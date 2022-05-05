@@ -1,8 +1,8 @@
-package dev.u9g.minecrftdatagenerator.mixin;
+package dev.u9g.minecraftdatagenerator.mixin;
 
-import dev.u9g.minecrftdatagenerator.Main;
-import dev.u9g.minecrftdatagenerator.generators.DataGenerators;
-import dev.u9g.minecrftdatagenerator.util.DGU;
+import dev.u9g.minecraftdatagenerator.Main;
+import dev.u9g.minecraftdatagenerator.generators.DataGenerators;
+import dev.u9g.minecraftdatagenerator.util.DGU;
 import net.minecraft.MinecraftVersion;
 import net.minecraft.server.dedicated.MinecraftDedicatedServer;
 import org.spongepowered.asm.mixin.Mixin;
@@ -17,7 +17,7 @@ public class ReadyMixin {
     @Inject(method = "setupServer()Z", at = @At("TAIL"))
     private void init(CallbackInfoReturnable<Boolean> cir) {
         Main.LOGGER.info("Starting data generation!");
-        String versionName = MinecraftVersion.CURRENT.getName();
+        String versionName = MinecraftVersion.GAME_VERSION.getName();
         Path serverRootDirectory = DGU.getCurrentlyRunningServer().getRunDirectory().toPath().toAbsolutePath();
         Path dataDumpDirectory = serverRootDirectory.resolve("minecraft-data").resolve(versionName);
         DataGenerators.runDataGenerators(dataDumpDirectory);

@@ -1,8 +1,8 @@
-package dev.u9g.minecrftdatagenerator.generators;
+package dev.u9g.minecraftdatagenerator.generators;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import dev.u9g.minecrftdatagenerator.util.DGU;
+import dev.u9g.minecraftdatagenerator.util.DGU;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
@@ -29,7 +29,7 @@ public class BiomesDataGenerator implements IDataGenerator {
         biomeDesc.addProperty("category", biome.getCategory().getName());
         biomeDesc.addProperty("temperature", biome.getTemperature());
         biomeDesc.addProperty("precipitation", biome.getPrecipitation().getName());
-        //biomeDesc.addProperty("depth", biome.getDepth()); - Doesn't exist anymore in minecraft source
+        biomeDesc.addProperty("depth", biome.getDepth());
         biomeDesc.addProperty("dimension", guessBiomeDimensionFromCategory(biome));
         biomeDesc.addProperty("displayName", DGU.translateText(localizationKey));
         biomeDesc.addProperty("color", biome.getSkyColor());

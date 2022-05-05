@@ -1,4 +1,4 @@
-package dev.u9g.minecrftdatagenerator.generators;
+package dev.u9g.minecraftdatagenerator.generators;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
@@ -6,8 +6,7 @@ import com.google.common.collect.Multimap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import dev.u9g.minecrftdatagenerator.util.DGU;
-import net.minecraft.client.MinecraftClient;
+import dev.u9g.minecraftdatagenerator.util.DGU;
 import net.minecraft.item.Item;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.Recipe;
@@ -40,12 +39,12 @@ public class RecipeDataGenerator implements IDataGenerator {
                         continue;
                     }
                     var stacks = ingredients.get(i);
-                    var matching = stacks.getMatchingStacks();
-                    if (matching.length == 0) {
-                        ingr.add(-1);
-                    } else {
-                        ingr.add(getRawIdFor(matching[0].getItem()));
-                    }
+//                    var matching = stacks.getMatchingStacks();
+//                    if (matching.length == 0) {
+//                        ingr.add(-1);
+//                    } else {
+//                        ingr.add(getRawIdFor(matching[0].getItem()));
+//                    }
                 }
                 Lists.reverse(ingr);
 
@@ -107,7 +106,7 @@ public class RecipeDataGenerator implements IDataGenerator {
                 var ingredients = new JsonArray();
                 for (Ingredient ingredient : sl.getIngredients()) {
                     if (ingredient.isEmpty()) continue;
-                    ingredients.add(getRawIdFor(ingredient.getMatchingStacks()[0].getItem()));
+//                    ingredients.add(getRawIdFor(ingredient.getMatchingStacks()[0].getItem()));
                 }
                 var rootRecipeObject = new JsonObject();
                 rootRecipeObject.add("ingredients", ingredients);

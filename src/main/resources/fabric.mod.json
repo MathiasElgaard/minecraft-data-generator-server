@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "id": "minecrft-data-generator",
+  "id": "minecraft-data-generator",
   "version": "${version}",
-  "name": "Minecrft Data Generator",
+  "name": "Minecraft Data Generator",
   "description": "",
   "authors": [
     "Archengius",
@@ -10,19 +10,18 @@
   ],
   "contact": {},
   "license": "MIT",
-  "icon": "assets/minecrft-data-generator/icon.png",
   "environment": "server",
   "entrypoints": {
     "main": [
-      "dev.u9g.minecrftdatagenerator.Main"
+      "dev.u9g.minecraftdatagenerator.Main"
     ]
   },
   "mixins": [
-    "minecrft-data-generator.mixins.json"
+    "minecraft-data-generator.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.14.4",
+    "fabricloader": ">=0.13.3",
     "fabric": "*",
-    "minecraft": "1.18"
+    "minecraft": "1.17"
   }
 }
