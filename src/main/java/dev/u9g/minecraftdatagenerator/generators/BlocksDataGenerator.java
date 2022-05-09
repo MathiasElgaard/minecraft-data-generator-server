@@ -3,12 +3,15 @@ package dev.u9g.minecraftdatagenerator.generators;
 import com.google.common.base.CaseFormat;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import dev.u9g.minecraftdatagenerator.Main;
 import dev.u9g.minecraftdatagenerator.util.DGU;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.StoneButtonBlock;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.PickaxeItem;
 import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.context.LootContextParameters;
 import net.minecraft.server.MinecraftServer;
@@ -23,21 +26,21 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.EmptyBlockView;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class BlocksDataGenerator implements IDataGenerator {
 
-    private static Logger logger = LoggerFactory.getLogger(BlocksDataGenerator.class);
+    private static final Logger logger = Main.LOGGER;
 
     private static List<Item> getItemsEffectiveForBlock(BlockState blockState) {
         return Registry.ITEM.stream()
-                .filter(item -> item.getDefaultStack().isSuitableFor(blockState))
+                .filter(item -> item.isEffectiveOn(blockState))
                 .collect(Collectors.toList());
     }
 
@@ -48,15 +51,15 @@ public class BlocksDataGenerator implements IDataGenerator {
             ServerWorld serverWorld = minecraftServer.getOverworld();
             LootContext.Builder lootContext = new LootContext.Builder(serverWorld)
                     .parameter(LootContextParameters.BLOCK_STATE, blockState)
-                    .parameter(LootContextParameters.ORIGIN, Vec3d.ZERO)
-                    .parameter(LootContextParameters.TOOL, firstToolItem.getDefaultStack())
+                    .parameter(LootContextParameters.POSITION, new BlockPos(0,0,0))
+                    .parameter(LootContextParameters.TOOL, firstToolItem.getStackForRender())
                     .random(0L);
             outDrops.addAll(blockState.getDroppedStacks(lootContext));
         } else {
             //If we're lacking world context to correctly determine drops, assume that default drop is ItemBlock stack in quantity of 1
             Item itemBlock = blockState.getBlock().asItem();
             if (itemBlock != Items.AIR) {
-                outDrops.add(itemBlock.getDefaultStack());
+                outDrops.add(itemBlock.getStackForRender());
             }
         }
     }
@@ -107,32 +110,32 @@ public class BlocksDataGenerator implements IDataGenerator {
     public JsonArray generateDataJson() {
         JsonArray resultBlocksArray = new JsonArray();
         Registry<Block> blockRegistry = Registry.BLOCK;
-        List<MaterialsDataGenerator.MaterialInfo> availableMaterials = MaterialsDataGenerator.getGlobalMaterialInfo();
+//        List<MaterialsDataGenerator.MaterialInfo> availableMaterials = MaterialsDataGenerator.getGlobalMaterialInfo();
 
-        blockRegistry.forEach(block -> resultBlocksArray.add(generateBlock(blockRegistry, availableMaterials, block)));
+        blockRegistry.forEach(block -> resultBlocksArray.add(generateBlock(blockRegistry, block)));
         return resultBlocksArray;
     }
 
-    private static String findMatchingBlockMaterial(BlockState blockState, List<MaterialsDataGenerator.MaterialInfo> materials) {
-        List<MaterialsDataGenerator.MaterialInfo> matchingMaterials = materials.stream()
-                .filter(material -> material.getPredicate().test(blockState))
-                .collect(Collectors.toList());
+//    private static String findMatchingBlockMaterial(BlockState blockState, List<MaterialsDataGenerator.MaterialInfo> materials) {
+//        List<MaterialsDataGenerator.MaterialInfo> matchingMaterials = materials.stream()
+//                .filter(material -> material.getPredicate().test(blockState))
+//                .collect(Collectors.toList());
+//
+//        if (matchingMaterials.size() > 1) {
+//            var firstMaterial = matchingMaterials.get(0);
+//            var otherMaterials = matchingMaterials.subList(1, matchingMaterials.size());
+//
+//            if (!otherMaterials.stream().allMatch(firstMaterial::includesMaterial)) {
+//                logger.fine(MessageFormat.format("Block {0} matches multiple materials: {1}", blockState.getBlock(), matchingMaterials));
+//            }
+//        }
+//        if (matchingMaterials.isEmpty()) {
+//            return "default";
+//        }
+//        return matchingMaterials.get(0).getMaterialName();
+//    }
 
-        if (matchingMaterials.size() > 1) {
-            var firstMaterial = matchingMaterials.get(0);
-            var otherMaterials = matchingMaterials.subList(1, matchingMaterials.size());
-
-            if (!otherMaterials.stream().allMatch(firstMaterial::includesMaterial)) {
-                logger.error("Block {} matches multiple materials: {}", blockState.getBlock(), matchingMaterials);
-            }
-        }
-        if (matchingMaterials.isEmpty()) {
-            return "default";
-        }
-        return matchingMaterials.get(0).getMaterialName();
-    }
-
-    public static JsonObject generateBlock(Registry<Block> blockRegistry, List<MaterialsDataGenerator.MaterialInfo> materials, Block block) {
+    public static JsonObject generateBlock(Registry<Block> blockRegistry, Block block) {
         JsonObject blockDesc = new JsonObject();
 
         List<BlockState> blockStates = block.getStateManager().getStates();
@@ -142,16 +145,21 @@ public class BlocksDataGenerator implements IDataGenerator {
 
         blockDesc.addProperty("id", blockRegistry.getRawId(block));
         blockDesc.addProperty("name", registryKey.getPath());
-//        if (Objects.equals(registryKey.getPath(), "red_candle_cake")) {
-//            System.out.println();
-//        }
         blockDesc.addProperty("displayName", DGU.translateText(localizationKey));
 
-        blockDesc.addProperty("hardness", block.getHardness());
+        float hardness = block.getDefaultState().getHardness(null, null);
+        blockDesc.addProperty("hardness", hardness);
         blockDesc.addProperty("resistance", block.getBlastResistance());
         blockDesc.addProperty("stackSize", block.asItem().getMaxCount());
-        blockDesc.addProperty("diggable", block.getHardness() != -1.0f || block.getHardness() == 0f);
-        blockDesc.addProperty("material", findMatchingBlockMaterial(defaultState, materials));
+        blockDesc.addProperty("diggable", hardness != -1.0f || hardness == 0f);
+//        List<String> effectiveOn = new ArrayList<>();
+        var obj = new JsonObject();
+        Registry.ITEM.forEach(item -> {
+            if (item.isEffectiveOn(defaultState)) {
+                obj.addProperty(String.valueOf(Registry.ITEM.getRawId(item)), item.getMiningSpeedMultiplier(item.getStackForRender(), defaultState));
+            }
+        });
+        blockDesc.add("effective_tools", obj);
 
         blockDesc.addProperty("transparent", !defaultState.isOpaque());
         blockDesc.addProperty("emitLight", defaultState.getLuminance());
@@ -169,14 +177,14 @@ public class BlocksDataGenerator implements IDataGenerator {
 
         List<Item> effectiveTools = getItemsEffectiveForBlock(defaultState);
 
-        //Only add harvest tools if tool is required for harvesting this block
-        if (defaultState.isToolRequired()) {
-            JsonObject effectiveToolsObject = new JsonObject();
-            for (Item effectiveItem : effectiveTools) {
-                effectiveToolsObject.addProperty(Integer.toString(Item.getRawId(effectiveItem)), true);
-            }
-            blockDesc.add("harvestTools", effectiveToolsObject);
-        }
+//        //Only add harvest tools if tool is required for harvesting this block
+//        if (defaultState.isToolRequired()) {
+//            JsonObject effectiveToolsObject = new JsonObject();
+//            for (Item effectiveItem : effectiveTools) {
+//                effectiveToolsObject.addProperty(Integer.toString(Item.getRawId(effectiveItem)), true);
+//            }
+//            blockDesc.add("harvestTools", effectiveToolsObject);
+//        }
 
         List<ItemStack> actualBlockDrops = new ArrayList<>();
         populateDropsIfPossible(defaultState, effectiveTools.isEmpty() ? Items.AIR : effectiveTools.get(0), actualBlockDrops);

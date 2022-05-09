@@ -7,12 +7,12 @@ import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.BlockRenderView;
 import net.minecraft.world.LightType;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeKeys;
+import net.minecraft.world.biome.Biomes;
+import net.minecraft.world.biome.PlainsBiome;
 import net.minecraft.world.chunk.light.LightingProvider;
 import net.minecraft.world.level.ColorResolver;
 import org.jetbrains.annotations.Nullable;
@@ -54,11 +54,7 @@ public enum EmptyRenderBlockView implements BlockRenderView {
 
     @Override
     public int getColor(BlockPos pos, ColorResolver colorResolver) {
-        DynamicRegistryManager registryManager = DynamicRegistryManager.create();
-        Registry<Biome> biomeRegistry = registryManager.get(Registry.BIOME_KEY);
-        Biome plainsBiome = biomeRegistry.get(BiomeKeys.PLAINS);
-
-        return colorResolver.getColor(plainsBiome, pos.getX(), pos.getY());
+        return colorResolver.getColor(Biomes.PLAINS, pos.getX(), pos.getY());
     }
 
     @Override

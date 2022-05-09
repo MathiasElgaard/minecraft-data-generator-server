@@ -3,21 +3,22 @@ package dev.u9g.minecraftdatagenerator.generators;
 import com.google.gson.JsonElement;
 import com.google.gson.internal.Streams;
 import com.google.gson.stream.JsonWriter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import dev.u9g.minecraftdatagenerator.Main;
 
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class DataGenerators {
 
-    private static List<IDataGenerator> GENERATORS = new ArrayList<>();
-    private static final Logger logger = LoggerFactory.getLogger(DataGenerators.class);
+    private static final List<IDataGenerator> GENERATORS = new ArrayList<>();
+    private static final Logger logger = Main.LOGGER;
 
     public static void register(IDataGenerator generator) {
         GENERATORS.add(generator);
@@ -27,15 +28,16 @@ public class DataGenerators {
         try {
             Files.createDirectories(outputDirectory);
         } catch (IOException exception) {
-            logger.error("Failed to create data generator output directory at {}", outputDirectory, exception);
+            logger.fine("Failed to create data generator output directory at " + outputDirectory);
+            exception.printStackTrace();
             return false;
         }
 
         int generatorsFailed = 0;
-        logger.info("Running minecraft data generators, output at {}", outputDirectory);
+        logger.info(MessageFormat.format("Running minecraft data generators, output at {0}", outputDirectory));
 
         for (IDataGenerator dataGenerator : GENERATORS) {
-            logger.info("Running generator {}", dataGenerator.getDataName());
+            logger.info(MessageFormat.format("Running generator {0}", dataGenerator.getDataName()));
             try {
                 String outputFileName = String.format("%s.json", dataGenerator.getDataName());
                 JsonElement outputElement = dataGenerator.generateDataJson();
@@ -46,10 +48,11 @@ public class DataGenerators {
                     jsonWriter.setIndent("  ");
                     Streams.write(outputElement, jsonWriter);
                 }
-                logger.info("Generator: {} -> {}", dataGenerator.getDataName(), outputFileName);
+                logger.info(MessageFormat.format("Generator: {0} -> {1}", dataGenerator.getDataName(), outputFileName));
 
             } catch (Throwable exception) {
-                logger.error("Failed to run data generator {}", dataGenerator.getDataName(), exception);
+                logger.fine(MessageFormat.format("Failed to run data generator {0}", dataGenerator.getDataName()));
+                exception.printStackTrace();
                 generatorsFailed++;
             }
         }
@@ -69,8 +72,6 @@ public class DataGenerators {
         register(new ItemsDataGenerator());
         register(new ParticlesDataGenerator());
         register(new TintsDataGenerator());
-        register(new MaterialsDataGenerator());
-//        register(new RecipeDataGenerator()); - On hold until mcdata supports multiple materials for a recipe
         register(new LanguageDataGenerator());
         register(new InstrumentsDataGenerator());
     }

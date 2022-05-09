@@ -2,7 +2,11 @@ package dev.u9g.minecraftdatagenerator.generators;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import dev.u9g.minecraftdatagenerator.ClientSideAnnoyances.FoliageColors;
+import dev.u9g.minecraftdatagenerator.ClientSideAnnoyances.ServerSideRedstoneWireBlock;
+import dev.u9g.minecraftdatagenerator.mixin.BiomeEffectsAccessor;
 import dev.u9g.minecraftdatagenerator.util.EmptyRenderBlockView;
+import dev.u9g.minecraftdatagenerator.ClientSideAnnoyances.GrassColors;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
@@ -10,10 +14,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.RedstoneWireBlock;
 import net.minecraft.client.color.block.BlockColors;
-import net.minecraft.client.color.world.FoliageColors;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 
@@ -31,9 +33,9 @@ public class TintsDataGenerator implements IDataGenerator {
         BiomeTintColors colors = new BiomeTintColors();
 
         biomeRegistry.forEach(biome -> {
-            int biomeGrassColor = biome.getGrassColorAt(0.0, 0.0);
-            int biomeFoliageColor = biome.getFoliageColor();
-            int biomeWaterColor = biome.getWaterColor();
+            int biomeGrassColor = GrassColors.getGrassColorAt(biome);
+            int biomeFoliageColor = FoliageColors.getFoliageColor(biome);
+            int biomeWaterColor = ((BiomeEffectsAccessor)biome.getEffects()).waterColor();
 
             colors.grassColoursMap.computeIfAbsent(biomeGrassColor, k -> new ArrayList<>()).add(biome);
             colors.foliageColoursMap.computeIfAbsent(biomeFoliageColor, k -> new ArrayList<>()).add(biome);
@@ -46,7 +48,7 @@ public class TintsDataGenerator implements IDataGenerator {
         Map<Integer, Integer> resultColors = new HashMap<>();
 
         for (int redstoneLevel : RedstoneWireBlock.POWER.getValues()) {
-            int color = RedstoneWireBlock.getWireColor(redstoneLevel);
+            int color = ServerSideRedstoneWireBlock.getWireColor(redstoneLevel);
             resultColors.put(redstoneLevel, color);
         }
         return resultColors;
@@ -141,9 +143,9 @@ public class TintsDataGenerator implements IDataGenerator {
 
     @Override
     public JsonObject generateDataJson() {
-        DynamicRegistryManager registryManager = DynamicRegistryManager.create();
-        Registry<Biome> biomeRegistry = registryManager.get(Registry.BIOME_KEY);
-        Registry<Block> blockRegistry = registryManager.get(Registry.BLOCK_KEY);
+//        DynamicRegistryManager registryManager = DynamicRegistryManager.create();
+        Registry<Biome> biomeRegistry = Registry.BIOME;
+        Registry<Block> blockRegistry = Registry.BLOCK;
 
         BiomeTintColors biomeTintColors = generateBiomeTintColors(biomeRegistry);
         Map<Integer, Integer> redstoneColors = generateRedstoneTintColors();

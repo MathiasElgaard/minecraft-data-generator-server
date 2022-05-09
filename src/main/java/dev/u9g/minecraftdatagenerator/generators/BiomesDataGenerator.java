@@ -2,9 +2,9 @@ package dev.u9g.minecraftdatagenerator.generators;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import dev.u9g.minecraftdatagenerator.mixin.BiomeAccessor;
 import dev.u9g.minecraftdatagenerator.util.DGU;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 
@@ -32,8 +32,8 @@ public class BiomesDataGenerator implements IDataGenerator {
         biomeDesc.addProperty("depth", biome.getDepth());
         biomeDesc.addProperty("dimension", guessBiomeDimensionFromCategory(biome));
         biomeDesc.addProperty("displayName", DGU.translateText(localizationKey));
-        biomeDesc.addProperty("color", biome.getSkyColor());
-        biomeDesc.addProperty("rainfall", biome.getDownfall());
+        biomeDesc.addProperty("color", ((BiomeAccessor)biome).skyColor());
+        biomeDesc.addProperty("rainfall", biome.getRainfall());
 
         return biomeDesc;
     }
@@ -46,8 +46,7 @@ public class BiomesDataGenerator implements IDataGenerator {
     @Override
     public JsonArray generateDataJson() {
         JsonArray biomesArray = new JsonArray();
-        DynamicRegistryManager registryManager = DynamicRegistryManager.create();
-        Registry<Biome> biomeRegistry = registryManager.get(Registry.BIOME_KEY);
+        Registry<Biome> biomeRegistry = Registry.BIOME;
 
         biomeRegistry.stream()
                 .map(biome -> generateBiomeInfo(biomeRegistry, biome))
