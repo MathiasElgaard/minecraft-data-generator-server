@@ -13,7 +13,6 @@ public interface MiningToolItemAccessor {
 
     @Accessor
     Set<Block> getEffectiveBlocks();
-
     @Accessor
     float getMiningSpeed();
 }

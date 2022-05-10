@@ -8,6 +8,7 @@ import net.minecraft.client.resource.language.I18n;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Language;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
 
 public class DGU {
 
@@ -52,6 +53,7 @@ public class DGU {
         return translateTextFallback(translationKey);
     }
 
+    @NotNull
     public static World getWorld() {
         return getCurrentlyRunningServer().getOverworld();
     }

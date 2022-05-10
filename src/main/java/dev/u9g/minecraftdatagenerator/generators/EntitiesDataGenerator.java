@@ -51,11 +51,8 @@ public class EntitiesDataGenerator implements IDataGenerator {
 
         String entityTypeString = "UNKNOWN";
         MinecraftServer minecraftServer = DGU.getCurrentlyRunningServer();
-
-        if (minecraftServer != null) {
-            Entity entityObject = entityType.create(minecraftServer.getOverworld());
-            entityTypeString = entityObject != null ? getEntityTypeForClass(entityObject.getClass()) : "player";
-        }
+        Entity entityObject = entityType.create(minecraftServer.getOverworld());
+        entityTypeString = entityObject != null ? getEntityTypeForClass(entityObject.getClass()) : "player";
         entityDesc.addProperty("type", entityTypeString);
         entityDesc.addProperty("category", getCategoryFrom(entityType));
 
@@ -63,7 +60,7 @@ public class EntitiesDataGenerator implements IDataGenerator {
     }
 
     private static String getCategoryFrom(@NotNull EntityType<?> entityType) {
-        if (entityType == EntityType.PLAYER) return "UNKNOWN"; // fail early for player entities
+        if (entityType == EntityType.PLAYER) return "other"; // fail early for player entities
         Class<? extends Entity> entityClazz = null;
         try {
             for (var field : EntityType.class.getFields())
@@ -80,7 +77,7 @@ public class EntitiesDataGenerator implements IDataGenerator {
             case "net.minecraft.entity.projectile", "net.minecraft.entity.projectile.thrown" -> "Projectiles";
             case "net.minecraft.entity.passive" -> "Passive mobs";
             case "net.minecraft.entity.vehicle" -> "Vehicles";
-            case "net.minecraft.entity" -> "UNKNOWN";
+            case "net.minecraft.entity" -> "other";
             default -> throw new Error("Unexpected entity type: " + entityClazz.getPackageName());
         };
     }

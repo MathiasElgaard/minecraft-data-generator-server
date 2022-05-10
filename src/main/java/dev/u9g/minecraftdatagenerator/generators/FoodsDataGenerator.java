@@ -3,8 +3,11 @@ package dev.u9g.minecraftdatagenerator.generators;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import dev.u9g.minecraftdatagenerator.util.DGU;
+import net.minecraft.block.Block;
+import net.minecraft.block.CakeBlock;
 import net.minecraft.item.FoodComponent;
 import net.minecraft.item.Item;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 

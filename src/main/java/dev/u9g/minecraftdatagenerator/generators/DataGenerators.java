@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.internal.Streams;
 import com.google.gson.stream.JsonWriter;
 import dev.u9g.minecraftdatagenerator.Main;
+import io.netty.handler.logging.LogLevel;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -13,6 +14,7 @@ import java.nio.file.StandardOpenOption;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class DataGenerators {
@@ -28,16 +30,16 @@ public class DataGenerators {
         try {
             Files.createDirectories(outputDirectory);
         } catch (IOException exception) {
-            logger.fine("Failed to create data generator output directory at " + outputDirectory);
+            logger.log(Level.INFO, "Failed to create data generator output directory at " + outputDirectory);
             exception.printStackTrace();
             return false;
         }
 
         int generatorsFailed = 0;
-        logger.info(MessageFormat.format("Running minecraft data generators, output at {0}", outputDirectory));
+        logger.log(Level.INFO, MessageFormat.format("Running minecraft data generators, output at {0}", outputDirectory));
 
         for (IDataGenerator dataGenerator : GENERATORS) {
-            logger.info(MessageFormat.format("Running generator {0}", dataGenerator.getDataName()));
+            logger.log(Level.INFO, MessageFormat.format("Running generator {0}", dataGenerator.getDataName()));
             try {
                 String outputFileName = String.format("%s.json", dataGenerator.getDataName());
                 JsonElement outputElement = dataGenerator.generateDataJson();
@@ -48,16 +50,16 @@ public class DataGenerators {
                     jsonWriter.setIndent("  ");
                     Streams.write(outputElement, jsonWriter);
                 }
-                logger.info(MessageFormat.format("Generator: {0} -> {1}", dataGenerator.getDataName(), outputFileName));
+                logger.log(Level.INFO, MessageFormat.format("Generator: {0} -> {1}", dataGenerator.getDataName(), outputFileName));
 
             } catch (Throwable exception) {
-                logger.fine(MessageFormat.format("Failed to run data generator {0}", dataGenerator.getDataName()));
+                logger.log(Level.INFO, MessageFormat.format("Failed to run data generator {0}", dataGenerator.getDataName()));
                 exception.printStackTrace();
                 generatorsFailed++;
             }
         }
 
-        logger.info("Finishing running data generators");
+        logger.log(Level.INFO, "Finishing running data generators");
         return generatorsFailed == 0;
     }
 
