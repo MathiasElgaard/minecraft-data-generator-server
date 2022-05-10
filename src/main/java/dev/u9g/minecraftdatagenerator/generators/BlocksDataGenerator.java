@@ -6,9 +6,7 @@ import com.google.gson.JsonObject;
 import dev.u9g.minecraftdatagenerator.Main;
 import dev.u9g.minecraftdatagenerator.mixin.MiningToolItemAccessor;
 import dev.u9g.minecraftdatagenerator.util.DGU;
-import net.minecraft.block.AirBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
+import net.minecraft.block.*;
 import net.minecraft.item.*;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.property.BooleanProperty;
@@ -17,10 +15,13 @@ import net.minecraft.state.property.IntegerProperty;
 import net.minecraft.state.property.Property;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.EmptyBlockView;
 import net.minecraft.world.loot.context.LootContext;
+import net.minecraft.world.loot.context.LootContextParameter;
+import net.minecraft.world.loot.context.LootContextParameters;
 import net.minecraft.world.loot.context.LootContextType;
 
 import java.util.Collection;
@@ -43,7 +44,9 @@ public class BlocksDataGenerator implements IDataGenerator {
     private static List<ItemStack> populateDropsIfPossible(BlockState blockState, Item firstToolItem) {
         //If we have local world context, we can actually evaluate loot tables and determine actual data
         ServerWorld serverWorld = (ServerWorld) DGU.getWorld();
-        var lootContext = new LootContext.Builder(serverWorld);
+        var lootContext = new LootContext.Builder(serverWorld)
+                .put(LootContextParameters.POSITION, BlockPos.ORIGIN)
+                .put(LootContextParameters.TOOL, DGU.stackFor(firstToolItem));
         blockState.getDroppedStacks(lootContext);
         return blockState.getDroppedStacks(lootContext);
     }
@@ -78,9 +81,7 @@ public class BlocksDataGenerator implements IDataGenerator {
         if (!(property instanceof BooleanProperty)) {
             JsonArray propertyValuesArray = new JsonArray();
             for (T propertyValue : propertyValues) {
-                System.out.println();
-                throw new Error("FIX ME!!");
-//                propertyValuesArray.add(property.name(propertyValue));
+                propertyValuesArray.add(property.getValueAsString(propertyValue));
             }
             propertyObject.add("values", propertyValuesArray);
         }
@@ -123,15 +124,23 @@ public class BlocksDataGenerator implements IDataGenerator {
         JsonObject effTools = new JsonObject();
         effectiveTools.forEach(item -> effTools.addProperty(
             String.valueOf(Registry.ITEM.getRawId(item)), // key
-            item.getBlockBreakingSpeed(item.getDefaultStack(), defaultState) // value
+            item.getBlockBreakingSpeed(DGU.stackFor(item), defaultState) // value
         ));
         blockDesc.add("effectiveTools", effTools);
 
         blockDesc.addProperty("transparent", !defaultState.isFullOpaque(EmptyBlockView.INSTANCE, BlockPos.ORIGIN));
         blockDesc.addProperty("emitLight", defaultState.getLuminance());
-        System.out.println();
         blockDesc.addProperty("filterLight", defaultState.getLuminance());
-        if (true) throw new RuntimeException("Check that for stone this will be 15!");
+        if (block instanceof LeavesBlock cpb) {
+            var blocksLight = cpb.getMaterial(cpb.getDefaultState()).blocksMovement();
+            // filterLight would be 1
+            System.out.println();
+        } else if (block instanceof OreBlock opb) {
+            var blocksLight = opb.getMaterial(opb.getDefaultState()).blocksMovement();
+            // filterLight would be 0
+            System.out.println();
+        }
+//        else if (block instanceof )
 
         blockDesc.addProperty("defaultState", Block.getRawIdFromState(defaultState));
         blockDesc.addProperty("minStateId", Block.getRawIdFromState(blockStates.get(0)));

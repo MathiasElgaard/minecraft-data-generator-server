@@ -52,8 +52,8 @@ public class EnchantmentsDataGenerator implements IDataGenerator {
     }
 
     private static JsonObject generateEnchantmentMaxPowerCoefficients(Enchantment enchantment) {
-        int b = enchantment.getMaximumPower(0);
-        int a = enchantment.getMaximumPower(1) - b;
+        int b = getMaximumPower(enchantment,0);
+        int a = getMaximumPower(enchantment,1) - b;
 
         JsonObject resultObject = new JsonObject();
         resultObject.addProperty("a", a);
@@ -107,5 +107,9 @@ public class EnchantmentsDataGenerator implements IDataGenerator {
         enchantmentDesc.addProperty("discoverable", true); // the first non-enchantable enchant came in 1.16, soul speed
 
         return enchantmentDesc;
+    }
+
+    private static int getMaximumPower(Enchantment ench, int level) {
+        return ench.getMinimumPower(level) + 5;
     }
 }

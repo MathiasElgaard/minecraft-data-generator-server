@@ -32,12 +32,12 @@ public class FoodsDataGenerator implements IDataGenerator {
         foodDesc.addProperty("id", registry.getRawId(foodItem));
         foodDesc.addProperty("name", Objects.requireNonNull(registryKey).getPath());
 
-        foodDesc.addProperty("stackSize", foodItem.getMaxCount());
+        foodDesc.addProperty("stackSize", foodItem.getMaxAmount());
         foodDesc.addProperty("displayName", DGU.translateText(foodItem.getTranslationKey()));
 
-        FoodComponent foodComponent = Objects.requireNonNull(foodItem.getFoodComponent());
-        float foodPoints = foodComponent.getHunger();
-        float saturationRatio = foodComponent.getSaturationModifier() * 2.0F;
+        var foodSettings = Objects.requireNonNull(foodItem.getFoodSetting());
+        float foodPoints = foodSettings.getHunger();
+        float saturationRatio = foodSettings.getSaturationModifier() * 2.0F;
         float saturation = foodPoints * saturationRatio;
 
         foodDesc.addProperty("foodPoints", foodPoints);

@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import dev.u9g.minecraftdatagenerator.ClientSideAnnoyances.FoliageColors;
 import dev.u9g.minecraftdatagenerator.ClientSideAnnoyances.ServerSideRedstoneWireBlock;
 import dev.u9g.minecraftdatagenerator.ClientSideAnnoyances.GrassColors;
+import dev.u9g.minecraftdatagenerator.util.DGU;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
@@ -52,12 +53,10 @@ public class TintsDataGenerator implements IDataGenerator {
         return resultColors;
     }
 
-    @Environment(EnvType.CLIENT)
     private static int getBlockColor(Block block, BlockColors blockColors) {
-        return blockColors.getColor(block.getDefaultState(), EmptyRenderBlockView.INSTANCE, BlockPos.ORIGIN, 0xFFFFFF);
+        return blockColors.getColor(block.getDefaultState(), DGU.getWorld(), BlockPos.ORIGIN);
     }
 
-    @Environment(EnvType.CLIENT)
     public static Map<Block, Integer> generateConstantTintColors() {
         Map<Block, Integer> resultColors = new HashMap<>();
         BlockColors blockColors = BlockColors.create();

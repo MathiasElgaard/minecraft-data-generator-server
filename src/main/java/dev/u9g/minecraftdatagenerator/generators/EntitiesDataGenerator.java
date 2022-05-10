@@ -7,11 +7,13 @@ import dev.u9g.minecraftdatagenerator.util.DGU;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.WaterCreatureEntity;
 import net.minecraft.entity.mob.AmbientEntity;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.PassiveEntity;
+import net.minecraft.entity.projectile.FireballEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -45,8 +47,8 @@ public class EntitiesDataGenerator implements IDataGenerator {
         entityDesc.addProperty("name", Objects.requireNonNull(registryKey).getPath());
 
         entityDesc.addProperty("displayName", DGU.translateText(entityType.getTranslationKey()));
-        entityDesc.addProperty("width", entityType.getDimensions().width);
-        entityDesc.addProperty("height", entityType.getDimensions().height);
+        entityDesc.addProperty("width", entityType.getWidth());
+        entityDesc.addProperty("height", entityType.getHeight());
 
         String entityTypeString = "UNKNOWN";
         Entity entityObject = entityType.create(DGU.getWorld());
@@ -72,7 +74,7 @@ public class EntitiesDataGenerator implements IDataGenerator {
         return switch (entityClazz.getPackageName()) {
             case "net.minecraft.entity.decoration", "net.minecraft.entity.decoration.painting" -> "Immobile";
             case "net.minecraft.entity.boss", "net.minecraft.entity.mob", "net.minecraft.entity.boss.dragon" -> "Hostile mobs";
-            case "net.minecraft.entity.projectile", "net.minecraft.entity.projectile.thrown" -> "Projectiles";
+            case "net.minecraft.entity.projectile", "net.minecraft.entity.thrown" -> "Projectiles";
             case "net.minecraft.entity.passive" -> "Passive mobs";
             case "net.minecraft.entity.vehicle" -> "Vehicles";
             case "net.minecraft.entity" -> "other";

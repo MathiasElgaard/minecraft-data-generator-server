@@ -5,6 +5,8 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.resource.language.I18n;
+import net.minecraft.item.ItemConvertible;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Language;
 import net.minecraft.world.World;
@@ -57,5 +59,9 @@ public class DGU {
     @NotNull
     public static World getWorld() {
         return getCurrentlyRunningServer().getWorld(DimensionType.OVERWORLD);
+    }
+
+    public static ItemStack stackFor(ItemConvertible ic) {
+        return new ItemStack(ic);
     }
 }

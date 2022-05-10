@@ -3,8 +3,10 @@ package dev.u9g.minecraftdatagenerator.generators;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import dev.u9g.minecraftdatagenerator.util.DGU;
+import net.minecraft.block.Block;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -17,9 +19,9 @@ import java.util.stream.Collectors;
 public class ItemsDataGenerator implements IDataGenerator {
 
     private static List<Item> calculateItemsToRepairWith(Registry<Item> itemRegistry, Item sourceItem) {
-        ItemStack sourceItemStack = sourceItem.getStackForRender();
+        ItemStack sourceItemStack = DGU.stackFor(sourceItem);
         return itemRegistry.stream()
-                .filter(otherItem -> sourceItem.canRepair(sourceItemStack, otherItem.getStackForRender()))
+                .filter(otherItem -> sourceItem.canRepair(sourceItemStack, DGU.stackFor(otherItem)))
                 .collect(Collectors.toList());
     }
 
@@ -50,7 +52,7 @@ public class ItemsDataGenerator implements IDataGenerator {
         itemDesc.addProperty("name", Objects.requireNonNull(registryKey).getPath());
 
         itemDesc.addProperty("displayName", DGU.translateText(item.getTranslationKey()));
-        itemDesc.addProperty("stackSize", item.getMaxCount());
+        itemDesc.addProperty("stackSize", item.getMaxAmount());
 
         List<EnchantmentTarget> enchantmentTargets = getApplicableEnchantmentTargets(item);
 
@@ -62,7 +64,7 @@ public class ItemsDataGenerator implements IDataGenerator {
             itemDesc.add("enchantCategories", enchantCategoriesArray);
         }
 
-        if (item.isDamageable()) {
+        if (item.canDamage()) {
             List<Item> repairWithItems = calculateItemsToRepairWith(itemRegistry, item);
 
             JsonArray fixedWithArray = new JsonArray();
@@ -74,7 +76,7 @@ public class ItemsDataGenerator implements IDataGenerator {
                 itemDesc.add("repairWith", fixedWithArray);
             }
 
-            int maxDurability = item.getMaxDamage();
+            int maxDurability = item.getMaxAmount();
             itemDesc.addProperty("maxDurability", maxDurability);
         }
         return itemDesc;

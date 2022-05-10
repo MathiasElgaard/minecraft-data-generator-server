@@ -17,7 +17,7 @@ public class InstrumentsDataGenerator implements IDataGenerator {
         for (Instrument instrument : Instrument.values()) {
             JsonObject object = new JsonObject();
             object.addProperty("id", instrument.ordinal());
-            object.addProperty("name", instrument.asString());
+            object.addProperty("name", instrument.toSnakeCase());
             array.add(object);
         }
         return array;
