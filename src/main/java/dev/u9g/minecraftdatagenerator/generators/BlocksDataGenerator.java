@@ -130,17 +130,7 @@ public class BlocksDataGenerator implements IDataGenerator {
 
         blockDesc.addProperty("transparent", !defaultState.isFullOpaque(EmptyBlockView.INSTANCE, BlockPos.ORIGIN));
         blockDesc.addProperty("emitLight", defaultState.getLuminance());
-        blockDesc.addProperty("filterLight", defaultState.getLuminance());
-        if (block instanceof LeavesBlock cpb) {
-            var blocksLight = cpb.getMaterial(cpb.getDefaultState()).blocksMovement();
-            // filterLight would be 1
-            System.out.println();
-        } else if (block instanceof OreBlock opb) {
-            var blocksLight = opb.getMaterial(opb.getDefaultState()).blocksMovement();
-            // filterLight would be 0
-            System.out.println();
-        }
-//        else if (block instanceof )
+        blockDesc.addProperty("filterLight", block.getLightSubtracted(block.getDefaultState(), EmptyBlockView.INSTANCE, BlockPos.ORIGIN));
 
         blockDesc.addProperty("defaultState", Block.getRawIdFromState(defaultState));
         blockDesc.addProperty("minStateId", Block.getRawIdFromState(blockStates.get(0)));
