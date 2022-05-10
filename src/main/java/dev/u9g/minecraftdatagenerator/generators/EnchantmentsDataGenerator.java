@@ -96,15 +96,15 @@ public class EnchantmentsDataGenerator implements IDataGenerator {
 
         JsonArray excludes = new JsonArray();
         for (Enchantment excludedEnchantment : incompatibleEnchantments) {
-            Identifier otherKey = registry.getKey(excludedEnchantment).orElseThrow().getValue();
-            excludes.add(otherKey.getPath());
+            Identifier otherKey = registry.getId(excludedEnchantment);
+            excludes.add(Objects.requireNonNull(otherKey).getPath());
         }
         enchantmentDesc.add("exclude", excludes);
 
         enchantmentDesc.addProperty("category", getEnchantmentTargetName(enchantment.type));
         enchantmentDesc.addProperty("weight", enchantment.getWeight().getWeight());
-        enchantmentDesc.addProperty("tradeable", enchantment.isAvailableForEnchantedBookOffer());
-        enchantmentDesc.addProperty("discoverable", enchantment.isAvailableForRandomSelection());
+        enchantmentDesc.addProperty("tradeable", true); // the first non-tradeable enchant came in 1.16, soul speed
+        enchantmentDesc.addProperty("discoverable", true); // the first non-enchantable enchant came in 1.16, soul speed
 
         return enchantmentDesc;
     }

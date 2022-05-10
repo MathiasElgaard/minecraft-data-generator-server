@@ -31,10 +31,10 @@ public class FoodsDataGenerator implements IDataGenerator {
 
     public static JsonObject generateFoodDescriptor(Registry<Item> registry, Item foodItem) {
         JsonObject foodDesc = new JsonObject();
-        Identifier registryKey = registry.getKey(foodItem).orElseThrow().getValue();
+        Identifier registryKey = registry.getId(foodItem);
 
         foodDesc.addProperty("id", registry.getRawId(foodItem));
-        foodDesc.addProperty("name", registryKey.getPath());
+        foodDesc.addProperty("name", Objects.requireNonNull(registryKey).getPath());
 
         foodDesc.addProperty("stackSize", foodItem.getMaxCount());
         foodDesc.addProperty("displayName", DGU.translateText(foodItem.getTranslationKey()));

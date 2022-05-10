@@ -11,6 +11,7 @@ import net.minecraft.util.registry.Registry;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class ItemsDataGenerator implements IDataGenerator {
@@ -43,10 +44,10 @@ public class ItemsDataGenerator implements IDataGenerator {
 
     public static JsonObject generateItem(Registry<Item> itemRegistry, Item item) {
         JsonObject itemDesc = new JsonObject();
-        Identifier registryKey = itemRegistry.getKey(item).orElseThrow().getValue();
+        Identifier registryKey = itemRegistry.getId(item);
 
         itemDesc.addProperty("id", itemRegistry.getRawId(item));
-        itemDesc.addProperty("name", registryKey.getPath());
+        itemDesc.addProperty("name", Objects.requireNonNull(registryKey).getPath());
 
         itemDesc.addProperty("displayName", DGU.translateText(item.getTranslationKey()));
         itemDesc.addProperty("stackSize", item.getMaxCount());
@@ -66,8 +67,8 @@ public class ItemsDataGenerator implements IDataGenerator {
 
             JsonArray fixedWithArray = new JsonArray();
             for (Item repairWithItem : repairWithItems) {
-                Identifier repairWithName = itemRegistry.getKey(repairWithItem).orElseThrow().getValue();
-                fixedWithArray.add(repairWithName.getPath());
+                Identifier repairWithName = itemRegistry.getId(repairWithItem);
+                fixedWithArray.add(Objects.requireNonNull(repairWithName).getPath());
             }
             if (fixedWithArray.size() > 0) {
                 itemDesc.add("repairWith", fixedWithArray);

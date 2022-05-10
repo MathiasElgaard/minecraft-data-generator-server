@@ -18,7 +18,7 @@ public class ReadyMixin {
     @Inject(method = "setupServer()Z", at = @At("TAIL"))
     private void init(CallbackInfoReturnable<Boolean> cir) {
         Main.LOGGER.log(Level.INFO, "Starting data generation!");
-        String versionName = MinecraftVersion.field_25319.getName();
+        String versionName = MinecraftVersion.create().getName();
         Path serverRootDirectory = DGU.getCurrentlyRunningServer().getRunDirectory().toPath().toAbsolutePath();
         Path dataDumpDirectory = serverRootDirectory.resolve("minecraft-data").resolve(versionName);
         DataGenerators.runDataGenerators(dataDumpDirectory);

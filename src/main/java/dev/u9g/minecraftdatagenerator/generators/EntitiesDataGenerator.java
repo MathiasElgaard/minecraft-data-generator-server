@@ -20,6 +20,7 @@ import net.minecraft.util.registry.Registry;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.ParameterizedType;
+import java.util.Objects;
 
 public class EntitiesDataGenerator implements IDataGenerator {
 
@@ -38,20 +39,19 @@ public class EntitiesDataGenerator implements IDataGenerator {
 
     public static JsonObject generateEntity(Registry<EntityType<?>> entityRegistry, EntityType<?> entityType) {
         JsonObject entityDesc = new JsonObject();
-        Identifier registryKey = entityRegistry.getKey(entityType).orElseThrow().getValue();
+        Identifier registryKey = entityRegistry.getId(entityType);
         int entityRawId = entityRegistry.getRawId(entityType);
 
         entityDesc.addProperty("id", entityRawId);
         entityDesc.addProperty("internalId", entityRawId);
-        entityDesc.addProperty("name", registryKey.getPath());
+        entityDesc.addProperty("name", Objects.requireNonNull(registryKey).getPath());
 
         entityDesc.addProperty("displayName", DGU.translateText(entityType.getTranslationKey()));
         entityDesc.addProperty("width", entityType.getDimensions().width);
         entityDesc.addProperty("height", entityType.getDimensions().height);
 
         String entityTypeString = "UNKNOWN";
-        MinecraftServer minecraftServer = DGU.getCurrentlyRunningServer();
-        Entity entityObject = entityType.create(minecraftServer.getOverworld());
+        Entity entityObject = entityType.create(DGU.getWorld());
         entityTypeString = entityObject != null ? getEntityTypeForClass(entityObject.getClass()) : "player";
         entityDesc.addProperty("type", entityTypeString);
         entityDesc.addProperty("category", getCategoryFrom(entityType));

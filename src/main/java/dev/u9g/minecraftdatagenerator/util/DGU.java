@@ -37,11 +37,11 @@ public class DGU {
     private static String translateTextClient(String translationKey) {
         return I18n.translate(translationKey);
     }
-    private static Language language = Language.getInstance();
+    private static final Language language = Language.getInstance();
 
     private static String translateTextFallback(String translationKey) {
         try {
-            return language.get(translationKey);
+            return language.translate(translationKey);
         } catch (Exception ignored) {}
         throw new RuntimeException("Failed to translate: '" + translationKey + "'");
     }

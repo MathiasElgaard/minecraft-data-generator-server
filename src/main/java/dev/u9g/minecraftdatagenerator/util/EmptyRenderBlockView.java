@@ -41,12 +41,6 @@ public enum EmptyRenderBlockView implements BlockRenderView {
         return 0;
     }
 
-
-    @Override
-    public float getBrightness(Direction direction, boolean shaded) {
-        return 0.0f;
-    }
-
     @Override
     public LightingProvider getLightingProvider() {
         return null;

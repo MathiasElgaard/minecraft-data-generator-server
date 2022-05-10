@@ -84,8 +84,8 @@ public class TintsDataGenerator implements IDataGenerator {
 
             JsonArray keysArray = new JsonArray();
             for (Biome biome : entry.getValue()) {
-                Identifier registryKey = biomeRegistry.getKey(biome).orElseThrow().getValue();
-                keysArray.add(registryKey.getPath());
+                Identifier registryKey = biomeRegistry.getId(biome);
+                keysArray.add(Objects.requireNonNull(registryKey).getPath());
             }
 
             entryObject.add("keys", keysArray);
@@ -122,8 +122,8 @@ public class TintsDataGenerator implements IDataGenerator {
             JsonObject entryObject = new JsonObject();
 
             JsonArray keysArray = new JsonArray();
-            Identifier registryKey = blockRegistry.getKey(entry.getKey()).orElseThrow().getValue();
-            keysArray.add(registryKey.getPath());
+            Identifier registryKey = blockRegistry.getId(entry.getKey());
+            keysArray.add(Objects.requireNonNull(registryKey).getPath());
 
             entryObject.add("keys", keysArray);
             entryObject.addProperty("color", entry.getValue());
