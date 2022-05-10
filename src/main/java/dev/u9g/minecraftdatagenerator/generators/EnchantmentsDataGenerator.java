@@ -91,14 +91,14 @@ public class EnchantmentsDataGenerator implements IDataGenerator {
         enchantmentDesc.addProperty("curse", enchantment.isCursed());
 
         List<Enchantment> incompatibleEnchantments = registry.stream()
-                .filter(other -> !enchantment.canCombine(other))
+                .filter(other -> !canCombine(enchantment, other))
                 .filter(other -> other != enchantment)
-                .collect(Collectors.toList());
+                .toList();
 
         JsonArray excludes = new JsonArray();
         for (Enchantment excludedEnchantment : incompatibleEnchantments) {
-            Identifier otherKey = registry.getKey(excludedEnchantment).orElseThrow().getValue();
-            excludes.add(otherKey.getPath());
+            Identifier otherKey = registry.getId(excludedEnchantment);
+            excludes.add(Objects.requireNonNull(otherKey).getPath());
         }
         enchantmentDesc.add("exclude", excludes);
 
@@ -108,5 +108,9 @@ public class EnchantmentsDataGenerator implements IDataGenerator {
         enchantmentDesc.addProperty("discoverable", enchantment.isAvailableForRandomSelection());
 
         return enchantmentDesc;
+    }
+
+    private static boolean canCombine (Enchantment ench1, Enchantment ench2) {
+        return ench1 != ench2;
     }
 }
