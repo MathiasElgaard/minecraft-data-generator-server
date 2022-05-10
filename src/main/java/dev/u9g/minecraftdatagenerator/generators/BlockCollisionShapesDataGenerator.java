@@ -22,7 +22,7 @@ public class BlockCollisionShapesDataGenerator implements IDataGenerator {
         private int lastCollisionShapeId = 0;
 
         public void processBlock(Block block) {
-            List<BlockState> blockStates = block.getStateManager().getStates();
+            List<BlockState> blockStates = block.getStateFactory().getStates();
             List<Integer> blockCollisionShapes = new ArrayList<>();
 
             for (BlockState blockState : blockStates) {

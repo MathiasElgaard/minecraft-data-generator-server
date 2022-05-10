@@ -9,26 +9,23 @@ import dev.u9g.minecraftdatagenerator.util.DGU;
 import net.minecraft.block.AirBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.GrassBlock;
 import net.minecraft.item.*;
-import net.minecraft.loot.LootPool;
-import net.minecraft.loot.LootTable;
-import net.minecraft.loot.context.LootContext;
-import net.minecraft.loot.context.LootContextParameters;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.EnumProperty;
-import net.minecraft.state.property.IntProperty;
+import net.minecraft.state.property.IntegerProperty;
 import net.minecraft.state.property.Property;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.EmptyBlockView;
+import net.minecraft.world.loot.context.LootContext;
+import net.minecraft.world.loot.context.LootContextType;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -46,8 +43,8 @@ public class BlocksDataGenerator implements IDataGenerator {
     private static List<ItemStack> populateDropsIfPossible(BlockState blockState, Item firstToolItem) {
         //If we have local world context, we can actually evaluate loot tables and determine actual data
         ServerWorld serverWorld = (ServerWorld) DGU.getWorld();
-        LootContext.Builder lootContext = new LootContext.Builder(serverWorld)
-                .setRandom(0L);
+        var lootContext = new LootContext.Builder(serverWorld);
+        blockState.getDroppedStacks(lootContext);
         return blockState.getDroppedStacks(lootContext);
     }
 
@@ -56,7 +53,7 @@ public class BlocksDataGenerator implements IDataGenerator {
         if (property instanceof BooleanProperty) {
             return "bool";
         }
-        if (property instanceof IntProperty) {
+        if (property instanceof IntegerProperty) {
             return "int";
         }
         if (property instanceof EnumProperty) {
@@ -81,7 +78,9 @@ public class BlocksDataGenerator implements IDataGenerator {
         if (!(property instanceof BooleanProperty)) {
             JsonArray propertyValuesArray = new JsonArray();
             for (T propertyValue : propertyValues) {
-                propertyValuesArray.add(property.name(propertyValue));
+                System.out.println();
+                throw new Error("FIX ME!!");
+//                propertyValuesArray.add(property.name(propertyValue));
             }
             propertyObject.add("values", propertyValuesArray);
         }
@@ -105,38 +104,40 @@ public class BlocksDataGenerator implements IDataGenerator {
     public static JsonObject generateBlock(Registry<Block> blockRegistry, Block block) {
         JsonObject blockDesc = new JsonObject();
 
-        List<BlockState> blockStates = block.getStateManager().getStates();
+        List<BlockState> blockStates = block.getStateFactory().getStates();
         BlockState defaultState = block.getDefaultState();
         Identifier registryKey = blockRegistry.getId(block);
         String localizationKey = block.getTranslationKey();
         List<Item> effectiveTools = getItemsEffectiveForBlock(block);
 
         blockDesc.addProperty("id", blockRegistry.getRawId(block));
-        blockDesc.addProperty("name", registryKey.getPath());
+        blockDesc.addProperty("name", Objects.requireNonNull(registryKey).getPath());
         blockDesc.addProperty("displayName", DGU.translateText(localizationKey));
 
         float hardness = block.getDefaultState().getHardness(null, null);
 
         blockDesc.addProperty("hardness", hardness);
         blockDesc.addProperty("resistance", block.getBlastResistance());
-        blockDesc.addProperty("stackSize", block.asItem().getMaxCount());
+        blockDesc.addProperty("stackSize", block.asItem().getMaxAmount());
         blockDesc.addProperty("diggable", hardness != -1.0f && !(block instanceof AirBlock));
         JsonObject effTools = new JsonObject();
         effectiveTools.forEach(item -> effTools.addProperty(
             String.valueOf(Registry.ITEM.getRawId(item)), // key
-            item.getMiningSpeed(item.getStackForRender(), defaultState) // value
+            item.getBlockBreakingSpeed(item.getDefaultStack(), defaultState) // value
         ));
         blockDesc.add("effectiveTools", effTools);
 
-        blockDesc.addProperty("transparent", !defaultState.isOpaque());
+        blockDesc.addProperty("transparent", !defaultState.isFullOpaque(EmptyBlockView.INSTANCE, BlockPos.ORIGIN));
         blockDesc.addProperty("emitLight", defaultState.getLuminance());
-        blockDesc.addProperty("filterLight", defaultState.getOpacity(EmptyBlockView.INSTANCE, BlockPos.ORIGIN));
+        System.out.println();
+        blockDesc.addProperty("filterLight", defaultState.getLuminance());
+        if (true) throw new RuntimeException("Check that for stone this will be 15!");
 
         blockDesc.addProperty("defaultState", Block.getRawIdFromState(defaultState));
         blockDesc.addProperty("minStateId", Block.getRawIdFromState(blockStates.get(0)));
         blockDesc.addProperty("maxStateId", Block.getRawIdFromState(blockStates.get(blockStates.size() - 1)));
         JsonArray stateProperties = new JsonArray();
-        for (Property<?> property : block.getStateManager().getProperties()) {
+        for (Property<?> property : block.getStateFactory().getProperties()) {
             stateProperties.add(generateStateProperty(property));
         }
         blockDesc.add("states", stateProperties);
@@ -144,7 +145,7 @@ public class BlocksDataGenerator implements IDataGenerator {
         List<ItemStack> drops = populateDropsIfPossible(defaultState, effectiveTools.stream().findFirst().orElse(Items.AIR));
 
         JsonArray dropsArray = new JsonArray();
-        drops.forEach(dropped -> dropsArray.add(Item.getRawId(dropped.getItem())));
+        drops.forEach(dropped -> dropsArray.add(Item.getRawIdByItem(dropped.getItem())));
         blockDesc.add("drops", dropsArray);
 
         VoxelShape blockCollisionShape = defaultState.getCollisionShape(EmptyBlockView.INSTANCE, BlockPos.ORIGIN);
