@@ -44,14 +44,10 @@ public class BlocksDataGenerator implements IDataGenerator {
     }
 
     private static List<ItemStack> populateDropsIfPossible(BlockState blockState, Item firstToolItem) {
-        MinecraftServer minecraftServer = DGU.getCurrentlyRunningServer();
         //If we have local world context, we can actually evaluate loot tables and determine actual data
-        ServerWorld serverWorld = minecraftServer.getOverworld();
+        ServerWorld serverWorld = (ServerWorld) DGU.getWorld();
         LootContext.Builder lootContext = new LootContext.Builder(serverWorld)
-                .parameter(LootContextParameters.BLOCK_STATE, blockState)
-                .parameter(LootContextParameters.POSITION, new BlockPos(0,0,0))
-                .parameter(LootContextParameters.TOOL, firstToolItem.getStackForRender())
-                .random(0L);
+                .setRandom(0L);
         return blockState.getDroppedStacks(lootContext);
     }
 
@@ -111,7 +107,7 @@ public class BlocksDataGenerator implements IDataGenerator {
 
         List<BlockState> blockStates = block.getStateManager().getStates();
         BlockState defaultState = block.getDefaultState();
-        Identifier registryKey = blockRegistry.getKey(block).orElseThrow().getValue();
+        Identifier registryKey = blockRegistry.getId(block);
         String localizationKey = block.getTranslationKey();
         List<Item> effectiveTools = getItemsEffectiveForBlock(block);
 
@@ -128,7 +124,7 @@ public class BlocksDataGenerator implements IDataGenerator {
         JsonObject effTools = new JsonObject();
         effectiveTools.forEach(item -> effTools.addProperty(
             String.valueOf(Registry.ITEM.getRawId(item)), // key
-            item.getMiningSpeedMultiplier(item.getStackForRender(), defaultState) // value
+            item.getMiningSpeed(item.getStackForRender(), defaultState) // value
         ));
         blockDesc.add("effectiveTools", effTools);
 

@@ -8,6 +8,7 @@ import net.minecraft.client.resource.language.I18n;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Language;
 import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
 import org.jetbrains.annotations.NotNull;
 
 public class DGU {
@@ -55,6 +56,6 @@ public class DGU {
 
     @NotNull
     public static World getWorld() {
-        return getCurrentlyRunningServer().getOverworld();
+        return getCurrentlyRunningServer().getWorld(DimensionType.OVERWORLD);
     }
 }

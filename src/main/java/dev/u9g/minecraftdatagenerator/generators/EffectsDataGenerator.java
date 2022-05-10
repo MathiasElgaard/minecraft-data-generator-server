@@ -31,7 +31,7 @@ public class EffectsDataGenerator implements IDataGenerator {
 
     public static JsonObject generateEffect(Registry<StatusEffect> registry, StatusEffect statusEffect) {
         JsonObject effectDesc = new JsonObject();
-        Identifier registryKey = registry.getKey(statusEffect).orElseThrow().getValue();
+        Identifier registryKey = registry.getId(statusEffect);
 
         effectDesc.addProperty("id", registry.getRawId(statusEffect));
         if (statusEffect == StatusEffects.UNLUCK) {

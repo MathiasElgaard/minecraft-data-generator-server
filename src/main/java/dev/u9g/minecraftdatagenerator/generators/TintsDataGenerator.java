@@ -4,7 +4,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import dev.u9g.minecraftdatagenerator.ClientSideAnnoyances.FoliageColors;
 import dev.u9g.minecraftdatagenerator.ClientSideAnnoyances.ServerSideRedstoneWireBlock;
-import dev.u9g.minecraftdatagenerator.mixin.BiomeEffectsAccessor;
 import dev.u9g.minecraftdatagenerator.util.EmptyRenderBlockView;
 import dev.u9g.minecraftdatagenerator.ClientSideAnnoyances.GrassColors;
 import net.fabricmc.api.EnvType;
@@ -35,7 +34,7 @@ public class TintsDataGenerator implements IDataGenerator {
         biomeRegistry.forEach(biome -> {
             int biomeGrassColor = GrassColors.getGrassColorAt(biome);
             int biomeFoliageColor = FoliageColors.getFoliageColor(biome);
-            int biomeWaterColor = ((BiomeEffectsAccessor)biome.getEffects()).waterColor();
+            int biomeWaterColor = biome.getWaterColor();
 
             colors.grassColoursMap.computeIfAbsent(biomeGrassColor, k -> new ArrayList<>()).add(biome);
             colors.foliageColoursMap.computeIfAbsent(biomeFoliageColor, k -> new ArrayList<>()).add(biome);

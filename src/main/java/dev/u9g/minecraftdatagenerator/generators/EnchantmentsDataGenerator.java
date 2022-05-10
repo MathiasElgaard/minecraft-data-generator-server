@@ -4,13 +4,17 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import dev.u9g.minecraftdatagenerator.util.DGU;
+import net.minecraft.enchantment.DamageEnchantment;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
+import net.minecraft.enchantment.VanishingCurseEnchantment;
+import net.minecraft.item.EnchantedBookItem;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class EnchantmentsDataGenerator implements IDataGenerator {
@@ -29,17 +33,17 @@ public class EnchantmentsDataGenerator implements IDataGenerator {
             .put(EnchantmentTarget.BOW, "bow")
             .put(EnchantmentTarget.WEARABLE, "wearable")
             .put(EnchantmentTarget.CROSSBOW, "crossbow")
-            .put(EnchantmentTarget.VANISHABLE, "vanishable")
+            .put(EnchantmentTarget.ALL, "vanishable") // according to VanishingCurseEnchantment
             .build();
 
     public static String getEnchantmentTargetName(EnchantmentTarget target) {
         return ENCHANTMENT_TARGET_NAMES.getOrDefault(target, target.name().toLowerCase(Locale.ROOT));
     }
 
-    //Equation enchantment costs follow is a * level + b, so we can easily retrieve a and b by passing zero level
+    // Equation enchantment costs follow is a * level + b, so we can easily retrieve a and b by passing zero level
     private static JsonObject generateEnchantmentMinPowerCoefficients(Enchantment enchantment) {
-        int b = enchantment.getMinPower(0);
-        int a = enchantment.getMinPower(1) - b;
+        int b = enchantment.getMinimumPower(0);
+        int a = enchantment.getMinimumPower(1) - b;
 
         JsonObject resultObject = new JsonObject();
         resultObject.addProperty("a", a);
@@ -48,8 +52,8 @@ public class EnchantmentsDataGenerator implements IDataGenerator {
     }
 
     private static JsonObject generateEnchantmentMaxPowerCoefficients(Enchantment enchantment) {
-        int b = enchantment.getMaxPower(0);
-        int a = enchantment.getMaxPower(1) - b;
+        int b = enchantment.getMaximumPower(0);
+        int a = enchantment.getMaximumPower(1) - b;
 
         JsonObject resultObject = new JsonObject();
         resultObject.addProperty("a", a);
@@ -73,13 +77,13 @@ public class EnchantmentsDataGenerator implements IDataGenerator {
 
     public static JsonObject generateEnchantment(Registry<Enchantment> registry, Enchantment enchantment) {
         JsonObject enchantmentDesc = new JsonObject();
-        Identifier registryKey = registry.getKey(enchantment).orElseThrow().getValue();
+        Identifier registryKey = registry.getId(enchantment);
 
         enchantmentDesc.addProperty("id", registry.getRawId(enchantment));
-        enchantmentDesc.addProperty("name", registryKey.getPath());
+        enchantmentDesc.addProperty("name", Objects.requireNonNull(registryKey).getPath());
         enchantmentDesc.addProperty("displayName", DGU.translateText(enchantment.getTranslationKey()));
 
-        enchantmentDesc.addProperty("maxLevel", enchantment.getMaxLevel());
+        enchantmentDesc.addProperty("maxLevel", enchantment.getMaximumLevel());
         enchantmentDesc.add("minCost", generateEnchantmentMinPowerCoefficients(enchantment));
         enchantmentDesc.add("maxCost", generateEnchantmentMaxPowerCoefficients(enchantment));
 

@@ -12,10 +12,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.EmptyBlockView;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class BlockCollisionShapesDataGenerator implements IDataGenerator {
 
@@ -58,8 +55,8 @@ public class BlockCollisionShapesDataGenerator implements IDataGenerator {
                     }
                 }
 
-                Identifier registryKey = blockRegistry.getKey(entry.getKey()).orElseThrow().getValue();
-                resultObject.add(registryKey.getPath(), blockCollision);
+                Identifier registryKey = blockRegistry.getId(entry.getKey());
+                resultObject.add(Objects.requireNonNull(registryKey).getPath(), blockCollision);
             }
 
             return resultObject;

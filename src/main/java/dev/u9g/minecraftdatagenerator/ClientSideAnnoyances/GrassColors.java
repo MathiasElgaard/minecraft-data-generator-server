@@ -11,13 +11,11 @@ public class GrassColors {
     }
 
     public static int getColor(double temperature, double humidity) {
-        int j = (int)((1.0 - (humidity *= temperature)) * 255.0);
-        int i = (int)((1.0 - temperature) * 255.0);
+        humidity *= temperature;
+        int i = (int)((1.0D - temperature) * 255.0D);
+        int j = (int)((1.0D - humidity) * 255.0D);
         int k = j << 8 | i;
-        if (k > colorMap.length) {
-            return -65281;
-        }
-        return colorMap[k];
+        return k > colorMap.length ? -65281 : colorMap[k];
     }
 
     public static int getGrassColorAt(Biome biome) {

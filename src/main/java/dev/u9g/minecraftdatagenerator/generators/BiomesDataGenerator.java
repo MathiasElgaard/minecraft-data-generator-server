@@ -20,8 +20,10 @@ public class BiomesDataGenerator implements IDataGenerator {
 
     public static JsonObject generateBiomeInfo(Registry<Biome> registry, Biome biome) {
         JsonObject biomeDesc = new JsonObject();
-        Identifier registryKey = registry.getKey(biome).orElseThrow().getValue();
+        Identifier registryKey = registry.getId(biome);
         String localizationKey = String.format("biome.%s.%s", registryKey.getNamespace(), registryKey.getPath());
+        // TODO: Verify this is right
+        System.out.println(localizationKey);
 
         biomeDesc.addProperty("id", registry.getRawId(biome));
         biomeDesc.addProperty("name", registryKey.getPath());
