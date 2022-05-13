@@ -13,10 +13,11 @@ import java.util.Objects;
 public class BiomesDataGenerator implements IDataGenerator {
 
     private static String guessBiomeDimensionFromCategory(Biome biome) {
+        String category = "overworld";
         return switch (biome.getCategory()) {
             case NETHER -> "nether";
             case THEEND -> "end";
-            default -> "overworld";
+            default -> ;
         };
     }
 

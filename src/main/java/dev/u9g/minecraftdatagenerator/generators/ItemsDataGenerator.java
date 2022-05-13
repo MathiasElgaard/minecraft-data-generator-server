@@ -8,10 +8,12 @@ import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ToolItem;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -40,7 +42,9 @@ public class ItemsDataGenerator implements IDataGenerator {
     public JsonArray generateDataJson() {
         JsonArray resultArray = new JsonArray();
         Registry<Item> itemRegistry = Registry.ITEM;
-        itemRegistry.stream().forEach(item -> resultArray.add(generateItem(itemRegistry, item)));
+        for (Item item : (Iterable<Item>) itemRegistry) {
+            resultArray.add(generateItem(itemRegistry, item));
+        }
         return resultArray;
     }
 
@@ -52,7 +56,7 @@ public class ItemsDataGenerator implements IDataGenerator {
         itemDesc.addProperty("name", Objects.requireNonNull(registryKey).getPath());
 
         itemDesc.addProperty("displayName", DGU.translateText(item.getTranslationKey()));
-        itemDesc.addProperty("stackSize", item.getMaxAmount());
+        itemDesc.addProperty("stackSize", item.getMaxCount());
 
         List<EnchantmentTarget> enchantmentTargets = getApplicableEnchantmentTargets(item);
 
@@ -64,7 +68,7 @@ public class ItemsDataGenerator implements IDataGenerator {
             itemDesc.add("enchantCategories", enchantCategoriesArray);
         }
 
-        if (item.canDamage()) {
+        if (item.isDamageable()) {
             List<Item> repairWithItems = calculateItemsToRepairWith(itemRegistry, item);
 
             JsonArray fixedWithArray = new JsonArray();
@@ -76,7 +80,7 @@ public class ItemsDataGenerator implements IDataGenerator {
                 itemDesc.add("repairWith", fixedWithArray);
             }
 
-            int maxDurability = item.getMaxAmount();
+            int maxDurability = item.getMaxDamage();
             itemDesc.addProperty("maxDurability", maxDurability);
         }
         return itemDesc;

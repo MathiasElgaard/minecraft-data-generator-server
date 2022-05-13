@@ -12,6 +12,7 @@ import net.minecraft.util.registry.Registry;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.stream.Collectors;
 
 public class EffectsDataGenerator implements IDataGenerator {
@@ -24,8 +25,10 @@ public class EffectsDataGenerator implements IDataGenerator {
     @Override
     public JsonArray generateDataJson() {
         JsonArray resultsArray = new JsonArray();
-        Registry<StatusEffect> statusEffectRegistry = Registry.STATUS_EFFECT;
-        statusEffectRegistry.forEach(effect -> resultsArray.add(generateEffect(statusEffectRegistry, effect)));
+        Registry<StatusEffect> statusEffectRegistry = Registry.MOB_EFFECT;
+        for (StatusEffect effect : (Iterable<StatusEffect>) statusEffectRegistry) {
+            resultsArray.add(generateEffect(statusEffectRegistry, effect));
+        }
         return resultsArray;
     }
 
@@ -42,7 +45,7 @@ public class EffectsDataGenerator implements IDataGenerator {
             effectDesc.addProperty("displayName", DGU.translateText(statusEffect.getTranslationKey()));
         }
 
-        effectDesc.addProperty("type", ((StatusEffectAccessor)statusEffect).type() == StatusEffectType.BENEFICIAL ? "good" : "bad");
+        effectDesc.addProperty("type", !statusEffect.isNegative() ? "good" : "bad");
         return effectDesc;
     }
 }

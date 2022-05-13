@@ -20,11 +20,11 @@ import java.util.stream.Collectors;
 public class EnchantmentsDataGenerator implements IDataGenerator {
 
     private static final ImmutableMap<EnchantmentTarget, String> ENCHANTMENT_TARGET_NAMES = ImmutableMap.<EnchantmentTarget, String>builder()
-            .put(EnchantmentTarget.ARMOR, "armor")
-            .put(EnchantmentTarget.ARMOR_FEET, "armor_feet")
-            .put(EnchantmentTarget.ARMOR_LEGS, "armor_legs")
+            .put(EnchantmentTarget.WEARABLE, "armor")
+            .put(EnchantmentTarget.FEET, "armor_feet")
+            .put(EnchantmentTarget.LEGS, "armor_legs")
             .put(EnchantmentTarget.ARMOR_CHEST, "armor_chest")
-            .put(EnchantmentTarget.ARMOR_HEAD, "armor_head")
+            .put(EnchantmentTarget.HEAD, "armor_head")
             .put(EnchantmentTarget.WEAPON, "weapon")
             .put(EnchantmentTarget.DIGGER, "digger")
             .put(EnchantmentTarget.FISHING_ROD, "fishing_rod")
@@ -32,7 +32,6 @@ public class EnchantmentsDataGenerator implements IDataGenerator {
             .put(EnchantmentTarget.BREAKABLE, "breakable")
             .put(EnchantmentTarget.BOW, "bow")
             .put(EnchantmentTarget.WEARABLE, "wearable")
-            .put(EnchantmentTarget.CROSSBOW, "crossbow")
             .put(EnchantmentTarget.ALL, "vanishable") // according to VanishingCurseEnchantment
             .build();
 

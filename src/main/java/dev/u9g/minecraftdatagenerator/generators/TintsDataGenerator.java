@@ -7,12 +7,11 @@ import dev.u9g.minecraftdatagenerator.ClientSideAnnoyances.ServerSideRedstoneWir
 import dev.u9g.minecraftdatagenerator.ClientSideAnnoyances.GrassColors;
 import dev.u9g.minecraftdatagenerator.util.DGU;
 import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.RedstoneWireBlock;
-import net.minecraft.client.color.block.BlockColors;
+import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
@@ -29,24 +28,24 @@ public class TintsDataGenerator implements IDataGenerator {
     }
 
     public static BiomeTintColors generateBiomeTintColors(Registry<Biome> biomeRegistry) {
+        ZombieEntity
         BiomeTintColors colors = new BiomeTintColors();
-
-        biomeRegistry.forEach(biome -> {
-            int biomeGrassColor = GrassColors.getGrassColorAt(biome);
+        for (Biome biome : (Iterable<Biome>) biomeRegistry) {
+            int biomeGrassColor = GrassColors.getGrassColor(biome);
             int biomeFoliageColor = FoliageColors.getFoliageColor(biome);
             int biomeWaterColor = biome.getWaterColor();
 
             colors.grassColoursMap.computeIfAbsent(biomeGrassColor, k -> new ArrayList<>()).add(biome);
             colors.foliageColoursMap.computeIfAbsent(biomeFoliageColor, k -> new ArrayList<>()).add(biome);
             colors.waterColourMap.computeIfAbsent(biomeWaterColor, k -> new ArrayList<>()).add(biome);
-        });
+        }
         return colors;
     }
 
     public static Map<Integer, Integer> generateRedstoneTintColors() {
         Map<Integer, Integer> resultColors = new HashMap<>();
 
-        for (int redstoneLevel : RedstoneWireBlock.POWER.getValues()) {
+        for (int redstoneLevel : RedstoneWireBlock.field_18447.getValues()) {
             int color = ServerSideRedstoneWireBlock.getWireColor(redstoneLevel);
             resultColors.put(redstoneLevel, color);
         }
