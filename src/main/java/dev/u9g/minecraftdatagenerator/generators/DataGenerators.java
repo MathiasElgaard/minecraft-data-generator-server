@@ -69,7 +69,7 @@ public class DataGenerators {
         register(new ItemsDataGenerator());
         register(new ParticlesDataGenerator());
         register(new TintsDataGenerator());
-        register(new MaterialsDataGenerator());
+//        register(new MaterialsDataGenerator());
 //        register(new RecipeDataGenerator()); - On hold until mcdata supports multiple materials for a recipe
         register(new LanguageDataGenerator());
         register(new InstrumentsDataGenerator());
