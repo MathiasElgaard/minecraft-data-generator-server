@@ -7,6 +7,8 @@ import dev.u9g.minecraftdatagenerator.util.DGU;
 import net.fabricmc.fabric.api.biome.v1.NetherBiomes;
 import net.fabricmc.fabric.api.biome.v1.TheEndBiomes;
 import net.fabricmc.fabric.impl.biome.TheEndBiomeData;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
@@ -24,11 +26,6 @@ public class BiomesDataGenerator implements IDataGenerator {
             return "end";
         }
         return "overworld";
-//        return switch (biome.getCategory()) {
-//            case NETHER -> "nether";
-//            case THEEND -> "end";
-//            default -> "overworld";
-//        };
     }
 
     public static JsonObject generateBiomeInfo(Registry<Biome> registry, Biome biome) {
