@@ -3,12 +3,12 @@ package dev.u9g.minecraftdatagenerator.util;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.class_4024;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.WorldView;
+import net.minecraft.world.BlockView;
 import org.jetbrains.annotations.Nullable;
 
-public enum EmptyRenderBlockView implements WorldView {
+public enum EmptyBlockView implements BlockView {
     INSTANCE;
 
     @Nullable
@@ -21,7 +21,12 @@ public enum EmptyRenderBlockView implements WorldView {
     }
 
     @Override
-    public class_4024 method_16280(BlockPos blockPos) {
+    public FluidState getFluidState(BlockPos blockPos) {
         return null;
+    }
+
+    @Override
+    public int getMaxLightLevel() {
+        return 15;
     }
 }

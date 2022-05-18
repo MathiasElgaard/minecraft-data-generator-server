@@ -37,7 +37,7 @@ public class BiomesDataGenerator implements IDataGenerator {
         biomeDesc.addProperty("category", biome.getCategory().name().toLowerCase(Locale.ENGLISH));
         biomeDesc.addProperty("temperature", biome.getTemperature());
         biomeDesc.addProperty("precipitation", biome.getPrecipitation().name().toLowerCase(Locale.ENGLISH));
-        biomeDesc.addProperty("depth", biome.getBaseHeightModifier());
+        biomeDesc.addProperty("depth", biome.getDepth());
         biomeDesc.addProperty("dimension", guessBiomeDimensionFromCategory(biome));
         biomeDesc.addProperty("displayName", DGU.translateText(localizationKey));
         biomeDesc.addProperty("color", SkyColor.getSkyColor(biome));

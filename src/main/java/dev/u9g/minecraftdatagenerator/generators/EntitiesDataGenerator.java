@@ -5,11 +5,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import dev.u9g.minecraftdatagenerator.util.DGU;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType2;
+import net.minecraft.entity.EntityTypes;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.*;
-import net.minecraft.entity.passive.AgeableEntity;
 import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.projectile.Projectile;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -29,14 +29,14 @@ public class EntitiesDataGenerator implements IDataGenerator {
     @Override
     public JsonArray generateDataJson() {
         JsonArray resultArray = new JsonArray();
-        Registry<EntityType2<?>> entityTypeRegistry = Registry.ENTITY_TYPE;
-        for (EntityType2<?> entityType2 : (Iterable<EntityType2<?>>) entityTypeRegistry) {
-            resultArray.add(generateEntity(entityTypeRegistry, entityType2));
+        Registry<EntityTypes<?>> entityTypeRegistry = Registry.ENTITY_TYPE;
+        for (EntityTypes<?> entityType : (Iterable<EntityTypes<?>>) entityTypeRegistry) {
+            resultArray.add(generateEntity(entityTypeRegistry, entityType));
         }
         return resultArray;
     }
 
-    public static JsonObject generateEntity(Registry<EntityType2<?>> entityRegistry, EntityType2<?> entityType) {
+    public static JsonObject generateEntity(Registry<EntityTypes<?>> entityRegistry, EntityTypes<?> entityType) {
         JsonObject entityDesc = new JsonObject();
         Identifier registryKey = entityRegistry.getId(entityType);
         int entityRawId = entityRegistry.getRawId(entityType);
@@ -58,11 +58,11 @@ public class EntitiesDataGenerator implements IDataGenerator {
         return entityDesc;
     }
 
-    private static Class<? extends Entity> getEntityClass(EntityType2<?> entityType) {
+    private static Class<? extends Entity> getEntityClass(EntityTypes<?> entityType) {
         Class<? extends Entity> entityClazz = null;
         try {
-            for (Field field : EntityType2.class.getFields())
-                if (entityType == field.get(EntityType2.class))
+            for (Field field : EntityTypes.class.getFields())
+                if (entityType == field.get(EntityTypes.class))
                     entityClazz = (Class<? extends Entity>)((ParameterizedType) TypeToken.get(field.getGenericType()).getType()).getActualTypeArguments()[0];
         } catch (Exception e) {
             e.printStackTrace();
@@ -72,8 +72,8 @@ public class EntitiesDataGenerator implements IDataGenerator {
         return entityClazz;
     }
 
-    private static String getCategoryFrom(@NotNull EntityType2<?> entityType) {
-        if (entityType == EntityType2.PLAYER) return "other"; // fail early for player entities
+    private static String getCategoryFrom(@NotNull EntityTypes<?> entityType) {
+        if (entityType == EntityTypes.PLAYER) return "other"; // fail early for player entities
         Class<? extends Entity> entityClazz = getEntityClass(entityType);
         String category = null;
         // TODO: FIND A BETTER WAY TO DO THIS:
@@ -111,7 +111,7 @@ public class EntitiesDataGenerator implements IDataGenerator {
 
         //Second level classifications. PathAwareEntity is not included because it
         //doesn't really make much sense to categorize by it
-        if (AgeableEntity.class.isAssignableFrom(entityClass)) {
+        if (PassiveEntity.class.isAssignableFrom(entityClass)) {
             return "passive";
         }
         if (MobEntity.class.isAssignableFrom(entityClass)) {

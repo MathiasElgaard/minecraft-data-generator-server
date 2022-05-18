@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import dev.u9g.minecraftdatagenerator.Main;
 import dev.u9g.minecraftdatagenerator.mixin.MiningToolItemAccessor;
 import dev.u9g.minecraftdatagenerator.util.DGU;
+import dev.u9g.minecraftdatagenerator.util.EmptyBlockView;
 import net.minecraft.block.*;
 import net.minecraft.item.*;
 import net.minecraft.server.world.ServerWorld;
@@ -15,9 +16,9 @@ import net.minecraft.state.property.Property;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.shapes.VoxelShape;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
@@ -37,11 +38,12 @@ public class BlocksDataGenerator implements IDataGenerator {
     private static List<ItemStack> populateDropsIfPossible(BlockState blockState, Item firstToolItem) {
         //If we have local world context, we can actually evaluate loot tables and determine actual data
         ServerWorld serverWorld = (ServerWorld) DGU.getWorld();
-        var lootContext = new LootContext.Builder(serverWorld)
-                .put(LootContextParameters.POSITION, BlockPos.ORIGIN)
-                .put(LootContextParameters.TOOL, DGU.stackFor(firstToolItem));
-        blockState.getDroppedStacks(lootContext);
-        return blockState.getDroppedStacks(lootContext);
+        throw new Error("Find a new way to populate drops");
+//        var lootContext = new LootContext.Builder(serverWorld)
+//                .put(LootContextParameters.POSITION, BlockPos.ORIGIN)
+//                .put(LootContextParameters.TOOL, DGU.stackFor(firstToolItem));
+//        blockState.getDroppedStacks(lootContext);
+//        return blockState.getDroppedStacks(lootContext);
     }
 
     private static String getPropertyTypeName(Property<?> property) {
@@ -130,7 +132,7 @@ public class BlocksDataGenerator implements IDataGenerator {
         blockDesc.addProperty("minStateId", Block.getRawIdFromState(blockStates.get(0)));
         blockDesc.addProperty("maxStateId", Block.getRawIdFromState(blockStates.get(blockStates.size() - 1)));
         JsonArray stateProperties = new JsonArray();
-        for (Property<?> property : block.getStateFactory().getProperties()) {
+        for (Property<?> property : block.getStateManager().method_11742()) {
             stateProperties.add(generateStateProperty(property));
         }
         blockDesc.add("states", stateProperties);
