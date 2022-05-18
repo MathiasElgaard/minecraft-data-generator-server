@@ -11,18 +11,10 @@ import net.minecraft.item.*;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.EnumProperty;
-import net.minecraft.state.property.IntegerProperty;
 import net.minecraft.state.property.Property;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.world.EmptyBlockView;
-import net.minecraft.world.loot.context.LootContext;
-import net.minecraft.world.loot.context.LootContextParameter;
-import net.minecraft.world.loot.context.LootContextParameters;
-import net.minecraft.world.loot.context.LootContextType;
 
 import java.util.Collection;
 import java.util.List;
@@ -36,7 +28,7 @@ public class BlocksDataGenerator implements IDataGenerator {
 
     private static List<Item> getItemsEffectiveForBlock(Block block) {
         return Registry.ITEM.stream()
-                .filter(item -> item instanceof MiningToolItem)
+                .filter(item -> item instanceof ToolItem)
                 .filter(item -> ((MiningToolItemAccessor)item).getEffectiveBlocks().contains(block))
                 .collect(Collectors.toList());
     }

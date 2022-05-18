@@ -8,17 +8,22 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 
+import java.util.Locale;
 import java.util.Objects;
 
 public class BiomesDataGenerator implements IDataGenerator {
 
     private static String guessBiomeDimensionFromCategory(Biome biome) {
         String category = "overworld";
-        return switch (biome.getCategory()) {
-            case NETHER -> "nether";
-            case THEEND -> "end";
-            default -> ;
-        };
+        switch(biome.getCategory()) {
+            case NETHER:
+                category = "nether";
+                break;
+            case THEEND:
+                category = "end";
+                break;
+        }
+        return category;
     }
 
     public static JsonObject generateBiomeInfo(Registry<Biome> registry, Biome biome) {
@@ -29,10 +34,10 @@ public class BiomesDataGenerator implements IDataGenerator {
         biomeDesc.addProperty("id", registry.getRawId(biome));
         biomeDesc.addProperty("name", registryKey.getPath());
 
-        biomeDesc.addProperty("category", biome.getCategory().getName());
+        biomeDesc.addProperty("category", biome.getCategory().name().toLowerCase(Locale.ENGLISH));
         biomeDesc.addProperty("temperature", biome.getTemperature());
-        biomeDesc.addProperty("precipitation", biome.getPrecipitation().getName());
-        biomeDesc.addProperty("depth", biome.getDepth());
+        biomeDesc.addProperty("precipitation", biome.getPrecipitation().name().toLowerCase(Locale.ENGLISH));
+        biomeDesc.addProperty("depth", biome.getBaseHeightModifier());
         biomeDesc.addProperty("dimension", guessBiomeDimensionFromCategory(biome));
         biomeDesc.addProperty("displayName", DGU.translateText(localizationKey));
         biomeDesc.addProperty("color", SkyColor.getSkyColor(biome));

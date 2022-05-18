@@ -2,17 +2,16 @@ package dev.u9g.minecraftdatagenerator.generators;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import dev.u9g.minecraftdatagenerator.mixin.StatusEffectAccessor;
 import dev.u9g.minecraftdatagenerator.util.DGU;
 import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.entity.effect.StatusEffectType;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
-import java.util.Iterator;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class EffectsDataGenerator implements IDataGenerator {
@@ -34,7 +33,7 @@ public class EffectsDataGenerator implements IDataGenerator {
 
     public static JsonObject generateEffect(Registry<StatusEffect> registry, StatusEffect statusEffect) {
         JsonObject effectDesc = new JsonObject();
-        Identifier registryKey = registry.getId(statusEffect);
+        @NotNull Identifier registryKey = Objects.requireNonNull(registry.getId(statusEffect));
 
         effectDesc.addProperty("id", registry.getRawId(statusEffect));
         if (statusEffect == StatusEffects.UNLUCK) {

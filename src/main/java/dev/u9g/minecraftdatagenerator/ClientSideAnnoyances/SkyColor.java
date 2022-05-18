@@ -1,66 +1,74 @@
-//package dev.u9g.minecraftdatagenerator.ClientSideAnnoyances;
-//
-//import net.minecraft.util.math.MathHelper;
-//import net.minecraft.world.biome.Biome;
-//
-//public class SkyColor {
-//    public static int getSkyColor(Biome biome) {
-//        return realSkyColor(biome.getTemperature());
-//    }
-//
-//    private static int realSkyColor(float f) {
-//        f /= 3.0f;
-//        f = MathHelper.clamp(f, -1.0f, 1.0f);
-//        return hsvToRgb(0.62222224f - f * 0.05f, 0.5f + f * 0.1f, 1.0f);
-//    }
-//
-//    private static int hsvToRgb(float f, float g, float h) {
-//        float p;
-//        float o;
-//        float n;
-//        int i = (int)(f * 6.0f) % 6;
-//        float j = f * 6.0f - (float)i;
-//        float k = h * (1.0f - g);
-//        float l = h * (1.0f - j * g);
-//        float m = h * (1.0f - (1.0f - j) * g);
-//        switch (i) {
-//            case 0: {
-//                n = h;
-//                o = m;
-//                p = k;
-//                break;
-//            }
-//            case 1: {
-//                n = l;
-//                o = h;
-//                p = k;
-//                break
-//            }
-//            case 2 -> {
-//                n = k;
-//                o = h;
-//                p = m;
-//            }
-//            case 3 -> {
-//                n = k;
-//                o = l;
-//                p = h;
-//            }
-//            case 4 -> {
-//                n = m;
-//                o = k;
-//                p = h;
-//            }
-//            case 5 -> {
-//                n = h;
-//                o = k;
-//                p = l;
-//            }
-//            default -> throw new RuntimeException("Something went wrong when converting from HSV to RGB. Input was " + f + ", " + g + ", " + h);
-//        }
-//        int q = MathHelper.clamp((int)(n * 255.0f), 0, 255);
-//        int r = MathHelper.clamp((int)(o * 255.0f), 0, 255);
-//        int s = MathHelper.clamp((int)(p * 255.0f), 0, 255);
-//        return q << 16 | r << 8 | s;
-//    }
-//}
+package dev.u9g.minecraftdatagenerator.ClientSideAnnoyances;
+
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.biome.Biome;
+
+public class SkyColor {
+    public static int getSkyColor(Biome biome) {
+        return realSkyColor(biome.getTemperature());
+    }
+
+    private static int realSkyColor(float temperature) {
+        temperature /= 3.0F;
+        temperature = MathHelper.clamp(temperature, -1.0F, 1.0F);
+        return MathHelper.hsvToRgb(0.62222224F - temperature * 0.05F, 0.5F + temperature * 0.1F, 1.0F);
+    }
+
+    public static int hsvToRgb(float hue, float saturation, float value) {
+        int i = (int)(hue * 6.0F) % 6;
+        float f = hue * 6.0F - (float)i;
+        float g = value * (1.0F - saturation);
+        float h = value * (1.0F - f * saturation);
+        float j = value * (1.0F - (1.0F - f) * saturation);
+        float k;
+        float l;
+        float m;
+        switch(i) {
+            case 0:
+                k = value;
+                l = j;
+                m = g;
+                break;
+            case 1:
+                k = h;
+                l = value;
+                m = g;
+                break;
+            case 2:
+                k = g;
+                l = value;
+                m = j;
+                break;
+            case 3:
+                k = g;
+                l = h;
+                m = value;
+                break;
+            case 4:
+                k = j;
+                l = g;
+                m = value;
+                break;
+            case 5:
+                k = value;
+                l = g;
+                m = h;
+                break;
+            default:
+                throw new RuntimeException("Something went wrong when converting from HSV to RGB. Input was " + hue + ", " + saturation + ", " + value);
+        }
+
+        int n = clamp((int)(k * 255.0F), 0, 255);
+        int o = clamp((int)(l * 255.0F), 0, 255);
+        int p = clamp((int)(m * 255.0F), 0, 255);
+        return n << 16 | o << 8 | p;
+    }
+
+    public static int clamp(int value, int min, int max) {
+        if (value < min) {
+            return min;
+        } else {
+            return Math.min(value, max);
+        }
+    }
+}

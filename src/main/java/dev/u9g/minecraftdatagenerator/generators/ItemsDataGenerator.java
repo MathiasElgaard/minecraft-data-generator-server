@@ -3,17 +3,13 @@ package dev.u9g.minecraftdatagenerator.generators;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import dev.u9g.minecraftdatagenerator.util.DGU;
-import net.minecraft.block.Block;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ToolItem;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-import java.util.Arrays;
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -28,9 +24,12 @@ public class ItemsDataGenerator implements IDataGenerator {
     }
 
     private static List<EnchantmentTarget> getApplicableEnchantmentTargets(Item sourceItem) {
-        return Arrays.stream(EnchantmentTarget.values())
-                .filter(target -> target.isAcceptableItem(sourceItem))
-                .collect(Collectors.toList());
+        List<EnchantmentTarget> targets = new ArrayList<>();
+        for (EnchantmentTarget target : EnchantmentTarget.values()) {
+            if (!target.isCompatible(sourceItem)) continue;
+            targets.add(target);
+        }
+        return targets;
     }
 
     @Override

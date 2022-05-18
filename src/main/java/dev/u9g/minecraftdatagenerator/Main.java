@@ -1,11 +1,6 @@
 package dev.u9g.minecraftdatagenerator;
 
 import net.fabricmc.api.ModInitializer;
-import net.minecraft.block.StoneButtonBlock;
-import net.minecraft.entity.decoration.LeashKnotEntity;
-import net.minecraft.item.FishItem;
-import net.minecraft.item.itemgroup.ItemGroup;
-import net.minecraft.util.registry.Registry;
 
 import java.util.logging.Logger;
 

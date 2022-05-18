@@ -11,6 +11,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.RedstoneWireBlock;
+import net.minecraft.client.BlockColors;
 import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -28,7 +29,6 @@ public class TintsDataGenerator implements IDataGenerator {
     }
 
     public static BiomeTintColors generateBiomeTintColors(Registry<Biome> biomeRegistry) {
-        ZombieEntity
         BiomeTintColors colors = new BiomeTintColors();
         for (Biome biome : (Iterable<Biome>) biomeRegistry) {
             int biomeGrassColor = GrassColors.getGrassColor(biome);
@@ -45,7 +45,7 @@ public class TintsDataGenerator implements IDataGenerator {
     public static Map<Integer, Integer> generateRedstoneTintColors() {
         Map<Integer, Integer> resultColors = new HashMap<>();
 
-        for (int redstoneLevel : RedstoneWireBlock.field_18447.getValues()) {
+        for (int redstoneLevel : RedstoneWireBlock.REDSTONE_POWER.getValues()) {
             int color = ServerSideRedstoneWireBlock.getWireColor(redstoneLevel);
             resultColors.put(redstoneLevel, color);
         }
@@ -53,7 +53,7 @@ public class TintsDataGenerator implements IDataGenerator {
     }
 
     private static int getBlockColor(Block block, BlockColors blockColors) {
-        return blockColors.getColor(block.getDefaultState(), DGU.getWorld(), BlockPos.ORIGIN);
+        return blockColors.method_13410(block.getDefaultState(), DGU.getWorld(), BlockPos.ORIGIN);
     }
 
     public static Map<Block, Integer> generateConstantTintColors() {
@@ -76,7 +76,7 @@ public class TintsDataGenerator implements IDataGenerator {
 
     private static JsonObject encodeBiomeColorMap(Registry<Biome> biomeRegistry, Map<Integer, List<Biome>> colorsMap) {
         JsonArray resultColorsArray = new JsonArray();
-        for (var entry : colorsMap.entrySet()) {
+        for (Map.Entry<Integer, List<Biome>> entry : colorsMap.entrySet()) {
             JsonObject entryObject = new JsonObject();
 
             JsonArray keysArray = new JsonArray();
@@ -97,7 +97,7 @@ public class TintsDataGenerator implements IDataGenerator {
 
     private static JsonObject encodeRedstoneColorMap(Map<Integer, Integer> colorsMap) {
         JsonArray resultColorsArray = new JsonArray();
-        for (var entry : colorsMap.entrySet()) {
+        for (Map.Entry<Integer, Integer> entry : colorsMap.entrySet()) {
             JsonObject entryObject = new JsonObject();
 
             JsonArray keysArray = new JsonArray();
@@ -115,7 +115,7 @@ public class TintsDataGenerator implements IDataGenerator {
 
     private static JsonObject encodeBlocksColorMap(Registry<Block> blockRegistry, Map<Block, Integer> colorsMap) {
         JsonArray resultColorsArray = new JsonArray();
-        for (var entry : colorsMap.entrySet()) {
+        for (Map.Entry<Block, Integer> entry : colorsMap.entrySet()) {
             JsonObject entryObject = new JsonObject();
 
             JsonArray keysArray = new JsonArray();

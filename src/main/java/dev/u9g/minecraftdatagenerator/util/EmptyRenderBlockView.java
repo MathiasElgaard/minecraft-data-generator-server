@@ -29,36 +29,4 @@ public enum EmptyRenderBlockView implements WorldView {
     public int method_16279() {
         return WorldView.super.method_16279();
     }
-
-//    public FluidState getFluidState(BlockPos pos) {
-//        return Fluids.EMPTY.getDefaultState();
-//    }
-
-    public int getBottomY() {
-        return 0;
-    }
-
-//    public int getHeight() {
-//        return 0;
-//    }
-
-//    @Override
-//    public LightingProvider getLightingProvider() {
-//        return null;
-//    }
-//
-//    @Override
-//    public int getColor(BlockPos pos, ColorResolver colorResolver) {
-//        return colorResolver.getColor(Biomes.PLAINS, pos.getX(), pos.getY());
-//    }
-//
-//    @Override
-//    public int getLightLevel(LightType type, BlockPos pos) {
-//        return type == LightType.SKY ? getMaxLightLevel() : 0;
-//    }
-//
-//    @Override
-//    public int getBaseLightLevel(BlockPos pos, int ambientDarkness) {
-//        return ambientDarkness;
-//    }
 }

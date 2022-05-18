@@ -41,8 +41,8 @@ public class FoodsDataGenerator implements IDataGenerator {
         foodDesc.addProperty("stackSize", foodItem.getMaxCount());
         foodDesc.addProperty("displayName", DGU.translateText(foodItem.getTranslationKey()));
 
-        float foodPoints = foodItem.getHungerPoints(foodItem.method_13650());
-        float saturationRatio = foodItem.getSaturation(foodItem.method_13650()) * 2.0F;
+        float foodPoints = foodItem.getHungerPoints(null /* unused arg */);
+        float saturationRatio = foodItem.getSaturation(null /* unused arg */) * 2.0F;
         float saturation = foodPoints * saturationRatio;
 
         foodDesc.addProperty("foodPoints", foodPoints);

@@ -9,8 +9,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.world.EmptyBlockView;
+import net.minecraft.util.shapes.VoxelShape;
 
 import java.util.*;
 

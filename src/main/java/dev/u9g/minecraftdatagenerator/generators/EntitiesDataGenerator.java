@@ -5,20 +5,20 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import dev.u9g.minecraftdatagenerator.util.DGU;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
+import net.minecraft.entity.EntityType2;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.WaterCreatureEntity;
 import net.minecraft.entity.mob.AmbientEntity;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.mob.WaterCreatureEntity;
+import net.minecraft.entity.passive.AgeableEntity;
 import net.minecraft.entity.passive.AnimalEntity;
-import net.minecraft.entity.passive.PassiveEntity;
-import net.minecraft.entity.projectile.FireballEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
+import net.minecraft.entity.projectile.Projectile;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.Objects;
 
@@ -32,12 +32,14 @@ public class EntitiesDataGenerator implements IDataGenerator {
     @Override
     public JsonArray generateDataJson() {
         JsonArray resultArray = new JsonArray();
-        Registry<EntityType<?>> entityTypeRegistry = Registry.ENTITY_TYPE;
-        entityTypeRegistry.forEach(entity -> resultArray.add(generateEntity(entityTypeRegistry, entity)));
+        Registry<EntityType2<?>> entityTypeRegistry = Registry.ENTITY_TYPE;
+        for (EntityType2<?> entityType2 : (Iterable<EntityType2<?>>) entityTypeRegistry) {
+            resultArray.add(generateEntity(entityTypeRegistry, entityType2));
+        }
         return resultArray;
     }
 
-    public static JsonObject generateEntity(Registry<EntityType<?>> entityRegistry, EntityType<?> entityType) {
+    public static JsonObject generateEntity(Registry<EntityType2<?>> entityRegistry, EntityType2<?> entityType) {
         JsonObject entityDesc = new JsonObject();
         Identifier registryKey = entityRegistry.getId(entityType);
         int entityRawId = entityRegistry.getRawId(entityType);
@@ -59,27 +61,37 @@ public class EntitiesDataGenerator implements IDataGenerator {
         return entityDesc;
     }
 
-    private static String getCategoryFrom(@NotNull EntityType<?> entityType) {
-        if (entityType == EntityType.PLAYER) return "other"; // fail early for player entities
+    private static Class<? extends Entity> getEntityClass(EntityType2<?> entityType) {
         Class<? extends Entity> entityClazz = null;
         try {
-            for (var field : EntityType.class.getFields())
-                if (entityType == field.get(EntityType.class))
+            for (Field field : EntityType2.class.getFields())
+                if (entityType == field.get(EntityType2.class))
                     entityClazz = (Class<? extends Entity>)((ParameterizedType) TypeToken.get(field.getGenericType()).getType()).getActualTypeArguments()[0];
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
         if (entityClazz == null) throw new RuntimeException("Shouldn't be null...");
-        return switch (entityClazz.getPackageName()) {
-            case "net.minecraft.entity.decoration", "net.minecraft.entity.decoration.painting" -> "Immobile";
-            case "net.minecraft.entity.boss", "net.minecraft.entity.mob", "net.minecraft.entity.boss.dragon" -> "Hostile mobs";
-            case "net.minecraft.entity.projectile", "net.minecraft.entity.thrown" -> "Projectiles";
-            case "net.minecraft.entity.passive" -> "Passive mobs";
-            case "net.minecraft.entity.vehicle" -> "Vehicles";
-            case "net.minecraft.entity" -> "other";
-            default -> throw new Error("Unexpected entity type: " + entityClazz.getPackageName());
-        };
+        return entityClazz;
+    }
+
+    private static String getCategoryFrom(@NotNull EntityType2<?> entityType) {
+        if (entityType == EntityType2.PLAYER) return "other"; // fail early for player entities
+        Class<? extends Entity> entityClazz = getEntityClass(entityType);
+        String category = null;
+        // TODO: FIND A BETTER WAY TO DO THIS:
+        System.out.println();
+        throw new Error("brokeee");
+//        switch (entityClazz.getPackageName()) {
+//            case "net.minecraft.entity.decoration", "net.minecraft.entity.decoration.painting" -> "Immobile";
+//            case "net.minecraft.entity.boss", "net.minecraft.entity.mob", "net.minecraft.entity.boss.dragon" -> "Hostile mobs";
+//            case "net.minecraft.entity.projectile", "net.minecraft.entity.thrown" -> "Projectiles";
+//            case "net.minecraft.entity.passive" -> "Passive mobs";
+//            case "net.minecraft.entity.vehicle" -> "Vehicles";
+//            case "net.minecraft.entity" -> "other";
+//            default -> throw new Error("Unexpected entity type: " + entityClazz.getPackageName());
+//        };
+//        return category;
     }
 
     //Honestly, both "type" and "category" fields in the schema and examples do not contain any useful information
@@ -102,7 +114,7 @@ public class EntitiesDataGenerator implements IDataGenerator {
 
         //Second level classifications. PathAwareEntity is not included because it
         //doesn't really make much sense to categorize by it
-        if (PassiveEntity.class.isAssignableFrom(entityClass)) {
+        if (AgeableEntity.class.isAssignableFrom(entityClass)) {
             return "passive";
         }
         if (MobEntity.class.isAssignableFrom(entityClass)) {
@@ -113,7 +125,7 @@ public class EntitiesDataGenerator implements IDataGenerator {
         if (LivingEntity.class.isAssignableFrom(entityClass)) {
             return "living";
         }
-        if (ProjectileEntity.class.isAssignableFrom(entityClass)) {
+        if (Projectile.class.isAssignableFrom(entityClass)) {
             return "projectile";
         }
         return "other";

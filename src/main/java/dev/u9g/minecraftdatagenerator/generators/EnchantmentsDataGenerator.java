@@ -4,17 +4,12 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import dev.u9g.minecraftdatagenerator.util.DGU;
-import net.minecraft.enchantment.DamageEnchantment;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentTarget;
-import net.minecraft.enchantment.VanishingCurseEnchantment;
+import net.minecraft.enchantment.*;
 import net.minecraft.item.EnchantedBookItem;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class EnchantmentsDataGenerator implements IDataGenerator {
@@ -86,12 +81,15 @@ public class EnchantmentsDataGenerator implements IDataGenerator {
         enchantmentDesc.add("minCost", generateEnchantmentMinPowerCoefficients(enchantment));
         enchantmentDesc.add("maxCost", generateEnchantmentMaxPowerCoefficients(enchantment));
 
-        enchantmentDesc.addProperty("treasureOnly", enchantment.isTreasure());
-        enchantmentDesc.addProperty("curse", enchantment.isCursed());
+        enchantmentDesc.addProperty("treasureOnly", enchantment.method_11448());
+        enchantmentDesc.addProperty("curse", enchantment.method_13675());
 
-        List<Enchantment> incompatibleEnchantments = registry.stream()
-                .filter(other -> !enchantment.isDifferent(other))
-                .filter(other -> other != enchantment).toList();
+        List<Enchantment> incompatibleEnchantments = new ArrayList<>();
+        for (Enchantment other : (Iterable<Enchantment>) registry) {
+            if (enchantment.isDifferent(other) && other != enchantment) {
+                incompatibleEnchantments.add(other);
+            }
+        }
 
         JsonArray excludes = new JsonArray();
         for (Enchantment excludedEnchantment : incompatibleEnchantments) {
@@ -100,8 +98,8 @@ public class EnchantmentsDataGenerator implements IDataGenerator {
         }
         enchantmentDesc.add("exclude", excludes);
 
-        enchantmentDesc.addProperty("category", getEnchantmentTargetName(enchantment.type));
-        enchantmentDesc.addProperty("weight", enchantment.getWeight().getWeight());
+        enchantmentDesc.addProperty("category", getEnchantmentTargetName(enchantment.target));
+        enchantmentDesc.addProperty("weight", enchantment.getRarity().getChance());
         enchantmentDesc.addProperty("tradeable", true); // the first non-tradeable enchant came in 1.16, soul speed
         enchantmentDesc.addProperty("discoverable", true); // the first non-enchantable enchant came in 1.16, soul speed
 
