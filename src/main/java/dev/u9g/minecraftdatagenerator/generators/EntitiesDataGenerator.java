@@ -7,10 +7,7 @@ import dev.u9g.minecraftdatagenerator.util.DGU;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType2;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.mob.AmbientEntity;
-import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.entity.mob.WaterCreatureEntity;
+import net.minecraft.entity.mob.*;
 import net.minecraft.entity.passive.AgeableEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.projectile.Projectile;
@@ -43,6 +40,7 @@ public class EntitiesDataGenerator implements IDataGenerator {
         JsonObject entityDesc = new JsonObject();
         Identifier registryKey = entityRegistry.getId(entityType);
         int entityRawId = entityRegistry.getRawId(entityType);
+        Class<? extends Entity> entityClass = getEntityClass(entityType);
 
         entityDesc.addProperty("id", entityRawId);
         entityDesc.addProperty("internalId", entityRawId);
@@ -53,8 +51,7 @@ public class EntitiesDataGenerator implements IDataGenerator {
         entityDesc.addProperty("height", entityType.getHeight());
 
         String entityTypeString = "UNKNOWN";
-        Entity entityObject = entityType.create(DGU.getWorld());
-        entityTypeString = entityObject != null ? getEntityTypeForClass(entityObject.getClass()) : "player";
+        entityTypeString = getEntityTypeForClass(entityClass);
         entityDesc.addProperty("type", entityTypeString);
         entityDesc.addProperty("category", getCategoryFrom(entityType));
 

@@ -17,6 +17,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
@@ -89,15 +90,16 @@ public class BlocksDataGenerator implements IDataGenerator {
     public JsonArray generateDataJson() {
         JsonArray resultBlocksArray = new JsonArray();
         Registry<Block> blockRegistry = Registry.BLOCK;
-
-        blockRegistry.forEach(block -> resultBlocksArray.add(generateBlock(blockRegistry, block)));
+        for (Block block : (Iterable<Block>) blockRegistry) {
+            resultBlocksArray.add(generateBlock(blockRegistry, block));
+        }
         return resultBlocksArray;
     }
 
     public static JsonObject generateBlock(Registry<Block> blockRegistry, Block block) {
         JsonObject blockDesc = new JsonObject();
 
-        List<BlockState> blockStates = block.getStateFactory().getStates();
+        List<BlockState> blockStates = block.getStateManager().getBlockStates();
         BlockState defaultState = block.getDefaultState();
         Identifier registryKey = blockRegistry.getId(block);
         String localizationKey = block.getTranslationKey();
@@ -111,7 +113,7 @@ public class BlocksDataGenerator implements IDataGenerator {
 
         blockDesc.addProperty("hardness", hardness);
         blockDesc.addProperty("resistance", block.getBlastResistance());
-        blockDesc.addProperty("stackSize", block.asItem().getMaxAmount());
+        blockDesc.addProperty("stackSize", block.getItem().getMaxCount());
         blockDesc.addProperty("diggable", hardness != -1.0f && !(block instanceof AirBlock));
         JsonObject effTools = new JsonObject();
         effectiveTools.forEach(item -> effTools.addProperty(
@@ -136,7 +138,7 @@ public class BlocksDataGenerator implements IDataGenerator {
         List<ItemStack> drops = populateDropsIfPossible(defaultState, effectiveTools.stream().findFirst().orElse(Items.AIR));
 
         JsonArray dropsArray = new JsonArray();
-        drops.forEach(dropped -> dropsArray.add(Item.getRawIdByItem(dropped.getItem())));
+        drops.forEach(dropped -> dropsArray.add(Item.getRawId(dropped.getItem())));
         blockDesc.add("drops", dropsArray);
 
         VoxelShape blockCollisionShape = defaultState.getCollisionShape(EmptyBlockView.INSTANCE, BlockPos.ORIGIN);

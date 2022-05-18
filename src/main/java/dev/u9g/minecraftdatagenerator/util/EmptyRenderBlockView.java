@@ -24,9 +24,4 @@ public enum EmptyRenderBlockView implements WorldView {
     public class_4024 method_16280(BlockPos blockPos) {
         return null;
     }
-
-    @Override
-    public int method_16279() {
-        return WorldView.super.method_16279();
-    }
 }

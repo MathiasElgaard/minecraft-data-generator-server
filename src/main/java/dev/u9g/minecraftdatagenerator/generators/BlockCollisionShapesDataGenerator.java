@@ -41,7 +41,7 @@ public class BlockCollisionShapesDataGenerator implements IDataGenerator {
         public JsonObject dumpBlockShapeIndices(Registry<Block> blockRegistry) {
             JsonObject resultObject = new JsonObject();
 
-            for (var entry : blockCollisionShapes.entrySet()) {
+            for (Map.Entry<Block, List<Integer>> entry : blockCollisionShapes.entrySet()) {
                 List<Integer> blockCollisions = entry.getValue();
                 long distinctShapesCount = blockCollisions.stream().distinct().count();
                 JsonElement blockCollision;
@@ -64,7 +64,7 @@ public class BlockCollisionShapesDataGenerator implements IDataGenerator {
         public JsonObject dumpShapesObject() {
             JsonObject shapesObject = new JsonObject();
 
-            for (var entry : uniqueBlockShapes.entrySet()) {
+            for (Map.Entry<VoxelShape, Integer> entry : uniqueBlockShapes.entrySet()) {
                 JsonArray boxesArray = new JsonArray();
                 entry.getKey().forEachBox((x1, y1, z1, x2, y2, z2) -> {
                     JsonArray oneBoxJsonArray = new JsonArray();
@@ -94,8 +94,9 @@ public class BlockCollisionShapesDataGenerator implements IDataGenerator {
     public JsonObject generateDataJson() {
         Registry<Block> blockRegistry = Registry.BLOCK;
         BlockShapesCache blockShapesCache = new BlockShapesCache();
-
-        blockRegistry.forEach(blockShapesCache::processBlock);
+        for (Block block : (Iterable<Block>) blockRegistry) {
+            blockShapesCache.processBlock(block);
+        }
 
         JsonObject resultObject = new JsonObject();
 

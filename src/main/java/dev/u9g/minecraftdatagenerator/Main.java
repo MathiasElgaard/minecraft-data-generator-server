@@ -8,6 +8,5 @@ public class Main implements ModInitializer {
     public static Logger LOGGER = Logger.getLogger("mc-data-gen-serv");
     @Override
     public void onInitialize() {
-
     }
 }
