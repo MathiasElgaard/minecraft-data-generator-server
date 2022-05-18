@@ -6,6 +6,7 @@ import dev.u9g.minecraftdatagenerator.util.DGU;
 import net.minecraft.item.FishItem;
 import net.minecraft.item.FoodItem;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -23,7 +24,6 @@ public class FoodsDataGenerator implements IDataGenerator {
         JsonArray resultsArray = new JsonArray();
         Registry<Item> itemRegistry = Registry.ITEM;
         for (Item item : (Iterable<Item>) itemRegistry) {
-            if (!item.isFood()) continue;
             if (item instanceof FoodItem) {
                 resultsArray.add(generateFoodDescriptor(itemRegistry, (FoodItem)item));
             }
@@ -40,9 +40,8 @@ public class FoodsDataGenerator implements IDataGenerator {
 
         foodDesc.addProperty("stackSize", foodItem.getMaxCount());
         foodDesc.addProperty("displayName", DGU.translateText(foodItem.getTranslationKey()));
-
-        float foodPoints = foodItem.getHungerPoints(null /* unused arg */);
-        float saturationRatio = foodItem.getSaturation(null /* unused arg */) * 2.0F;
+        float foodPoints = foodItem.getHungerPoints(getDefaultStack(foodItem));
+        float saturationRatio = foodItem.getSaturation(getDefaultStack(foodItem)) * 2.0F;
         float saturation = foodPoints * saturationRatio;
 
         foodDesc.addProperty("foodPoints", foodPoints);
@@ -51,5 +50,9 @@ public class FoodsDataGenerator implements IDataGenerator {
         foodDesc.addProperty("effectiveQuality", foodPoints + saturation);
         foodDesc.addProperty("saturationRatio", saturationRatio);
         return foodDesc;
+    }
+
+    private static ItemStack getDefaultStack(FoodItem foodItem) {
+        return new ItemStack(foodItem);
     }
 }

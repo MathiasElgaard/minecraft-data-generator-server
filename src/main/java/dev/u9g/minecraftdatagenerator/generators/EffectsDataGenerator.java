@@ -2,6 +2,7 @@ package dev.u9g.minecraftdatagenerator.generators;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import dev.u9g.minecraftdatagenerator.mixin.StatusEffectAccessor;
 import dev.u9g.minecraftdatagenerator.util.DGU;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffects;
@@ -44,7 +45,7 @@ public class EffectsDataGenerator implements IDataGenerator {
             effectDesc.addProperty("displayName", DGU.translateText(statusEffect.getTranslationKey()));
         }
 
-        effectDesc.addProperty("type", !statusEffect.isNegative() ? "good" : "bad");
+        effectDesc.addProperty("type", !((StatusEffectAccessor)statusEffect).negative() ? "good" : "bad");
         return effectDesc;
     }
 }

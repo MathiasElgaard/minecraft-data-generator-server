@@ -9,7 +9,6 @@ import dev.u9g.minecraftdatagenerator.util.DGU;
 import dev.u9g.minecraftdatagenerator.util.EmptyBlockView;
 import net.minecraft.block.*;
 import net.minecraft.item.*;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.IntProperty;
@@ -19,6 +18,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.shapes.VoxelShape;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -37,14 +37,7 @@ public class BlocksDataGenerator implements IDataGenerator {
     }
 
     private static List<ItemStack> populateDropsIfPossible(BlockState blockState, Item firstToolItem) {
-        //If we have local world context, we can actually evaluate loot tables and determine actual data
-        ServerWorld serverWorld = (ServerWorld) DGU.getWorld();
-        throw new Error("Find a new way to populate drops");
-//        var lootContext = new LootContext.Builder(serverWorld)
-//                .put(LootContextParameters.POSITION, BlockPos.ORIGIN)
-//                .put(LootContextParameters.TOOL, DGU.stackFor(firstToolItem));
-//        blockState.getDroppedStacks(lootContext);
-//        return blockState.getDroppedStacks(lootContext);
+        return new ArrayList<>();
     }
 
     private static String getPropertyTypeName(Property<?> property) {
@@ -137,13 +130,7 @@ public class BlocksDataGenerator implements IDataGenerator {
             stateProperties.add(generateStateProperty(property));
         }
         blockDesc.add("states", stateProperties);
-
-        List<ItemStack> drops = populateDropsIfPossible(defaultState, effectiveTools.stream().findFirst().orElse(Items.AIR));
-
-        JsonArray dropsArray = new JsonArray();
-        drops.forEach(dropped -> dropsArray.add(Item.getRawId(dropped.getItem())));
-        blockDesc.add("drops", dropsArray);
-
+        blockDesc.add("drops", new JsonArray());
         VoxelShape blockCollisionShape = defaultState.getCollisionShape(EmptyBlockView.INSTANCE, BlockPos.ORIGIN);
         blockDesc.addProperty("boundingBox", blockCollisionShape.isEmpty() ? "empty" : "block");
 

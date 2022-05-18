@@ -2,17 +2,14 @@ package dev.u9g.minecraftdatagenerator.generators;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import dev.u9g.minecraftdatagenerator.ClientSideAnnoyances.BlockColors;
 import dev.u9g.minecraftdatagenerator.ClientSideAnnoyances.FoliageColors;
 import dev.u9g.minecraftdatagenerator.ClientSideAnnoyances.ServerSideRedstoneWireBlock;
 import dev.u9g.minecraftdatagenerator.ClientSideAnnoyances.GrassColors;
 import dev.u9g.minecraftdatagenerator.util.DGU;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.RedstoneWireBlock;
-import net.minecraft.client.BlockColors;
-import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
@@ -145,12 +142,7 @@ public class TintsDataGenerator implements IDataGenerator {
 
         BiomeTintColors biomeTintColors = generateBiomeTintColors(biomeRegistry);
         Map<Integer, Integer> redstoneColors = generateRedstoneTintColors();
-        Map<Block, Integer> constantTintColors = Collections.emptyMap();
-
-        EnvType currentEnvironment = FabricLoader.getInstance().getEnvironmentType();
-        if (currentEnvironment == EnvType.CLIENT) {
-            constantTintColors = generateConstantTintColors();
-        }
+        Map<Block, Integer> constantTintColors = generateConstantTintColors();
 
         JsonObject resultObject = new JsonObject();
 

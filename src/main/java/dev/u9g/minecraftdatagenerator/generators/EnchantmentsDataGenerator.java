@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class EnchantmentsDataGenerator implements IDataGenerator {
 
     private static final ImmutableMap<EnchantmentTarget, String> ENCHANTMENT_TARGET_NAMES = ImmutableMap.<EnchantmentTarget, String>builder()
-            .put(EnchantmentTarget.WEARABLE, "armor")
+            .put(EnchantmentTarget.ALL_ARMOR, "armor")
             .put(EnchantmentTarget.FEET, "armor_feet")
             .put(EnchantmentTarget.LEGS, "armor_legs")
             .put(EnchantmentTarget.ARMOR_CHEST, "armor_chest")

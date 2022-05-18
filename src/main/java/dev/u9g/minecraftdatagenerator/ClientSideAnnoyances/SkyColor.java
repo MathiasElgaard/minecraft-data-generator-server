@@ -11,7 +11,7 @@ public class SkyColor {
     private static int realSkyColor(float temperature) {
         temperature /= 3.0F;
         temperature = MathHelper.clamp(temperature, -1.0F, 1.0F);
-        return MathHelper.hsvToRgb(0.62222224F - temperature * 0.05F, 0.5F + temperature * 0.1F, 1.0F);
+        return hsvToRgb(0.62222224F - temperature * 0.05F, 0.5F + temperature * 0.1F, 1.0F);
     }
 
     public static int hsvToRgb(float hue, float saturation, float value) {
