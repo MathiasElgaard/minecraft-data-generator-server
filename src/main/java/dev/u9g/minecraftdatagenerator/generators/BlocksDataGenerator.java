@@ -12,6 +12,7 @@ import net.minecraft.item.*;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.EnumProperty;
+import net.minecraft.state.property.IntProperty;
 import net.minecraft.state.property.Property;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -51,7 +52,7 @@ public class BlocksDataGenerator implements IDataGenerator {
         if (property instanceof BooleanProperty) {
             return "bool";
         }
-        if (property instanceof IntegerProperty) {
+        if (property instanceof IntProperty) {
             return "int";
         }
         if (property instanceof EnumProperty) {
@@ -76,7 +77,7 @@ public class BlocksDataGenerator implements IDataGenerator {
         if (!(property instanceof BooleanProperty)) {
             JsonArray propertyValuesArray = new JsonArray();
             for (T propertyValue : propertyValues) {
-                propertyValuesArray.add(property.getValueAsString(propertyValue));
+                propertyValuesArray.add(property.name(propertyValue));
             }
             propertyObject.add("values", propertyValuesArray);
         }
@@ -132,7 +133,7 @@ public class BlocksDataGenerator implements IDataGenerator {
         blockDesc.addProperty("minStateId", Block.getRawIdFromState(blockStates.get(0)));
         blockDesc.addProperty("maxStateId", Block.getRawIdFromState(blockStates.get(blockStates.size() - 1)));
         JsonArray stateProperties = new JsonArray();
-        for (Property<?> property : block.getStateManager().method_11742()) {
+        for (Property<?> property : block.getStateManager().getProperties2()) {
             stateProperties.add(generateStateProperty(property));
         }
         blockDesc.add("states", stateProperties);

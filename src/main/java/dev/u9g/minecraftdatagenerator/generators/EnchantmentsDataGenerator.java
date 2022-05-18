@@ -81,8 +81,8 @@ public class EnchantmentsDataGenerator implements IDataGenerator {
         enchantmentDesc.add("minCost", generateEnchantmentMinPowerCoefficients(enchantment));
         enchantmentDesc.add("maxCost", generateEnchantmentMaxPowerCoefficients(enchantment));
 
-        enchantmentDesc.addProperty("treasureOnly", enchantment.method_11448());
-        enchantmentDesc.addProperty("curse", enchantment.method_13675());
+        enchantmentDesc.addProperty("treasureOnly", enchantment.isTreasure());
+        enchantmentDesc.addProperty("curse", enchantment.isCursed());
 
         List<Enchantment> incompatibleEnchantments = new ArrayList<>();
         for (Enchantment other : (Iterable<Enchantment>) registry) {
