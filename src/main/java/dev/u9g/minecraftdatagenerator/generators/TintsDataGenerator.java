@@ -42,21 +42,21 @@ public class TintsDataGenerator implements IDataGenerator {
     public static Map<Integer, Integer> generateRedstoneTintColors() {
         Map<Integer, Integer> resultColors = new HashMap<>();
 
-        for (int redstoneLevel : RedstoneWireBlock.REDSTONE_POWER.getValues()) {
+        for (int redstoneLevel : RedstoneWireBlock.POWER.getValues()) {
             int color = ServerSideRedstoneWireBlock.getWireColor(redstoneLevel);
             resultColors.put(redstoneLevel, color);
         }
         return resultColors;
     }
 
-    private static int getBlockColor(Block block, BlockColors blockColors) {
+    private static int getBlockColor(Block block, net.minecraft.client.BlockColors blockColors) {
         return blockColors.method_13410(block.getDefaultState(), DGU.getWorld(), BlockPos.ORIGIN);
     }
 
     public static Map<Block, Integer> generateConstantTintColors() {
         Map<Block, Integer> resultColors = new HashMap<>();
         BlockColors blockColors = BlockColors.create();
-
+        net.minecraft.client.color.world.FoliageColors
         resultColors.put(Blocks.BIRCH_LEAVES, FoliageColors.getBirchColor());
         resultColors.put(Blocks.SPRUCE_LEAVES, FoliageColors.getSpruceColor());
 

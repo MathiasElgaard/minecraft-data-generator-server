@@ -6,29 +6,29 @@ import dev.u9g.minecraftdatagenerator.ClientSideAnnoyances.SkyColor;
 import dev.u9g.minecraftdatagenerator.util.DGU;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.SimpleRegistry;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.EndBiome;
+import net.minecraft.world.biome.NetherBiome;
 
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.Objects;
 
 public class BiomesDataGenerator implements IDataGenerator {
 
     private static String guessBiomeDimensionFromCategory(Biome biome) {
-        String category = "overworld";
-        switch(biome.getCategory()) {
-            case NETHER:
-                category = "nether";
-                break;
-            case THEEND:
-                category = "end";
-                break;
+        if (biome instanceof NetherBiome) {
+            return "nether";
+        } else if (biome instanceof EndBiome) {
+            return "end";
         }
-        return category;
+        return "overworld";
     }
 
-    public static JsonObject generateBiomeInfo(Registry<Biome> registry, Biome biome) {
+    public static JsonObject generateBiomeInfo(SimpleRegistry<Identifier, Biome> registry, Biome biome) {
         JsonObject biomeDesc = new JsonObject();
-        Identifier registryKey = registry.getId(biome);
+        Identifier registryKey = registry.getIdentifier(biome);
         String localizationKey = String.format("biome.%s.%s", Objects.requireNonNull(registryKey).getNamespace(), registryKey.getPath());
 
         biomeDesc.addProperty("id", registry.getRawId(biome));
@@ -54,11 +54,11 @@ public class BiomesDataGenerator implements IDataGenerator {
     @Override
     public JsonArray generateDataJson() {
         JsonArray biomesArray = new JsonArray();
-        Registry<Biome> biomeRegistry = Registry.BIOME;
+        SimpleRegistry<Identifier, Biome> biomeRegistry = Biome.REGISTRY;
 
-        biomeRegistry.stream()
-                .map(biome -> generateBiomeInfo(biomeRegistry, biome))
-                .forEach(biomesArray::add);
+        for (Biome biome : biomeRegistry) {
+            biomesArray.add(generateBiomeInfo(biomeRegistry, biome));
+        }
         return biomesArray;
     }
 }

@@ -1,51 +1,58 @@
 package dev.u9g.minecraftdatagenerator.ClientSideAnnoyances;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.RenderBlockView;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.biome.Biome;
 
 import java.util.Iterator;
 
 public class BiomeColors {
-    private static final ColorProvider field_21146 = Biome::getGrassColor;
-    private static final ColorProvider field_21147 = Biome::getFoliageColor;
-    private static final ColorProvider field_21148 = (biome, blockPos) -> biome.getWaterColor();
-    private static final ColorProvider field_21149 = (biome, blockPos) -> biome.method_16447();
+    private static final ColorProvider GRASS_COLOR = new ColorProvider() {
+        public int getColorAtPos(Biome biome, BlockPos pos) {
+            return biome.getGrassColor(pos);
+        }
+    };
+    private static final ColorProvider FOLIAGE_COLOR = new ColorProvider() {
+        public int getColorAtPos(Biome biome, BlockPos pos) {
+            return biome.getFoliageColor(pos);
+        }
+    };
+    private static final ColorProvider WATER_COLOR = new ColorProvider() {
+        public int getColorAtPos(Biome biome, BlockPos pos) {
+            return biome.getWaterColor();
+        }
+    };
 
-    private static int method_19682(RenderBlockView renderBlockView, BlockPos blockPos, ColorProvider colorProvider) {
+    private static int getColor(BlockView view, BlockPos pos, ColorProvider provider) {
         int i = 0;
         int j = 0;
         int k = 0;
-        int l = MinecraftClient.getInstance().options.field_19979;
-        int m = (l * 2 + 1) * (l * 2 + 1);
 
-        int n;
-        for(Iterator<BlockPos.Mutable> var8 = BlockPos.mutableIterate(blockPos.getX() - l, blockPos.getY(), blockPos.getZ() - l, blockPos.getX() + l, blockPos.getY(), blockPos.getZ() + l).iterator(); var8.hasNext(); k += n & 255) {
-            BlockPos.Mutable mutable = var8.next();
-            n = colorProvider.getColor(renderBlockView.method_8577(mutable), mutable);
-            i += (n & 16711680) >> 16;
-            j += (n & '\uff00') >> 8;
+        int l;
+        for(Iterator<BlockPos.Mutable> var6 = BlockPos.mutableIterate(pos.add(-1, 0, -1), pos.add(1, 0, 1)).iterator(); var6.hasNext(); k += l & 255) {
+            BlockPos.Mutable mutable = (BlockPos.Mutable)var6.next();
+            l = provider.getColorAtPos(view.getBiome(mutable), mutable);
+            i += (l & 16711680) >> 16;
+            j += (l & '\uff00') >> 8;
         }
 
-        return (i / m & 255) << 16 | (j / m & 255) << 8 | k / m & 255;
+        return (i / 9 & 255) << 16 | (j / 9 & 255) << 8 | k / 9 & 255;
     }
 
-    public static int method_19681(RenderBlockView renderBlockView, BlockPos blockPos) {
-        return method_19682(renderBlockView, blockPos, field_21146);
+    public static int getGrassColor(BlockView view, BlockPos pos) {
+        return getColor(view, pos, GRASS_COLOR);
     }
 
-    public static int method_19684(RenderBlockView renderBlockView, BlockPos blockPos) {
-        return method_19682(renderBlockView, blockPos, field_21147);
+    public static int getFoliageColor(BlockView view, BlockPos pos) {
+        return getColor(view, pos, FOLIAGE_COLOR);
     }
 
-    public static int method_19686(RenderBlockView renderBlockView, BlockPos blockPos) {
-        return method_19682(renderBlockView, blockPos, field_21148);
+    public static int getWaterColor(BlockView view, BlockPos pos) {
+        return getColor(view, pos, WATER_COLOR);
     }
 
     interface ColorProvider {
-        int getColor(Biome biome, BlockPos blockPos);
+        int getColorAtPos(Biome biome, BlockPos pos);
     }
 }
+
