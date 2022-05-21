@@ -16,6 +16,8 @@ repositories {
         name = "legacy-fabric"
         url = "https://maven.legacyfabric.net"
     }
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
 }
 
 loom {

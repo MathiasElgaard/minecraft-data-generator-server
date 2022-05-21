@@ -78,9 +78,9 @@ public class BlockColors {
     }
 
     public int method_13410(BlockState blockState, World world, BlockPos blockPos) {
-        net.minecraft.client.BlockColorable blockColorable = (net.minecraft.client.BlockColorable)this.BlockColor2Id.fromId(Block.getIdByBlock(blockState.getBlock()));
+        BlockColorable blockColorable = BlockColor2Id.fromId(Block.getIdByBlock(blockState.getBlock()));
         if (blockColorable != null) {
-            return blockColorable.method_12155(blockState, (BlockView)null, (BlockPos)null, 0);
+            return blockColorable.method_12155(blockState, null, null, 0);
         } else {
             MaterialColor materialColor = blockState.getMaterialColor(world, blockPos);
             return materialColor != null ? materialColor.color : -1;

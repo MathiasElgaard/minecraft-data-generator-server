@@ -3,7 +3,11 @@ package dev.u9g.minecraftdatagenerator.generators;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.block.enums.Instrument;
+import dev.u9g.minecraftdatagenerator.mixin.NoteBlockAccessor;
+import dev.u9g.minecraftdatagenerator.mixin.SoundAccessor;
+import net.minecraft.sound.Sound;
+
+import java.util.Objects;
 
 public class InstrumentsDataGenerator implements IDataGenerator {
     @Override
@@ -14,10 +18,11 @@ public class InstrumentsDataGenerator implements IDataGenerator {
     @Override
     public JsonElement generateDataJson() {
         JsonArray array = new JsonArray();
-        for (Instrument instrument : Instrument.values()) {
+        int i = 0;
+        for (Sound sound : Objects.requireNonNull(NoteBlockAccessor.TUNES())) {
             JsonObject object = new JsonObject();
-            object.addProperty("id", instrument.ordinal());
-            object.addProperty("name", instrument.asString());
+            object.addProperty("id", i++);
+            object.addProperty("name", ((SoundAccessor)sound).id().getPath().split("\\.")[2]);
             array.add(object);
         }
         return array;

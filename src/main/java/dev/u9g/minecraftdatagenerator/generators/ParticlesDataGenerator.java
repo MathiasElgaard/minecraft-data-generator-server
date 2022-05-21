@@ -3,11 +3,6 @@ package dev.u9g.minecraftdatagenerator.generators;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.client.particle.ParticleType;
-import net.minecraft.item.Item;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
-
-import java.util.Objects;
 
 public class ParticlesDataGenerator implements IDataGenerator {
 
@@ -19,19 +14,18 @@ public class ParticlesDataGenerator implements IDataGenerator {
     @Override
     public JsonArray generateDataJson() {
         JsonArray resultsArray = new JsonArray();
-        Registry<ParticleType<?>> particleTypeRegistry = Registry.PARTICLE_TYPE;
-        for (ParticleType<?> particleType : (Iterable<ParticleType>) particleTypeRegistry) {
-            resultsArray.add(generateParticleType(particleTypeRegistry, particleType));
+        int i = 0;
+        for (ParticleType particleType : ParticleType.values()) {
+            resultsArray.add(generateParticleType(i++, particleType));
         }
         return resultsArray;
     }
 
-    public static JsonObject generateParticleType(Registry<ParticleType<?>> registry, ParticleType<?> particleType) {
+    public static JsonObject generateParticleType(int id, ParticleType particleType) {
         JsonObject effectDesc = new JsonObject();
-        Identifier registryKey = registry.getId(particleType);
 
-        effectDesc.addProperty("id", registry.getRawId(particleType));
-        effectDesc.addProperty("name", Objects.requireNonNull(registryKey).getPath());
+        effectDesc.addProperty("id", id);
+        effectDesc.addProperty("name", particleType.getName());
         return effectDesc;
     }
 }

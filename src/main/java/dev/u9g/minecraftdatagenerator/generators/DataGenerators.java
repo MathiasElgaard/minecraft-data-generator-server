@@ -1,5 +1,6 @@
 package dev.u9g.minecraftdatagenerator.generators;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.internal.Streams;
 import com.google.gson.stream.JsonWriter;
@@ -76,5 +77,6 @@ public class DataGenerators {
         register(new TintsDataGenerator());
         register(new LanguageDataGenerator());
         register(new InstrumentsDataGenerator());
+        register(new AttributesDataGenerator());
     }
 }

@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import dev.u9g.minecraftdatagenerator.mixin.StatusEffectAccessor;
 import dev.u9g.minecraftdatagenerator.util.DGU;
+import dev.u9g.minecraftdatagenerator.util.Registries;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.util.Identifier;
@@ -25,18 +26,17 @@ public class EffectsDataGenerator implements IDataGenerator {
     @Override
     public JsonArray generateDataJson() {
         JsonArray resultsArray = new JsonArray();
-        Registry<StatusEffect> statusEffectRegistry = Registry.MOB_EFFECT;
-        for (StatusEffect effect : (Iterable<StatusEffect>) statusEffectRegistry) {
-            resultsArray.add(generateEffect(statusEffectRegistry, effect));
+        for (StatusEffect effect : Registries.STATUS_EFFECTS) {
+            resultsArray.add(generateEffect(effect));
         }
         return resultsArray;
     }
 
-    public static JsonObject generateEffect(Registry<StatusEffect> registry, StatusEffect statusEffect) {
+    public static JsonObject generateEffect(StatusEffect statusEffect) {
         JsonObject effectDesc = new JsonObject();
-        @NotNull Identifier registryKey = Objects.requireNonNull(registry.getId(statusEffect));
+        @NotNull Identifier registryKey = Objects.requireNonNull(Registries.STATUS_EFFECTS.getIdentifier(statusEffect));
 
-        effectDesc.addProperty("id", registry.getRawId(statusEffect));
+        effectDesc.addProperty("id", Registries.STATUS_EFFECTS.getRawId(statusEffect));
         if (statusEffect == StatusEffects.UNLUCK) {
             effectDesc.addProperty("name", "BadLuck");
             effectDesc.addProperty("displayName", "Bad Luck");

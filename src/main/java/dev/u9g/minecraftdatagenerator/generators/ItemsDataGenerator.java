@@ -3,6 +3,7 @@ package dev.u9g.minecraftdatagenerator.generators;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import dev.u9g.minecraftdatagenerator.util.DGU;
+import dev.u9g.minecraftdatagenerator.util.Registries;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -16,11 +17,14 @@ import java.util.stream.Collectors;
 
 public class ItemsDataGenerator implements IDataGenerator {
 
-    private static List<Item> calculateItemsToRepairWith(Registry<Item> itemRegistry, Item sourceItem) {
-        ItemStack sourceItemStack = DGU.stackFor(sourceItem);
-        return itemRegistry.stream()
-                .filter(otherItem -> sourceItem.canRepair(sourceItemStack, DGU.stackFor(otherItem)))
-                .collect(Collectors.toList());
+    private static List<Item> calculateItemsToRepairWith(Item sourceItem) {
+        List<Item> items = new ArrayList<>();
+        for (Item otherItem : Registries.ITEMS) {
+            if (sourceItem.canRepair(DGU.stackFor(sourceItem), DGU.stackFor(otherItem))) {
+                items.add(otherItem);
+            }
+        }
+        return items;
     }
 
     private static List<EnchantmentTarget> getApplicableEnchantmentTargets(Item sourceItem) {
@@ -40,18 +44,17 @@ public class ItemsDataGenerator implements IDataGenerator {
     @Override
     public JsonArray generateDataJson() {
         JsonArray resultArray = new JsonArray();
-        Registry<Item> itemRegistry = Registry.ITEM;
-        for (Item item : (Iterable<Item>) itemRegistry) {
-            resultArray.add(generateItem(itemRegistry, item));
+        for (Item item : Registries.ITEMS) {
+            resultArray.add(generateItem(item));
         }
         return resultArray;
     }
 
-    public static JsonObject generateItem(Registry<Item> itemRegistry, Item item) {
+    public static JsonObject generateItem(Item item) {
         JsonObject itemDesc = new JsonObject();
-        Identifier registryKey = itemRegistry.getId(item);
+        Identifier registryKey = Registries.ITEMS.getIdentifier(item);
 
-        itemDesc.addProperty("id", itemRegistry.getRawId(item));
+        itemDesc.addProperty("id", Registries.ITEMS.getRawId(item));
         itemDesc.addProperty("name", Objects.requireNonNull(registryKey).getPath());
 
         itemDesc.addProperty("displayName", DGU.translateText(item.getTranslationKey()));
@@ -68,11 +71,11 @@ public class ItemsDataGenerator implements IDataGenerator {
         }
 
         if (item.isDamageable()) {
-            List<Item> repairWithItems = calculateItemsToRepairWith(itemRegistry, item);
+            List<Item> repairWithItems = calculateItemsToRepairWith(item);
 
             JsonArray fixedWithArray = new JsonArray();
             for (Item repairWithItem : repairWithItems) {
-                Identifier repairWithName = itemRegistry.getId(repairWithItem);
+                Identifier repairWithName = Registries.ITEMS.getIdentifier(repairWithItem);
                 fixedWithArray.add(Objects.requireNonNull(repairWithName).getPath());
             }
             if (fixedWithArray.size() > 0) {

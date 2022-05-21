@@ -4,13 +4,11 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import dev.u9g.minecraftdatagenerator.util.DGU;
+import dev.u9g.minecraftdatagenerator.util.Registries;
 import net.minecraft.enchantment.*;
-import net.minecraft.item.EnchantedBookItem;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class EnchantmentsDataGenerator implements IDataGenerator {
 
@@ -23,7 +21,6 @@ public class EnchantmentsDataGenerator implements IDataGenerator {
             .put(EnchantmentTarget.WEAPON, "weapon")
             .put(EnchantmentTarget.DIGGER, "digger")
             .put(EnchantmentTarget.FISHING_ROD, "fishing_rod")
-            .put(EnchantmentTarget.TRIDENT, "trident")
             .put(EnchantmentTarget.BREAKABLE, "breakable")
             .put(EnchantmentTarget.BOW, "bow")
             .put(EnchantmentTarget.WEARABLE, "wearable")
@@ -46,8 +43,8 @@ public class EnchantmentsDataGenerator implements IDataGenerator {
     }
 
     private static JsonObject generateEnchantmentMaxPowerCoefficients(Enchantment enchantment) {
-        int b = getMaximumPower(enchantment,0);
-        int a = getMaximumPower(enchantment,1) - b;
+        int b = enchantment.getMaximumPower(0);
+        int a = enchantment.getMaximumPower(1) - b;
 
         JsonObject resultObject = new JsonObject();
         resultObject.addProperty("a", a);
@@ -63,17 +60,17 @@ public class EnchantmentsDataGenerator implements IDataGenerator {
     @Override
     public JsonArray generateDataJson() {
         JsonArray resultsArray = new JsonArray();
-        Registry<Enchantment> enchantmentRegistry = Registry.ENCHANTMENT;
-        enchantmentRegistry.stream()
-                .forEach(enchantment -> resultsArray.add(generateEnchantment(enchantmentRegistry, enchantment)));
+        for (Enchantment enchantment : Registries.ENCHANTMENTS) {
+            resultsArray.add(generateEnchantment(enchantment));
+        }
         return resultsArray;
     }
 
-    public static JsonObject generateEnchantment(Registry<Enchantment> registry, Enchantment enchantment) {
+    public static JsonObject generateEnchantment(Enchantment enchantment) {
         JsonObject enchantmentDesc = new JsonObject();
-        Identifier registryKey = registry.getId(enchantment);
+        Identifier registryKey = Registries.ENCHANTMENTS.getIdentifier(enchantment);
 
-        enchantmentDesc.addProperty("id", registry.getRawId(enchantment));
+        enchantmentDesc.addProperty("id", Registries.ENCHANTMENTS.getRawId(enchantment));
         enchantmentDesc.addProperty("name", Objects.requireNonNull(registryKey).getPath());
         enchantmentDesc.addProperty("displayName", DGU.translateText(enchantment.getTranslationKey()));
 
@@ -85,15 +82,15 @@ public class EnchantmentsDataGenerator implements IDataGenerator {
         enchantmentDesc.addProperty("curse", enchantment.isCursed());
 
         List<Enchantment> incompatibleEnchantments = new ArrayList<>();
-        for (Enchantment other : (Iterable<Enchantment>) registry) {
-            if (enchantment.isDifferent(other) && other != enchantment) {
+        for (Enchantment other : Registries.ENCHANTMENTS) {
+            if (!enchantment.isDifferent(other) && other != enchantment) {
                 incompatibleEnchantments.add(other);
             }
         }
 
         JsonArray excludes = new JsonArray();
         for (Enchantment excludedEnchantment : incompatibleEnchantments) {
-            Identifier otherKey = registry.getId(excludedEnchantment);
+            Identifier otherKey = Registries.ENCHANTMENTS.getIdentifier(excludedEnchantment);
             excludes.add(Objects.requireNonNull(otherKey).getPath());
         }
         enchantmentDesc.add("exclude", excludes);
@@ -104,9 +101,5 @@ public class EnchantmentsDataGenerator implements IDataGenerator {
         enchantmentDesc.addProperty("discoverable", true); // the first non-enchantable enchant came in 1.16, soul speed
 
         return enchantmentDesc;
-    }
-
-    private static int getMaximumPower(Enchantment ench, int level) {
-        return ench.getMinimumPower(level) + 5;
     }
 }

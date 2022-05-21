@@ -114,8 +114,8 @@ public class RecipeDataGenerator implements IDataGenerator {
 //        return finalObj;
         return JsonNull.INSTANCE;
     }
-
-    private static int getRawIdFor (Item item) {
-        return Registry.ITEM.getRawId(item);
-    }
+//
+//    private static int getRawIdFor (Item item) {
+//        return Registry.ITEM.getRawId(item);
+//    }
 }

@@ -1,17 +1,25 @@
 package dev.u9g.minecraftdatagenerator.util;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.TypeAdapter;
+import com.google.gson.internal.bind.TypeAdapters;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
+import com.google.gson.stream.JsonWriter;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.resource.language.I18n;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Itemable;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Language;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType2;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
 
 public class DGU {
 
@@ -39,11 +47,10 @@ public class DGU {
     private static String translateTextClient(String translationKey) {
         return I18n.translate(translationKey);
     }
-    private static final Language language = Language.getInstance();
 
     private static String translateTextFallback(String translationKey) {
         try {
-            return language.translate(translationKey);
+            return Registries.LANGUAGE.translate(translationKey);
         } catch (Exception ignored) {}
         throw new RuntimeException("Failed to translate: '" + translationKey + "'");
     }
@@ -58,10 +65,25 @@ public class DGU {
 
     @NotNull
     public static World getWorld() {
-        return getCurrentlyRunningServer().method_20312(DimensionType2.OVERWORLD);
+        return getCurrentlyRunningServer().getWorld();
     }
 
-    public static ItemStack stackFor(Itemable ic) {
+    public static ItemStack stackFor(Item ic) {
         return new ItemStack(ic);
     }
+
+    public static Gson gson = new GsonBuilder().registerTypeAdapterFactory(TypeAdapters.newFactory(double.class, Double.class, new TypeAdapter<Number>() {
+        @Override
+        public Number read(JsonReader in) throws IOException {
+            if (in.peek() == JsonToken.NULL) {
+                in.nextNull();
+                return null;
+            }
+            return in.nextDouble();
+        }
+        @Override
+        public void write(JsonWriter out, Number value) throws IOException {
+            out.value(value);
+        }
+    })).create();
 }

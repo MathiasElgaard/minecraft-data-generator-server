@@ -2,23 +2,19 @@ package dev.u9g.minecraftdatagenerator.generators;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 import dev.u9g.minecraftdatagenerator.util.DGU;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityTypes;
-import net.minecraft.entity.LightningBoltEntity;
-import net.minecraft.entity.LivingEntity;
+import dev.u9g.minecraftdatagenerator.util.Registries;
+import net.minecraft.entity.*;
 import net.minecraft.entity.mob.*;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.PassiveEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.FishingBobberEntity;
 import net.minecraft.entity.projectile.Projectile;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
 import java.util.Objects;
 
 public class EntitiesDataGenerator implements IDataGenerator {
@@ -31,65 +27,42 @@ public class EntitiesDataGenerator implements IDataGenerator {
     @Override
     public JsonArray generateDataJson() {
         JsonArray resultArray = new JsonArray();
-        Registry<EntityTypes<?>> entityTypeRegistry = Registry.ENTITY_TYPE;
-        for (EntityTypes<?> entityType : (Iterable<EntityTypes<?>>) entityTypeRegistry) {
-            resultArray.add(generateEntity(entityTypeRegistry, entityType));
+        for (Class<? extends Entity> entityType : Registries.ENTITY_TYPES) {
+            resultArray.add(generateEntity(entityType));
         }
         return resultArray;
     }
 
-    public static JsonObject generateEntity(Registry<EntityTypes<?>> entityRegistry, EntityTypes<?> entityType) {
+    public static JsonObject generateEntity(Class<? extends Entity> entityClass) {
         JsonObject entityDesc = new JsonObject();
-        Identifier registryKey = entityRegistry.getId(entityType);
-        int entityRawId = entityRegistry.getRawId(entityType);
-        Class<? extends Entity> entityClass = getEntityClass(entityType);
-        @Nullable Entity entity = makeEntity(entityType);
-
-        entityDesc.addProperty("id", entityRawId);
-        entityDesc.addProperty("internalId", entityRawId);
+        Identifier registryKey = Registries.ENTITY_TYPES.getIdentifier(entityClass);
+        int entityRawId = Registries.ENTITY_TYPES.getRawId(entityClass);
+        @Nullable Entity entity = makeEntity(entityClass);
+        // FIXME: ENTITY ID IS WRONG
+        int id = entityId(entity);
+        entityDesc.addProperty("id", id);
+        entityDesc.addProperty("internalId", id);
         entityDesc.addProperty("name", Objects.requireNonNull(registryKey).getPath());
 
-        entityDesc.addProperty("displayName", DGU.translateText(entityType.getTranslationKey()));
+        if (entity != null) entityDesc.addProperty("displayName", DGU.translateText(entity.getTranslationKey()));
         entityDesc.addProperty("width", entity == null ? 0 : entity.width);
         entityDesc.addProperty("height", entity == null ? 0 : entity.height);
 
         String entityTypeString = "UNKNOWN";
         entityTypeString = getEntityTypeForClass(entityClass);
         entityDesc.addProperty("type", entityTypeString);
-        entityDesc.addProperty("category", getCategoryFrom(entityType));
+        entityDesc.addProperty("category", getCategoryFrom(entityClass));
 
         return entityDesc;
     }
 
-    private static Entity makeEntity(EntityTypes<?> type) {
-        Entity entity;
-        try {
-            entity = type.spawn(DGU.getWorld());
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
-        return entity;
+    private static Entity makeEntity(Class<? extends Entity> type) {
+        return EntityType.createInstanceFromClass(type, DGU.getWorld());
     }
 
-    private static Class<? extends Entity> getEntityClass(EntityTypes<?> entityType) {
-        Class<? extends Entity> entityClazz = null;
-        try {
-            for (Field field : EntityTypes.class.getFields())
-                if (entityType == field.get(EntityTypes.class))
-                    entityClazz = (Class<? extends Entity>)((ParameterizedType) TypeToken.get(field.getGenericType()).getType()).getActualTypeArguments()[0];
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
-        if (entityClazz == null) throw new RuntimeException("Shouldn't be null...");
-        return entityClazz;
-    }
-
-    private static String getCategoryFrom(@NotNull EntityTypes<?> entityType) {
-        if (entityType == EntityTypes.PLAYER) return "other"; // fail early for player entities
-        Class<? extends Entity> entityClazz = getEntityClass(entityType);
-        String packageName = entityClazz.getPackage().getName();
+    private static String getCategoryFrom(@NotNull Class<?> entityClass) {
+        if (entityClass == PlayerEntity.class) return "other"; // fail early for player entities
+        String packageName = entityClass.getPackage().getName();
         String category = null;
         switch (packageName) {
             case "net.minecraft.entity.decoration":
@@ -155,5 +128,22 @@ public class EntitiesDataGenerator implements IDataGenerator {
             return "projectile";
         }
         return "other";
+    }
+
+    private static int entityId(Entity entity) {
+        if (!DGU.getCurrentlyRunningServer().getVersion().equals("1.12.2")) {
+            throw new Error("These ids were gotten manually for 1.12.2, remake for " + DGU.getCurrentlyRunningServer().getVersion());
+        }
+        int rawId = Registries.ENTITY_TYPES.getRawId(entity.getClass());
+        if (rawId == -1) { // see TrackedEntityInstance
+            if (entity instanceof ItemEntity) {
+                return 1;
+            } else if (entity instanceof FishingBobberEntity) {
+                return 90;
+            } else {
+                throw new Error("unable to find rawId for entity: " + entity.getEntityName());
+            }
+        }
+        return rawId;
     }
 }

@@ -3,6 +3,7 @@ package dev.u9g.minecraftdatagenerator.generators;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import dev.u9g.minecraftdatagenerator.util.DGU;
+import dev.u9g.minecraftdatagenerator.util.Registries;
 import net.minecraft.item.FishItem;
 import net.minecraft.item.FoodItem;
 import net.minecraft.item.Item;
@@ -22,26 +23,25 @@ public class FoodsDataGenerator implements IDataGenerator {
 
     public JsonArray generateDataJson() {
         JsonArray resultsArray = new JsonArray();
-        Registry<Item> itemRegistry = Registry.ITEM;
-        for (Item item : (Iterable<Item>) itemRegistry) {
+        for (Item item : Registries.ITEMS) {
             if (item instanceof FoodItem) {
-                resultsArray.add(generateFoodDescriptor(itemRegistry, (FoodItem)item));
+                resultsArray.add(generateFoodDescriptor((FoodItem)item));
             }
         }
         return resultsArray;
     }
 
-    public static JsonObject generateFoodDescriptor(Registry<Item> registry, FoodItem foodItem) {
+    public static JsonObject generateFoodDescriptor(FoodItem foodItem) {
         JsonObject foodDesc = new JsonObject();
-        Identifier registryKey = registry.getId(foodItem);
+        Identifier registryKey = Registries.ITEMS.getIdentifier(foodItem);
 
-        foodDesc.addProperty("id", registry.getRawId(foodItem));
+        foodDesc.addProperty("id", Registries.ITEMS.getRawId(foodItem));
         foodDesc.addProperty("name", Objects.requireNonNull(registryKey).getPath());
 
         foodDesc.addProperty("stackSize", foodItem.getMaxCount());
         foodDesc.addProperty("displayName", DGU.translateText(foodItem.getTranslationKey()));
-        float foodPoints = foodItem.getHungerPoints(getDefaultStack(foodItem));
-        float saturationRatio = foodItem.getSaturation(getDefaultStack(foodItem)) * 2.0F;
+        float foodPoints = foodItem.getHungerPoints(DGU.stackFor(foodItem));
+        float saturationRatio = foodItem.getSaturation(DGU.stackFor(foodItem)) * 2.0F;
         float saturation = foodPoints * saturationRatio;
 
         foodDesc.addProperty("foodPoints", foodPoints);
@@ -50,9 +50,5 @@ public class FoodsDataGenerator implements IDataGenerator {
         foodDesc.addProperty("effectiveQuality", foodPoints + saturation);
         foodDesc.addProperty("saturationRatio", saturationRatio);
         return foodDesc;
-    }
-
-    private static ItemStack getDefaultStack(FoodItem foodItem) {
-        return new ItemStack(foodItem);
     }
 }
