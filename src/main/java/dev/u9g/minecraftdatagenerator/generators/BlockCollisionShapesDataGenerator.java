@@ -1,25 +1,18 @@
 package dev.u9g.minecraftdatagenerator.generators;
 
-import com.google.common.collect.Multimap;
-import com.google.common.collect.MultimapBuilder;
-import com.google.common.collect.Multiset;
-import com.google.common.collect.SetMultimap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import dev.u9g.minecraftdatagenerator.mixin.EndPortalFrameBlockAccessor;
 import dev.u9g.minecraftdatagenerator.util.DGU;
-import dev.u9g.minecraftdatagenerator.util.EmptyBlockView;
 import dev.u9g.minecraftdatagenerator.util.Registries;
 import net.minecraft.block.*;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BoundingBox;
+import net.minecraft.util.math.Box;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class BlockCollisionShapesDataGenerator implements IDataGenerator {
-    private static final BoundingBox ENTITY_BOX = new BoundingBox(0.0D, 0.0D, 0.0D, 1.0D, 2.0D, 1.0D);
+    private static final Box ENTITY_BOX = new Box(0.0D, 0.0D, 0.0D, 1.0D, 2.0D, 1.0D);
 
     @Override
     public String getDataName() {
@@ -48,7 +41,7 @@ public class BlockCollisionShapesDataGenerator implements IDataGenerator {
         return Objects.requireNonNull(Registries.BLOCKS.getIdentifier(block)).getPath();
     }
 
-    private static JsonArray jsonOf(BoundingBox box) {
+    private static JsonArray jsonOf(Box box) {
         JsonArray arr = new JsonArray();
         if (box == null) return arr;
         arr.add(box.minnX);
@@ -66,9 +59,9 @@ public class BlockCollisionShapesDataGenerator implements IDataGenerator {
         public Object addShapesFrom(Block block) {
             List<Integer> indexesOfBoxesInTheShapesCache = new ArrayList<>();
             for (BlockState state : block.getStateManager().getBlockStates().reverse()) {
-                List<BoundingBox> boxes = new ArrayList<>();
+                List<Box> boxes = new ArrayList<>();
                 try {
-                    state./*addCollisionBBsToList*/method_11710(DGU.getWorld(), BlockPos.ORIGIN, ENTITY_BOX, boxes, null, true);
+                    state.addCollisionBoxesToList(DGU.getWorld(), BlockPos.ORIGIN, ENTITY_BOX, boxes, null, true);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -100,9 +93,9 @@ public class BlockCollisionShapesDataGenerator implements IDataGenerator {
         }
 
         private static class Shapes {
-            List<BoundingBox> boxes;
+            List<Box> boxes;
 
-            public Shapes(List<BoundingBox> boxes) {
+            public Shapes(List<Box> boxes) {
                 this.boxes = boxes;
             }
 

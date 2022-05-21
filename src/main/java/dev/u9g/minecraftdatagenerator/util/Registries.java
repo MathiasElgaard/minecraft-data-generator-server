@@ -15,8 +15,8 @@ public class Registries {
     public static final SimpleRegistry<Identifier, Biome> BIOMES = Biome.REGISTRY;
     public static final SimpleRegistry<Identifier, Block> BLOCKS = Block.REGISTRY;
     public static final SimpleRegistry<Identifier, Item> ITEMS = Item.REGISTRY;
-    public static final SimpleRegistry<Identifier, StatusEffect> STATUS_EFFECTS = StatusEffect.field_3164;
+    public static final SimpleRegistry<Identifier, StatusEffect> STATUS_EFFECTS = StatusEffect.REGISTRY;
     public static final SimpleRegistry<Identifier, Enchantment> ENCHANTMENTS = Enchantment.REGISTRY;
-    public static final SimpleRegistry<Identifier, Class<? extends Entity>> ENTITY_TYPES = EntityType.ENTITY_TYPES;
+    public static final SimpleRegistry<Identifier, Class<? extends Entity>> ENTITY_TYPES = EntityType.REGISTRY;
     public static final Language LANGUAGE = new Language();
 }

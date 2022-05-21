@@ -17,7 +17,6 @@ import net.minecraft.state.property.IntProperty;
 import net.minecraft.state.property.Property;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BoundingBox;
 
 import java.util.*;
 import java.util.logging.Logger;
@@ -103,7 +102,7 @@ public class BlocksDataGenerator implements IDataGenerator {
         blockDesc.addProperty("name", Objects.requireNonNull(registryKey).getPath());
         blockDesc.addProperty("displayName", block.getTranslatedName());
 
-        float hardness = block.getDefaultState().method_11718(null, null);
+        float hardness = block.getDefaultState().getHardness(null, null);
 
         blockDesc.addProperty("hardness", hardness);
         blockDesc.addProperty("resistance", ((BlockAccessor)block).getBlastResistance());
@@ -116,8 +115,8 @@ public class BlocksDataGenerator implements IDataGenerator {
         ));
         blockDesc.add("effectiveTools", effTools);
         blockDesc.addProperty("transparent", block instanceof TransparentBlock);
-        blockDesc.addProperty("emitLight", defaultState.method_11725());
-        blockDesc.addProperty("filterLight", block.getDefaultState().method_11721());
+        blockDesc.addProperty("emitLight", defaultState.getLuminance2());
+        blockDesc.addProperty("filterLight", block.getDefaultState().getOpacity());
 
         JsonArray stateProperties = new JsonArray();
         for (Property<?> property : block.getStateManager().getProperties2()) {
@@ -131,7 +130,7 @@ public class BlocksDataGenerator implements IDataGenerator {
     }
 
     private static String boundingBox(Block block, BlockState state) {
-        if (block.method_8640(state, EmptyBlockView.INSTANCE, BlockPos.ORIGIN) == null) {
+        if (block.getCollisionBox(state, EmptyBlockView.INSTANCE, BlockPos.ORIGIN) == null) {
             return "empty";
         }
         return "block";
