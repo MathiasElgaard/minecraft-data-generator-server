@@ -63,12 +63,14 @@ public class ItemsDataGenerator implements IDataGenerator {
 
         List<EnchantmentTarget> enchantmentTargets = getApplicableEnchantmentTargets(item);
 
-        JsonArray enchantCategoriesArray = new JsonArray();
-        for (EnchantmentTarget target : enchantmentTargets) {
-            enchantCategoriesArray.add(new JsonPrimitive(EnchantmentsDataGenerator.getEnchantmentTargetName(target)));
-        }
-        if (enchantCategoriesArray.size() > 0) {
-            itemDesc.add("enchantCategories", enchantCategoriesArray);
+        if (item.isDamageable()) {
+            JsonArray enchantCategoriesArray = new JsonArray();
+            for (EnchantmentTarget target : enchantmentTargets) {
+                enchantCategoriesArray.add(new JsonPrimitive(EnchantmentsDataGenerator.getEnchantmentTargetName(target)));
+            }
+            if (enchantCategoriesArray.size() > 0) {
+                itemDesc.add("enchantCategories", enchantCategoriesArray);
+            }
         }
 
         if (item.isDamageable()) {

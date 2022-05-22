@@ -38,6 +38,11 @@ public class EmptyBlockView implements BlockView {
     }
 
     @Override
+    public boolean isEmpty() {
+        return false;
+    }
+
+    @Override
     public int getStrongRedstonePower(BlockPos pos, Direction direction) {
         return 0;
     }

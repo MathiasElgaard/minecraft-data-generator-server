@@ -23,24 +23,18 @@ import java.io.IOException;
 
 public class DGU {
 
-    @Environment(EnvType.CLIENT)
-    private static MinecraftServer getCurrentlyRunningServerClient() {
-        return MinecraftClient.getInstance().getServer();
-    }
-
-    @SuppressWarnings("deprecation")
-    private static MinecraftServer getCurrentlyRunningServerDedicated() {
-        return (MinecraftServer) FabricLoader.getInstance().getGameInstance();
-    }
+//    @Environment(EnvType.CLIENT)
+//    private static MinecraftServer getCurrentlyRunningServerClient() {
+//        return MinecraftClient.getInstance().getServer();
+//    }
+//
+//    @SuppressWarnings("deprecation")
+//    private static MinecraftServer getCurrentlyRunningServerDedicated() {
+//        return (MinecraftServer) FabricLoader.getInstance().getGameInstance();
+//    }
 
     public static MinecraftServer getCurrentlyRunningServer() {
-        EnvType environmentType = FabricLoader.getInstance().getEnvironmentType();
-        if (environmentType == EnvType.CLIENT) {
-            return getCurrentlyRunningServerClient();
-        } else if (environmentType == EnvType.SERVER) {
-            return getCurrentlyRunningServerDedicated();
-        }
-        throw new UnsupportedOperationException();
+        return (MinecraftServer) FabricLoader.getInstance().getGameInstance();
     }
 
     @Environment(EnvType.CLIENT)
