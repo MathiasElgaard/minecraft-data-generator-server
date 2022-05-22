@@ -22,6 +22,7 @@ public class BlockCollisionShapesDataGenerator implements IDataGenerator {
 
     @Override
     public JsonObject generateDataJson() {
+        new Throwable("make sure end portal frame has 2 states!").printStackTrace();
         ShapeCache shapeCache = new ShapeCache();
         JsonObject blocksObject = new JsonObject();
         for (Block block : Registries.BLOCKS) {
@@ -45,12 +46,12 @@ public class BlockCollisionShapesDataGenerator implements IDataGenerator {
     private static JsonArray jsonOf(Box box) {
         JsonArray arr = new JsonArray();
         if (box == null) return arr;
-        arr.add(new JsonPrimitive(box.minnX));
-        arr.add(new JsonPrimitive(box.minnY));
-        arr.add(new JsonPrimitive(box.minnZ));
-        arr.add(new JsonPrimitive(box.maxxX));
-        arr.add(new JsonPrimitive(box.maxxY));
-        arr.add(new JsonPrimitive(box.maxxZ));
+        arr.add(new JsonPrimitive(box.minX));
+        arr.add(new JsonPrimitive(box.minY));
+        arr.add(new JsonPrimitive(box.minZ));
+        arr.add(new JsonPrimitive(box.maxX));
+        arr.add(new JsonPrimitive(box.maxY));
+        arr.add(new JsonPrimitive(box.maxZ));
         return arr;
     }
 
@@ -62,7 +63,7 @@ public class BlockCollisionShapesDataGenerator implements IDataGenerator {
             for (BlockState state : block.getStateManager().getBlockStates().reverse()) {
                 List<Box> boxes = new ArrayList<>();
                 try {
-                    state.addCollisionBoxesToList(DGU.getWorld(), BlockPos.ORIGIN, ENTITY_BOX, boxes, null);
+                    block.appendCollisionBoxes(DGU.getWorld(), BlockPos.ORIGIN, state, ENTITY_BOX, boxes, null);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

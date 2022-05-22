@@ -29,10 +29,5 @@ public class FoliageColors {
     public static int getDefaultColor() {
         return 4764952;
     }
-
-    public static int getFoliageColor(Biome biome) {
-        double d = (double) MathHelper.clamp(biome.getTemperature(), 0.0F, 1.0F);
-        double e = (double) MathHelper.clamp(biome.getRainfall(), 0.0F, 1.0F);
-        return FoliageColors.getColor(d, e);
-    }
 }
+

@@ -18,12 +18,6 @@ public class GrassColors {
         int k = j << 8 | i;
         return k > colorMap.length ? -65281 : colorMap[k];
     }
-
-    public static int getGrassColor(Biome biome) {
-        double d = (double) MathHelper.clamp(biome.getTemperature(), 0.0F, 1.0F);
-        double e = (double) MathHelper.clamp(biome.getRainfall(), 0.0F, 1.0F);
-        return GrassColors.getColor(d, e);
-    }
 }
 
 

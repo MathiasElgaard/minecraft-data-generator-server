@@ -99,20 +99,20 @@ public class BlocksDataGenerator implements IDataGenerator {
         Identifier registryKey = Registries.BLOCKS.getIdentifier(block);
         List<Item> effectiveTools = getItemsEffectiveForBlock(block);
 
-        blockDesc.addProperty("id", Registries.BLOCKS.getRawId(block));
+        blockDesc.addProperty("id", Registries.BLOCKS.getIndex(block));
         blockDesc.addProperty("name", Objects.requireNonNull(registryKey).getPath());
         if (!block.getTranslatedName().startsWith("tile.")) {
             blockDesc.addProperty("displayName", block.getTranslatedName());
         }
 
-        float hardness = block.getDefaultState().getHardness(null, null);
+        float hardness = block.getStrength(null, null);
 
         blockDesc.addProperty("hardness", hardness);
         blockDesc.addProperty("resistance", ((BlockAccessor)block).getBlastResistance());
         blockDesc.addProperty("diggable", hardness != -1.0f && !(block instanceof AirBlock));
         JsonObject effTools = new JsonObject();
         effectiveTools.forEach(item -> effTools.addProperty(
-            String.valueOf(Registries.ITEMS.getRawId(item)), // key
+            String.valueOf(Registries.ITEMS.getIndex(item)), // key
             item.getBlockBreakingSpeed(DGU.stackFor(item), defaultState) // value
         ));
         blockDesc.add("effectiveTools", effTools);

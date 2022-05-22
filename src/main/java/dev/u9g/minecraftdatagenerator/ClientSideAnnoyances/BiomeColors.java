@@ -1,6 +1,8 @@
 package dev.u9g.minecraftdatagenerator.ClientSideAnnoyances;
 
 import dev.u9g.minecraftdatagenerator.util.EmptyBlockView;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.color.world.GrassColors;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -22,11 +24,11 @@ public class BiomeColors {
     };
     private static final ColorProvider WATER_COLOR = new ColorProvider() {
         public int getColorAtPos(Biome biome, BlockPos pos) {
-            return biome.getWaterColor();
+            return biome.waterColor;
         }
     };
 
-    private static int getColor(EmptyBlockView view, BlockPos pos, ColorProvider provider) {
+    private static int getColor(BlockView view, BlockPos pos, ColorProvider provider) {
         int i = 0;
         int j = 0;
         int k = 0;
@@ -42,15 +44,15 @@ public class BiomeColors {
         return (i / 9 & 255) << 16 | (j / 9 & 255) << 8 | k / 9 & 255;
     }
 
-    public static int getGrassColor(EmptyBlockView view, BlockPos pos) {
+    public static int getGrassColor(BlockView view, BlockPos pos) {
         return getColor(view, pos, GRASS_COLOR);
     }
 
-    public static int getFoliageColor(EmptyBlockView view, BlockPos pos) {
+    public static int getFoliageColor(BlockView view, BlockPos pos) {
         return getColor(view, pos, FOLIAGE_COLOR);
     }
 
-    public static int getWaterColor(EmptyBlockView view, BlockPos pos) {
+    public static int getWaterColor(BlockView view, BlockPos pos) {
         return getColor(view, pos, WATER_COLOR);
     }
 
@@ -58,5 +60,4 @@ public class BiomeColors {
         int getColorAtPos(Biome biome, BlockPos pos);
     }
 }
-
 

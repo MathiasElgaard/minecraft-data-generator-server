@@ -5,7 +5,7 @@ import net.minecraft.world.biome.Biome;
 
 public class SkyColor {
     public static int getSkyColor(Biome biome) {
-        return realSkyColor(biome.getTemperature());
+        return realSkyColor(biome.temperature);
     }
 
     private static int realSkyColor(float temperature) {

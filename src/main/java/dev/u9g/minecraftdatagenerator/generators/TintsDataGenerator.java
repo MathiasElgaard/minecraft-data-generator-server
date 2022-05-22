@@ -19,8 +19,6 @@ import java.util.*;
 
 public class TintsDataGenerator implements IDataGenerator {
 
-    private static final BlockColors blockColors = BlockColors.create();
-
     public static class BiomeTintColors {
         Map<Integer, List<Biome>> grassColoursMap = new HashMap<>();
         Map<Integer, List<Biome>> foliageColoursMap = new HashMap<>();
