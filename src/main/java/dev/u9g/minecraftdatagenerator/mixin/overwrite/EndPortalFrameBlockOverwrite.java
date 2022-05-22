@@ -1,4 +1,4 @@
-package dev.u9g.minecraftdatagenerator.mixin;
+package dev.u9g.minecraftdatagenerator.mixin.overwrite;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -8,7 +8,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 

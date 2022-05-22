@@ -1,6 +1,5 @@
 package dev.u9g.minecraftdatagenerator.ClientSideAnnoyances;
 
-import net.minecraft.block.RedstoneWireBlock;
 import net.minecraft.util.math.MathHelper;
 
 public class ServerSideRedstoneWireBlock {

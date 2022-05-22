@@ -8,10 +8,14 @@ import dev.u9g.minecraftdatagenerator.Main;
 import dev.u9g.minecraftdatagenerator.mixin.BlockAccessor;
 import dev.u9g.minecraftdatagenerator.mixin.MiningToolItemAccessor;
 import dev.u9g.minecraftdatagenerator.util.DGU;
-import dev.u9g.minecraftdatagenerator.util.EmptyBlockView;
 import dev.u9g.minecraftdatagenerator.util.Registries;
-import net.minecraft.block.*;
-import net.minecraft.item.*;
+import net.minecraft.block.AirBlock;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.TransparentBlock;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ToolItem;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.IntProperty;
@@ -19,7 +23,10 @@ import net.minecraft.state.property.Property;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 public class BlocksDataGenerator implements IDataGenerator {
@@ -117,11 +124,11 @@ public class BlocksDataGenerator implements IDataGenerator {
         ));
         blockDesc.add("effectiveTools", effTools);
         blockDesc.addProperty("transparent", block instanceof TransparentBlock);
-        blockDesc.addProperty("emitLight", defaultState.getLuminance2());
-        blockDesc.addProperty("filterLight", block.getDefaultState().getOpacity());
+        blockDesc.addProperty("emitLight", block.getLightLevel());
+        blockDesc.addProperty("filterLight", block.getOpacity());
 
         JsonArray stateProperties = new JsonArray();
-        for (Property<?> property : block.getStateManager().getProperties2()) {
+        for (Property<?> property : block.getStateManager().getProperties()) {
             stateProperties.add(generateStateProperty(property));
         }
         blockDesc.add("states", stateProperties);
@@ -132,7 +139,7 @@ public class BlocksDataGenerator implements IDataGenerator {
     }
 
     private static String boundingBox(Block block, BlockState state) {
-        if (block.getDefaultState().getCollisionBox(EmptyBlockView.INSTANCE, BlockPos.ORIGIN) == null) {
+        if (block.getCollisionBox(DGU.getWorld(), BlockPos.ORIGIN, state) == null) {
             return "empty";
         }
         return "block";

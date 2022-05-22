@@ -6,7 +6,10 @@ import dev.u9g.minecraftdatagenerator.mixin.EntityTypeAccessor;
 import dev.u9g.minecraftdatagenerator.util.DGU;
 import dev.u9g.minecraftdatagenerator.util.Registries;
 import net.minecraft.entity.*;
-import net.minecraft.entity.mob.*;
+import net.minecraft.entity.mob.AmbientEntity;
+import net.minecraft.entity.mob.HostileEntity;
+import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.mob.WaterCreatureEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.FishingBobberEntity;
@@ -36,14 +39,14 @@ public class EntitiesDataGenerator implements IDataGenerator {
     public static JsonObject generateEntity(Class<? extends Entity> entityClass) {
         JsonObject entityDesc = new JsonObject();
         Identifier registryKey = Registries.ENTITY_TYPES.getIdentifier(entityClass);
-        int entityRawId = Registries.ENTITY_TYPES.getRawId(entityClass);
+        int entityRawId = Registries.ENTITY_TYPES.getIndex(entityClass);
         @Nullable Entity entity = makeEntity(entityClass);
         // FIXME: ENTITY ID IS WRONG
         int id = entityId(entity);
         entityDesc.addProperty("id", id);
         entityDesc.addProperty("internalId", id);
         entityDesc.addProperty("name", Objects.requireNonNull(registryKey).getPath());
-        String displayName = entity != null ? DGU.translateText(entity.getTranslationKey()) : null;
+        String displayName = entity != null ? entity.method_2518() : null;
         if (displayName != null && !displayName.startsWith("entity.")) {
             entityDesc.addProperty("displayName", displayName);
         }
@@ -134,17 +137,17 @@ public class EntitiesDataGenerator implements IDataGenerator {
     }
 
     private static int entityId(Entity entity) {
-        if (!DGU.getCurrentlyRunningServer().getVersion().equals("1.10.2")) {
-            throw new Error("These ids were gotten manually for 1.10.2, remake for " + DGU.getCurrentlyRunningServer().getVersion());
+        if (!DGU.getCurrentlyRunningServer().getVersion().equals("1.8.9")) {
+            throw new Error("These ids were gotten manually for 1.8.9, remake for " + DGU.getCurrentlyRunningServer().getVersion());
         }
-        int rawId = Registries.ENTITY_TYPES.getRawId(entity.getClass());
+        int rawId = Registries.ENTITY_TYPES.getIndex(entity.getClass());
         if (rawId == -1) { // see TrackedEntityInstance
             if (entity instanceof ItemEntity) {
                 return 2;
             } else if (entity instanceof FishingBobberEntity) {
                 return 90;
             } else {
-                throw new Error("unable to find rawId for entity: " + entity.getEntityName());
+                throw new Error("unable to find rawId for entity: " + entity.getEntity().getClass().getName());
             }
         }
         return rawId;

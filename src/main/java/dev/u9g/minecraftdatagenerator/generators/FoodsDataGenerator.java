@@ -4,14 +4,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import dev.u9g.minecraftdatagenerator.util.DGU;
 import dev.u9g.minecraftdatagenerator.util.Registries;
-import net.minecraft.item.FishItem;
 import net.minecraft.item.FoodItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
-import java.util.Iterator;
 import java.util.Objects;
 
 public class FoodsDataGenerator implements IDataGenerator {
@@ -35,7 +31,7 @@ public class FoodsDataGenerator implements IDataGenerator {
         JsonObject foodDesc = new JsonObject();
         Identifier registryKey = Registries.ITEMS.getIdentifier(foodItem);
 
-        foodDesc.addProperty("id", Registries.ITEMS.getRawId(foodItem));
+        foodDesc.addProperty("id", Registries.ITEMS.getIndex(foodItem));
         foodDesc.addProperty("name", Objects.requireNonNull(registryKey).getPath());
 
         foodDesc.addProperty("stackSize", foodItem.getMaxCount());

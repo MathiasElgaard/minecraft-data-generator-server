@@ -1,11 +1,6 @@
 package dev.u9g.minecraftdatagenerator.ClientSideAnnoyances;
 
-import dev.u9g.minecraftdatagenerator.util.EmptyBlockView;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.color.world.GrassColors;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.biome.Biome;
 

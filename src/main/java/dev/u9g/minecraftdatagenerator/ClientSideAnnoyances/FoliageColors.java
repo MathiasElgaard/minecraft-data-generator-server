@@ -1,6 +1,5 @@
 package dev.u9g.minecraftdatagenerator.ClientSideAnnoyances;
 
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.biome.Biome;
 
@@ -28,6 +27,12 @@ public class FoliageColors {
 
     public static int getDefaultColor() {
         return 4764952;
+    }
+
+    public static int getFoliageColor(Biome biome) {
+        double d = MathHelper.clamp(biome.temperature, 0.0f, 1.0f);
+        double e = MathHelper.clamp(biome.downfall, 0.0f, 1.0f);
+        return FoliageColors.getColor(d, e);
     }
 }
 

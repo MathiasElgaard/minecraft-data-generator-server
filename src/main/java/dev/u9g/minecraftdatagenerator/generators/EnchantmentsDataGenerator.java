@@ -6,10 +6,14 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import dev.u9g.minecraftdatagenerator.util.DGU;
 import dev.u9g.minecraftdatagenerator.util.Registries;
-import net.minecraft.enchantment.*;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.util.Identifier;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 
 public class EnchantmentsDataGenerator implements IDataGenerator {
 
@@ -17,7 +21,7 @@ public class EnchantmentsDataGenerator implements IDataGenerator {
             .put(EnchantmentTarget.ALL_ARMOR, "armor")
             .put(EnchantmentTarget.FEET, "armor_feet")
             .put(EnchantmentTarget.LEGS, "armor_legs")
-            .put(EnchantmentTarget.ARMOR_CHEST, "armor_chest")
+            .put(EnchantmentTarget.TORSO, "armor_chest")
             .put(EnchantmentTarget.HEAD, "armor_head")
             .put(EnchantmentTarget.WEAPON, "weapon")
             .put(EnchantmentTarget.DIGGER, "digger")
@@ -69,7 +73,7 @@ public class EnchantmentsDataGenerator implements IDataGenerator {
         JsonObject enchantmentDesc = new JsonObject();
         Identifier registryKey = Registries.ENCHANTMENTS.getIdentifier(enchantment);
 
-        enchantmentDesc.addProperty("id", Registries.ENCHANTMENTS.getRawId(enchantment));
+        enchantmentDesc.addProperty("id", Registries.ENCHANTMENTS.getIndex(enchantment));
         enchantmentDesc.addProperty("name", Objects.requireNonNull(registryKey).getPath());
         enchantmentDesc.addProperty("displayName", DGU.translateText(enchantment.getTranslationKey()));
 
@@ -77,7 +81,7 @@ public class EnchantmentsDataGenerator implements IDataGenerator {
         enchantmentDesc.add("minCost", generateEnchantmentMinPowerCoefficients(enchantment));
         enchantmentDesc.add("maxCost", generateEnchantmentMaxPowerCoefficients(enchantment));
 
-        enchantmentDesc.addProperty("treasureOnly", enchantment.isTreasure());
+        enchantmentDesc.addProperty("treasureOnly", false); // 1.9 added treasure enchants
         enchantmentDesc.addProperty("curse", false); // 1.10 added curse enchants
 
         List<Enchantment> incompatibleEnchantments = new ArrayList<>();
@@ -95,7 +99,7 @@ public class EnchantmentsDataGenerator implements IDataGenerator {
         enchantmentDesc.add("exclude", excludes);
 
         enchantmentDesc.addProperty("category", getEnchantmentTargetName(enchantment.target));
-        enchantmentDesc.addProperty("weight", enchantment.getRarity().getChance());
+        enchantmentDesc.addProperty("weight", enchantment.getEnchantmentType()); // see AnvilScreenhandler L209
         enchantmentDesc.addProperty("tradeable", true); // the first non-tradeable enchant came in 1.16, soul speed
         enchantmentDesc.addProperty("discoverable", true); // the first non-enchantable enchant came in 1.16, soul speed
 

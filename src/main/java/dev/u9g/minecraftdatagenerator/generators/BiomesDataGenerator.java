@@ -4,8 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import dev.u9g.minecraftdatagenerator.ClientSideAnnoyances.SkyColor;
 import dev.u9g.minecraftdatagenerator.mixin.BiomeAccessor;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.SimpleRegistry;
+import dev.u9g.minecraftdatagenerator.util.Registries;
 import net.minecraft.world.biome.*;
 
 import java.util.Locale;
@@ -21,20 +20,20 @@ public class BiomesDataGenerator implements IDataGenerator {
         return "overworld";
     }
 
-    public static JsonObject generateBiomeInfo(SimpleRegistry<Identifier, Biome> registry, Biome biome) {
+    public static JsonObject generateBiomeInfo(Biome biome) {
         JsonObject biomeDesc = new JsonObject();
-        Identifier registryKey = registry.getIdentifier(biome);
+//        Identifier registryKey = registry.getIdentifier(biome);
 
-        biomeDesc.addProperty("id", registry.getRawId(biome));
+        biomeDesc.addProperty("id", Registries.BIOMES.getIndex(biome));
         biomeDesc.addProperty("name", String.join("_", ((BiomeAccessor)biome).name().toLowerCase(Locale.ENGLISH).split(" ")));
         biomeDesc.addProperty("category", category(biome));
-        biomeDesc.addProperty("temperature", biome.getTemperature());
+        biomeDesc.addProperty("temperature", biome.temperature);
         biomeDesc.addProperty("precipitation", precipitation(biome));
-        biomeDesc.addProperty("depth", biome.getDepth());
+        biomeDesc.addProperty("depth", biome.depth);
         biomeDesc.addProperty("dimension", guessBiomeDimensionFromCategory(biome));
         biomeDesc.addProperty("displayName", ((BiomeAccessor)biome).name());
         biomeDesc.addProperty("color", SkyColor.getSkyColor(biome));
-        biomeDesc.addProperty("rainfall", biome.getRainfall());
+        biomeDesc.addProperty("rainfall", biome.downfall);
 
         return biomeDesc;
     }
@@ -47,10 +46,9 @@ public class BiomesDataGenerator implements IDataGenerator {
     @Override
     public JsonArray generateDataJson() {
         JsonArray biomesArray = new JsonArray();
-        SimpleRegistry<Identifier, Biome> biomeRegistry = Biome.REGISTRY;
 
-        for (Biome biome : biomeRegistry) {
-            biomesArray.add(generateBiomeInfo(biomeRegistry, biome));
+        for (Biome biome : Registries.BIOMES) {
+            biomesArray.add(generateBiomeInfo(biome));
         }
         return biomesArray;
     }
@@ -88,15 +86,15 @@ public class BiomesDataGenerator implements IDataGenerator {
             return "savanna";
         } else if (biome instanceof MesaBiome) {
             return "mesa";
-        } else if (biome instanceof StoneBeachBiome || biome instanceof VoidBiome) {
+        } else if (biome instanceof StoneBeachBiome) {
             return "none"; // Should StoneBeachBiome be beach too? this is how it is now in mcdata
         }
         throw new Error("Unable to find biome category for " + biome.getClass().getName());
     }
 
     private static String precipitation(Biome biome) {
-        float rainfall = biome.getRainfall();
-        float temperature = biome.getTemperature();
+        float rainfall = biome.downfall;
+        float temperature = biome.temperature;
         if (rainfall == 0) {
             return "none";
         } else if (temperature < 0.2f) {

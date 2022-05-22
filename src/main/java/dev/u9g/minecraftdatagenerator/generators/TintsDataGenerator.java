@@ -3,7 +3,10 @@ package dev.u9g.minecraftdatagenerator.generators;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import dev.u9g.minecraftdatagenerator.ClientSideAnnoyances.*;
+import dev.u9g.minecraftdatagenerator.ClientSideAnnoyances.BiomeBlockColors;
+import dev.u9g.minecraftdatagenerator.ClientSideAnnoyances.FoliageColors;
+import dev.u9g.minecraftdatagenerator.ClientSideAnnoyances.GrassColors;
+import dev.u9g.minecraftdatagenerator.ClientSideAnnoyances.ServerSideRedstoneWireBlock;
 import dev.u9g.minecraftdatagenerator.mixin.BiomeAccessor;
 import dev.u9g.minecraftdatagenerator.util.EmptyBlockView;
 import dev.u9g.minecraftdatagenerator.util.Registries;
@@ -12,7 +15,6 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.RedstoneWireBlock;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockView;
 import net.minecraft.world.biome.Biome;
 
 import java.util.*;
@@ -57,12 +59,11 @@ public class TintsDataGenerator implements IDataGenerator {
     }
 
     private static int getBlockColor(Block block) {
-        return blockColors.method_13410(block.getDefaultState());
+        return BiomeBlockColors.getBlockColor(block, block.getDefaultState());
     }
 
     public static Map<Block, Integer> generateConstantTintColors() {
         Map<Block, Integer> resultColors = new HashMap<>();
-        BlockColors blockColors = BlockColors.create();
         // FIXME: ?
         // resultColors.put(Blocks.BIRCH_LEAVES, FoliageColors.getBirchColor());
         // resultColors.put(Blocks.SPRUCE_LEAVES, FoliageColors.getSpruceColor());
@@ -86,8 +87,7 @@ public class TintsDataGenerator implements IDataGenerator {
 
             JsonArray keysArray = new JsonArray();
             for (Biome biome : entry.getValue()) {
-                Identifier registryKey = Registries.BIOMES.getIdentifier(biome);
-                keysArray.add(new JsonPrimitive(Objects.requireNonNull(registryKey).getPath()));
+                keysArray.add(new JsonPrimitive(biome.name));
             }
 
             entryObject.add("keys", keysArray);

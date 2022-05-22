@@ -1,11 +1,11 @@
 package dev.u9g.minecraftdatagenerator.generators;
 
-import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.internal.Streams;
 import com.google.gson.stream.JsonWriter;
 import dev.u9g.minecraftdatagenerator.Main;
-import io.netty.handler.logging.LogLevel;
+import dev.u9g.minecraftdatagenerator.util.DGU;
 
 import java.io.IOException;
 import java.io.Writer;

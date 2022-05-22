@@ -4,8 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import dev.u9g.minecraftdatagenerator.mixin.LanguageAccessor;
-import dev.u9g.minecraftdatagenerator.util.Registries;
-import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.util.Language;
 
 import java.util.Map;
 
@@ -17,7 +16,8 @@ public class AttributesDataGenerator implements IDataGenerator {
 
     @Override
     public JsonElement generateDataJson() {
-        Map<String, String> translations = ((LanguageAccessor) Registries.LANGUAGE).translations();
+        Language lang = new Language();
+        Map<String, String> translations = ((LanguageAccessor) lang).translations();
         JsonArray arr = new JsonArray();
         for (Map.Entry<String, String> translation : translations.entrySet()) {
             String key = translation.getKey();

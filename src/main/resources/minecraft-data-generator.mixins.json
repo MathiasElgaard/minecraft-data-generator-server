@@ -7,16 +7,17 @@
     "BiomeAccessor",
     "BlockAccessor",
     "EnchantmentAccessor",
-    "EndPortalFrameBlockAccessor",
-    "EndPortalFrameBlockOverwrite",
     "EntityTypeAccessor",
-    "ItemEntityOverwrite",
     "LanguageAccessor",
     "MiningToolItemAccessor",
     "NoteBlockAccessor",
     "ReadyMixin",
-    "SoundAccessor",
-    "StatusEffectAccessor"
+    "StatusEffectAccessor",
+    "overwrite.CocoaBlockOverwrite",
+    "overwrite.EndPortalFrameBlockOverwrite",
+    "overwrite.ItemEntityOverwrite",
+    "overwrite.SkeletonSkullBlockOverwrite",
+    "overwrite.StairBlockOverwrite"
   ],
   "client": [
   ],
