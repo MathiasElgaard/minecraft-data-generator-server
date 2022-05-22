@@ -101,13 +101,14 @@ public class BlocksDataGenerator implements IDataGenerator {
 
         blockDesc.addProperty("id", Registries.BLOCKS.getRawId(block));
         blockDesc.addProperty("name", Objects.requireNonNull(registryKey).getPath());
-        blockDesc.addProperty("displayName", block.getTranslatedName());
+        if (!block.getTranslatedName().startsWith("tile.")) {
+            blockDesc.addProperty("displayName", block.getTranslatedName());
+        }
 
         float hardness = block.getDefaultState().getHardness(null, null);
 
         blockDesc.addProperty("hardness", hardness);
         blockDesc.addProperty("resistance", ((BlockAccessor)block).getBlastResistance());
-        blockDesc.addProperty("stackSize", Item.fromBlock(block).getMaxCount());
         blockDesc.addProperty("diggable", hardness != -1.0f && !(block instanceof AirBlock));
         JsonObject effTools = new JsonObject();
         effectiveTools.forEach(item -> effTools.addProperty(
@@ -135,5 +136,9 @@ public class BlocksDataGenerator implements IDataGenerator {
             return "empty";
         }
         return "block";
+    }
+
+    private static Item getItemFromBlock(Block block) {
+        return Registries.ITEMS.get(Registries.BLOCKS.getIdentifier(block));
     }
 }

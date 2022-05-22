@@ -1,5 +1,9 @@
 package dev.u9g.minecraftdatagenerator.ClientSideAnnoyances;
 
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.biome.Biome;
+
 public class GrassColors {
     private static int[] colorMap = new int[65536];
 
@@ -13,6 +17,12 @@ public class GrassColors {
         int j = (int)((1.0D - humidity) * 255.0D);
         int k = j << 8 | i;
         return k > colorMap.length ? -65281 : colorMap[k];
+    }
+
+    public static int getGrassColor(Biome biome) {
+        double d = (double) MathHelper.clamp(biome.getTemperature(), 0.0F, 1.0F);
+        double e = (double) MathHelper.clamp(biome.getRainfall(), 0.0F, 1.0F);
+        return GrassColors.getColor(d, e);
     }
 }
 

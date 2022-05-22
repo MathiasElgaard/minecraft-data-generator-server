@@ -13,14 +13,14 @@ import org.spongepowered.asm.mixin.Overwrite;
 import java.util.List;
 
 @Mixin(EndPortalFrameBlock.class)
-public class EndPortalFrameBlockMixin {
+public class EndPortalFrameBlockOverwrite {
     /**
      * @author a
      * @reason a
      */
     @Overwrite()
-    public void addCollisionBoxesToList(BlockState blockState, World world, BlockPos blockPos, Box boundingBox, List<Box> list, @Nullable Entity entity, boolean bl) {
-        list.add(EndPortalFrameBlockAccessor.portalFrame());
-        list.add(EndPortalFrameBlockAccessor.eye());
+    public void addCollisionBoxesToList(BlockState state, World world, BlockPos pos, Box entityBox, List<Box> boxes, @Nullable Entity entity) {
+        boxes.add(EndPortalFrameBlockAccessor.portalFrame());
+        boxes.add(EndPortalFrameBlockAccessor.eye());
     }
 }

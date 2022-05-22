@@ -43,8 +43,10 @@ public class EntitiesDataGenerator implements IDataGenerator {
         entityDesc.addProperty("id", id);
         entityDesc.addProperty("internalId", id);
         entityDesc.addProperty("name", Objects.requireNonNull(registryKey).getPath());
-
-        if (entity != null) entityDesc.addProperty("displayName", DGU.translateText(entity.getTranslationKey()));
+        String displayName = entity != null ? DGU.translateText(entity.getTranslationKey()) : null;
+        if (displayName != null && !displayName.startsWith("entity.")) {
+            entityDesc.addProperty("displayName", displayName);
+        }
         entityDesc.addProperty("width", entity == null ? 0 : entity.width);
         entityDesc.addProperty("height", entity == null ? 0 : entity.height);
 
@@ -57,7 +59,8 @@ public class EntitiesDataGenerator implements IDataGenerator {
     }
 
     private static Entity makeEntity(Class<? extends Entity> type) {
-        return EntityType.createInstanceFromName(EntityTypeAccessor.CLASS_NAME_MAP().get(type), DGU.getWorld());
+        String name = EntityTypeAccessor.CLASS_NAME_MAP().get(type);
+        return EntityType.createInstanceFromName(name, DGU.getWorld());
     }
 
     private static String getCategoryFrom(@NotNull Class<?> entityClass) {
@@ -131,14 +134,13 @@ public class EntitiesDataGenerator implements IDataGenerator {
     }
 
     private static int entityId(Entity entity) {
-        new Throwable("make sure 1.11.2 and 1.10.2 work here").printStackTrace();
-        if (!DGU.getCurrentlyRunningServer().getVersion().equals("1.12.2")) {
-            throw new Error("These ids were gotten manually for 1.12.2, remake for " + DGU.getCurrentlyRunningServer().getVersion());
+        if (!DGU.getCurrentlyRunningServer().getVersion().equals("1.10.2")) {
+            throw new Error("These ids were gotten manually for 1.10.2, remake for " + DGU.getCurrentlyRunningServer().getVersion());
         }
         int rawId = Registries.ENTITY_TYPES.getRawId(entity.getClass());
         if (rawId == -1) { // see TrackedEntityInstance
             if (entity instanceof ItemEntity) {
-                return 1;
+                return 2;
             } else if (entity instanceof FishingBobberEntity) {
                 return 90;
             } else {

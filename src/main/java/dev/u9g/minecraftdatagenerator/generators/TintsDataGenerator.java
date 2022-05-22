@@ -12,7 +12,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.RedstoneWireBlock;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.WorldView;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.biome.Biome;
 
 import java.util.*;
@@ -31,14 +31,14 @@ public class TintsDataGenerator implements IDataGenerator {
         BiomeTintColors colors = new BiomeTintColors();
 
         for (Biome biome : Registries.BIOMES) {
-            WorldView bv = new EmptyBlockView() {
+            EmptyBlockView bv = new EmptyBlockView() {
                 @Override
                 public Biome getBiome(BlockPos pos) {
                     return biome;
                 }
             };
-            int biomeGrassColor = BiomeColors.getGrassColor(bv, BlockPos.ORIGIN);
-            int biomeFoliageColor = BiomeColors.getFoliageColor(bv, BlockPos.ORIGIN);
+            int biomeGrassColor = GrassColors.getGrassColor(bv.getBiome(BlockPos.ORIGIN));
+            int biomeFoliageColor = FoliageColors.getFoliageColor(bv.getBiome(BlockPos.ORIGIN));
             int biomeWaterColor = ((BiomeAccessor)biome).waterColor();
 
             colors.grassColoursMap.computeIfAbsent(biomeGrassColor, k -> new ArrayList<>()).add(biome);

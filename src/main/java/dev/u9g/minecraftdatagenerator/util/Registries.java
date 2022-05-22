@@ -26,6 +26,9 @@ public class Registries {
     static {
         for (Map.Entry<Integer, Class<? extends Entity>> entry : EntityTypeAccessor.ID_CLASS_MAP().entrySet()) {
             String name = EntityTypeAccessor.CLASS_NAME_MAP().get(entry.getValue());
+            if (name.equals("Mob") || name.equals("Monster")) {
+                continue;
+            }
             ENTITY_TYPES.add(entry.getKey(), new Identifier(name), entry.getValue());
         }
     }
