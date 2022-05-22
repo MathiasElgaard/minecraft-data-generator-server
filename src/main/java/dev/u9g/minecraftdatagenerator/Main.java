@@ -2,8 +2,6 @@ package dev.u9g.minecraftdatagenerator;
 
 import net.fabricmc.api.ModInitializer;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
 import java.util.logging.Logger;
 
 public class Main implements ModInitializer {
