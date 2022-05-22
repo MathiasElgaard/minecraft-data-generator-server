@@ -113,7 +113,7 @@ public class BlocksDataGenerator implements IDataGenerator {
         JsonObject effTools = new JsonObject();
         effectiveTools.forEach(item -> effTools.addProperty(
             String.valueOf(Registries.ITEMS.getIndex(item)), // key
-            item.getBlockBreakingSpeed(DGU.stackFor(item), defaultState) // value
+            item.getMiningSpeedMultiplier(DGU.stackFor(item), block) // value
         ));
         blockDesc.add("effectiveTools", effTools);
         blockDesc.addProperty("transparent", block instanceof TransparentBlock);
