@@ -3,6 +3,7 @@ package dev.u9g.minecraftdatagenerator.generators;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import dev.u9g.minecraftdatagenerator.util.DGU;
 import dev.u9g.minecraftdatagenerator.util.Registries;
 import net.minecraft.block.*;
@@ -44,12 +45,12 @@ public class BlockCollisionShapesDataGenerator implements IDataGenerator {
     private static JsonArray jsonOf(Box box) {
         JsonArray arr = new JsonArray();
         if (box == null) return arr;
-        arr.add(box.minnX);
-        arr.add(box.minnY);
-        arr.add(box.minnZ);
-        arr.add(box.maxxX);
-        arr.add(box.maxxY);
-        arr.add(box.maxxZ);
+        arr.add(new JsonPrimitive(box.minnX));
+        arr.add(new JsonPrimitive(box.minnY));
+        arr.add(new JsonPrimitive(box.minnZ));
+        arr.add(new JsonPrimitive(box.maxxX));
+        arr.add(new JsonPrimitive(box.maxxY));
+        arr.add(new JsonPrimitive(box.maxxZ));
         return arr;
     }
 
@@ -78,7 +79,7 @@ public class BlockCollisionShapesDataGenerator implements IDataGenerator {
                 return indexesOfBoxesInTheShapesCache.get(0);
             } else {
                 JsonArray shapeIndexes = new JsonArray();
-                indexesOfBoxesInTheShapesCache.forEach(shapeIndexes::add);
+                indexesOfBoxesInTheShapesCache.forEach(shapeIndex -> shapeIndexes.add(new JsonPrimitive(shapeIndex)));
                 return shapeIndexes;
             }
         }

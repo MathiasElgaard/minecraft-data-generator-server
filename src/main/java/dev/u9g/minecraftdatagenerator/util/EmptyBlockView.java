@@ -10,8 +10,8 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.level.LevelGeneratorType;
 import org.jetbrains.annotations.Nullable;
 
-public enum EmptyBlockView implements BlockView {
-    INSTANCE;
+public class EmptyBlockView implements BlockView {
+    public static EmptyBlockView INSTANCE = new EmptyBlockView();
 
     @Nullable
     public BlockEntity getBlockEntity(BlockPos pos) {

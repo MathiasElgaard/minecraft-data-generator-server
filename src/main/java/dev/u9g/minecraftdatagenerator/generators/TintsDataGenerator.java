@@ -2,18 +2,19 @@ package dev.u9g.minecraftdatagenerator.generators;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import dev.u9g.minecraftdatagenerator.ClientSideAnnoyances.BlockColors;
-import dev.u9g.minecraftdatagenerator.ClientSideAnnoyances.FoliageColors;
-import dev.u9g.minecraftdatagenerator.ClientSideAnnoyances.ServerSideRedstoneWireBlock;
-import dev.u9g.minecraftdatagenerator.ClientSideAnnoyances.GrassColors;
+import com.google.gson.JsonPrimitive;
+import dev.u9g.minecraftdatagenerator.ClientSideAnnoyances.*;
 import dev.u9g.minecraftdatagenerator.mixin.BiomeAccessor;
 import dev.u9g.minecraftdatagenerator.util.DGU;
+import dev.u9g.minecraftdatagenerator.util.EmptyBlockView;
 import dev.u9g.minecraftdatagenerator.util.Registries;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.RedstoneWireBlock;
+import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.biome.Biome;
 
 import java.util.*;
@@ -32,8 +33,14 @@ public class TintsDataGenerator implements IDataGenerator {
         BiomeTintColors colors = new BiomeTintColors();
 
         for (Biome biome : Registries.BIOMES) {
-            int biomeGrassColor = GrassColors.getGrassColor(biome);
-            int biomeFoliageColor = FoliageColors.getFoliageColor(biome);
+            BlockView bv = new EmptyBlockView() {
+                @Override
+                public Biome getBiome(BlockPos pos) {
+                    return biome;
+                }
+            };
+            int biomeGrassColor = BiomeColors.getGrassColor(bv, BlockPos.ORIGIN);
+            int biomeFoliageColor = BiomeColors.getFoliageColor(bv, BlockPos.ORIGIN);
             int biomeWaterColor = ((BiomeAccessor)biome).waterColor();
 
             colors.grassColoursMap.computeIfAbsent(biomeGrassColor, k -> new ArrayList<>()).add(biome);
@@ -54,7 +61,7 @@ public class TintsDataGenerator implements IDataGenerator {
     }
 
     private static int getBlockColor(Block block) {
-        return blockColors.method_13410(block.getDefaultState(), DGU.getWorld(), BlockPos.ORIGIN);
+        return blockColors.method_13410(block.getDefaultState());
     }
 
     public static Map<Block, Integer> generateConstantTintColors() {
@@ -84,7 +91,7 @@ public class TintsDataGenerator implements IDataGenerator {
             JsonArray keysArray = new JsonArray();
             for (Biome biome : entry.getValue()) {
                 Identifier registryKey = Registries.BIOMES.getIdentifier(biome);
-                keysArray.add(Objects.requireNonNull(registryKey).getPath());
+                keysArray.add(new JsonPrimitive(Objects.requireNonNull(registryKey).getPath()));
             }
 
             entryObject.add("keys", keysArray);
@@ -103,7 +110,7 @@ public class TintsDataGenerator implements IDataGenerator {
             JsonObject entryObject = new JsonObject();
 
             JsonArray keysArray = new JsonArray();
-            keysArray.add(entry.getKey());
+            keysArray.add(new JsonPrimitive(entry.getKey()));
 
             entryObject.add("keys", keysArray);
             entryObject.addProperty("color", entry.getValue());
@@ -119,10 +126,9 @@ public class TintsDataGenerator implements IDataGenerator {
         JsonArray resultColorsArray = new JsonArray();
         for (Map.Entry<Block, Integer> entry : colorsMap.entrySet()) {
             JsonObject entryObject = new JsonObject();
-
             JsonArray keysArray = new JsonArray();
             Identifier registryKey = Registries.BLOCKS.getIdentifier(entry.getKey());
-            keysArray.add(Objects.requireNonNull(registryKey).getPath());
+            keysArray.add(new JsonPrimitive(Objects.requireNonNull(registryKey).getPath()));
 
             entryObject.add("keys", keysArray);
             entryObject.addProperty("color", entry.getValue());

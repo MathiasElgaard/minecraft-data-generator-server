@@ -29,7 +29,7 @@ public class BiomeColors {
         int k = 0;
 
         int l;
-        for(Iterator<BlockPos.Mutable> var6 = BlockPos.mutableIterate(pos.add(-1, 0, -1), pos.add(1, 0, 1)).iterator(); var6.hasNext(); k += l & 255) {
+        for(Iterator var6 = BlockPos.mutableIterate(pos.add(-1, 0, -1), pos.add(1, 0, 1)).iterator(); var6.hasNext(); k += l & 255) {
             BlockPos.Mutable mutable = (BlockPos.Mutable)var6.next();
             l = provider.getColorAtPos(view.getBiome(mutable), mutable);
             i += (l & 16711680) >> 16;

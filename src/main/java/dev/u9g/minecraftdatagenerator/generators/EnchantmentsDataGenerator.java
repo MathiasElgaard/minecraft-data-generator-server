@@ -3,6 +3,7 @@ package dev.u9g.minecraftdatagenerator.generators;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import dev.u9g.minecraftdatagenerator.util.DGU;
 import dev.u9g.minecraftdatagenerator.util.Registries;
 import net.minecraft.enchantment.*;
@@ -91,7 +92,7 @@ public class EnchantmentsDataGenerator implements IDataGenerator {
         JsonArray excludes = new JsonArray();
         for (Enchantment excludedEnchantment : incompatibleEnchantments) {
             Identifier otherKey = Registries.ENCHANTMENTS.getIdentifier(excludedEnchantment);
-            excludes.add(Objects.requireNonNull(otherKey).getPath());
+            excludes.add(new JsonPrimitive(Objects.requireNonNull(otherKey).getPath()));
         }
         enchantmentDesc.add("exclude", excludes);
 

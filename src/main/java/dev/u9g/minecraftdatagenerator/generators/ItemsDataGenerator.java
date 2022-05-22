@@ -2,6 +2,7 @@ package dev.u9g.minecraftdatagenerator.generators;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import dev.u9g.minecraftdatagenerator.util.DGU;
 import dev.u9g.minecraftdatagenerator.util.Registries;
 import net.minecraft.enchantment.EnchantmentTarget;
@@ -64,7 +65,7 @@ public class ItemsDataGenerator implements IDataGenerator {
 
         JsonArray enchantCategoriesArray = new JsonArray();
         for (EnchantmentTarget target : enchantmentTargets) {
-            enchantCategoriesArray.add(EnchantmentsDataGenerator.getEnchantmentTargetName(target));
+            enchantCategoriesArray.add(new JsonPrimitive(EnchantmentsDataGenerator.getEnchantmentTargetName(target)));
         }
         if (enchantCategoriesArray.size() > 0) {
             itemDesc.add("enchantCategories", enchantCategoriesArray);
@@ -76,7 +77,7 @@ public class ItemsDataGenerator implements IDataGenerator {
             JsonArray fixedWithArray = new JsonArray();
             for (Item repairWithItem : repairWithItems) {
                 Identifier repairWithName = Registries.ITEMS.getIdentifier(repairWithItem);
-                fixedWithArray.add(Objects.requireNonNull(repairWithName).getPath());
+                fixedWithArray.add(new JsonPrimitive(Objects.requireNonNull(repairWithName).getPath()));
             }
             if (fixedWithArray.size() > 0) {
                 itemDesc.add("repairWith", fixedWithArray);

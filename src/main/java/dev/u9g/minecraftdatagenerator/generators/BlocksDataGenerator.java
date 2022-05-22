@@ -3,6 +3,7 @@ package dev.u9g.minecraftdatagenerator.generators;
 import com.google.common.base.CaseFormat;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import dev.u9g.minecraftdatagenerator.Main;
 import dev.u9g.minecraftdatagenerator.mixin.BlockAccessor;
 import dev.u9g.minecraftdatagenerator.mixin.MiningToolItemAccessor;
@@ -69,7 +70,7 @@ public class BlocksDataGenerator implements IDataGenerator {
         if (!(property instanceof BooleanProperty)) {
             JsonArray propertyValuesArray = new JsonArray();
             for (T propertyValue : propertyValues) {
-                propertyValuesArray.add(property.name(propertyValue));
+                propertyValuesArray.add(new JsonPrimitive(property.name(propertyValue)));
             }
             propertyObject.add("values", propertyValuesArray);
         }
