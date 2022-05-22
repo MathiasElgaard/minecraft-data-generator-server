@@ -24,7 +24,6 @@ public class EnchantmentsDataGenerator implements IDataGenerator {
             .put(EnchantmentTarget.FISHING_ROD, "fishing_rod")
             .put(EnchantmentTarget.BREAKABLE, "breakable")
             .put(EnchantmentTarget.BOW, "bow")
-            .put(EnchantmentTarget.WEARABLE, "wearable")
             .put(EnchantmentTarget.ALL, "vanishable") // according to VanishingCurseEnchantment
             .build();
 
@@ -80,11 +79,12 @@ public class EnchantmentsDataGenerator implements IDataGenerator {
         enchantmentDesc.add("maxCost", generateEnchantmentMaxPowerCoefficients(enchantment));
 
         enchantmentDesc.addProperty("treasureOnly", enchantment.isTreasure());
-        enchantmentDesc.addProperty("curse", enchantment.isCursed());
+        enchantmentDesc.addProperty("curse", false); // 1.10 added curse enchants
 
         List<Enchantment> incompatibleEnchantments = new ArrayList<>();
+        new Throwable("check that incompatible enchantments are correct").printStackTrace();
         for (Enchantment other : Registries.ENCHANTMENTS) {
-            if (!enchantment.isDifferent(other) && other != enchantment) {
+            if (!enchantment.differs(other) && !other.differs(enchantment) && other != enchantment) {
                 incompatibleEnchantments.add(other);
             }
         }

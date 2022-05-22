@@ -5,16 +5,14 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import dev.u9g.minecraftdatagenerator.ClientSideAnnoyances.*;
 import dev.u9g.minecraftdatagenerator.mixin.BiomeAccessor;
-import dev.u9g.minecraftdatagenerator.util.DGU;
 import dev.u9g.minecraftdatagenerator.util.EmptyBlockView;
 import dev.u9g.minecraftdatagenerator.util.Registries;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.RedstoneWireBlock;
-import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockView;
+import net.minecraft.world.WorldView;
 import net.minecraft.world.biome.Biome;
 
 import java.util.*;
@@ -33,7 +31,7 @@ public class TintsDataGenerator implements IDataGenerator {
         BiomeTintColors colors = new BiomeTintColors();
 
         for (Biome biome : Registries.BIOMES) {
-            BlockView bv = new EmptyBlockView() {
+            WorldView bv = new EmptyBlockView() {
                 @Override
                 public Biome getBiome(BlockPos pos) {
                     return biome;

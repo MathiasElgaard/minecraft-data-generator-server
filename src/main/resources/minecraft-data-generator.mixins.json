@@ -8,6 +8,7 @@
     "BlockAccessor",
     "EndPortalFrameBlockAccessor",
     "EndPortalFrameBlockMixin",
+    "EntityTypeAccessor",
     "LanguageAccessor",
     "MiningToolItemAccessor",
     "NoteBlockAccessor",

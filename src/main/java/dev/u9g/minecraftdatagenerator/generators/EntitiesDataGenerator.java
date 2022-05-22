@@ -2,12 +2,12 @@ package dev.u9g.minecraftdatagenerator.generators;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import dev.u9g.minecraftdatagenerator.mixin.EntityTypeAccessor;
 import dev.u9g.minecraftdatagenerator.util.DGU;
 import dev.u9g.minecraftdatagenerator.util.Registries;
 import net.minecraft.entity.*;
 import net.minecraft.entity.mob.*;
 import net.minecraft.entity.passive.AnimalEntity;
-import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.FishingBobberEntity;
 import net.minecraft.entity.projectile.Projectile;
@@ -57,7 +57,7 @@ public class EntitiesDataGenerator implements IDataGenerator {
     }
 
     private static Entity makeEntity(Class<? extends Entity> type) {
-        return EntityType.createInstanceFromClass(type, DGU.getWorld());
+        return EntityType.createInstanceFromName(EntityTypeAccessor.CLASS_NAME_MAP().get(type), DGU.getWorld());
     }
 
     private static String getCategoryFrom(@NotNull Class<?> entityClass) {
@@ -113,7 +113,7 @@ public class EntitiesDataGenerator implements IDataGenerator {
 
         //Second level classifications. PathAwareEntity is not included because it
         //doesn't really make much sense to categorize by it
-        if (PassiveEntity.class.isAssignableFrom(entityClass)) {
+        if (PathAwareEntity.class.isAssignableFrom(entityClass)) {
             return "passive";
         }
         if (MobEntity.class.isAssignableFrom(entityClass)) {
@@ -131,6 +131,7 @@ public class EntitiesDataGenerator implements IDataGenerator {
     }
 
     private static int entityId(Entity entity) {
+        new Throwable("make sure 1.11.2 and 1.10.2 work here").printStackTrace();
         if (!DGU.getCurrentlyRunningServer().getVersion().equals("1.12.2")) {
             throw new Error("These ids were gotten manually for 1.12.2, remake for " + DGU.getCurrentlyRunningServer().getVersion());
         }

@@ -5,12 +5,12 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockView;
+import net.minecraft.world.WorldView;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.level.LevelGeneratorType;
 import org.jetbrains.annotations.Nullable;
 
-public class EmptyBlockView implements BlockView {
+public class EmptyBlockView implements WorldView {
     public static EmptyBlockView INSTANCE = new EmptyBlockView();
 
     @Nullable

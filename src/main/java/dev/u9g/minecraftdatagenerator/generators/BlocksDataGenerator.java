@@ -131,7 +131,7 @@ public class BlocksDataGenerator implements IDataGenerator {
     }
 
     private static String boundingBox(Block block, BlockState state) {
-        if (block.getCollisionBox(state, EmptyBlockView.INSTANCE, BlockPos.ORIGIN) == null) {
+        if (block.getDefaultState().getCollisionBox(EmptyBlockView.INSTANCE, BlockPos.ORIGIN) == null) {
             return "empty";
         }
         return "block";
