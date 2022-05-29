@@ -2,6 +2,7 @@ package dev.u9g.minecraftdatagenerator.util;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.class_5093;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.biome.Biome;
 
@@ -46,6 +47,11 @@ public class EmptyBlockView implements BlockView {
     @Override
     public boolean isEmpty() {
         return false;
+    }
+
+    @Override
+    public class_5093 method_22399() {
+        return null;
     }
 
     @Override

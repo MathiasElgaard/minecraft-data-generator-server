@@ -11,25 +11,27 @@ version = project.mod_version
 group = project.maven_group
 
 repositories {
-    mavenLocal()
-    maven {
-        name = "legacy-fabric"
-        url = "https://maven.legacyfabric.net"
-    }
     mavenCentral()
+    maven {
+        url = "https://maven.u9g.dev"
+    }
+//    maven {
+//        name = "legacy-fabric"
+//        url = "https://maven.legacyfabric.net"
+//    }
     maven { url 'https://jitpack.io' }
 }
 
 loom {
     setIntermediaryUrl('https://maven.legacyfabric.net/net/fabricmc/intermediary/%1$s/intermediary-%1$s-v2.jar');
-    customMinecraftManifest.set("https://meta.legacyfabric.net/v2/manifest/${minecraft_version}")
+    customMinecraftManifest.set("https://legacyfabric.u9g.dev/v2/manifest/${minecraft_version}")
 
-    // Required by 1.7.x
-    // runs {
-    // 	client {
-    // 		programArgs "--userProperties", "{}"
-    // 	}
-    // }
+//     Required by 1.7.x
+     runs {
+     	client {
+     		programArgs "--userProperties", "{}"
+     	}
+     }
 }
 
 dependencies {
