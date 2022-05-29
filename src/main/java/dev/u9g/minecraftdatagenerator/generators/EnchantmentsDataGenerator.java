@@ -18,11 +18,11 @@ import java.util.Objects;
 public class EnchantmentsDataGenerator implements IDataGenerator {
 
     private static final ImmutableMap<EnchantmentTarget, String> ENCHANTMENT_TARGET_NAMES = ImmutableMap.<EnchantmentTarget, String>builder()
-            .put(EnchantmentTarget.ALL_ARMOR, "armor")
-            .put(EnchantmentTarget.FEET, "armor_feet")
-            .put(EnchantmentTarget.LEGS, "armor_legs")
-            .put(EnchantmentTarget.TORSO, "armor_chest")
-            .put(EnchantmentTarget.HEAD, "armor_head")
+            .put(EnchantmentTarget.ARMOR, "armor")
+            .put(EnchantmentTarget.ARMOR_FEET, "armor_feet")
+            .put(EnchantmentTarget.ARMOR_LEGS, "armor_legs")
+            .put(EnchantmentTarget.ARMOR_TORSO, "armor_chest")
+            .put(EnchantmentTarget.ARMOR_HEAD, "armor_head")
             .put(EnchantmentTarget.WEAPON, "weapon")
             .put(EnchantmentTarget.DIGGER, "digger")
             .put(EnchantmentTarget.FISHING_ROD, "fishing_rod")
@@ -71,10 +71,10 @@ public class EnchantmentsDataGenerator implements IDataGenerator {
 
     public static JsonObject generateEnchantment(Enchantment enchantment) {
         JsonObject enchantmentDesc = new JsonObject();
-        Identifier registryKey = Registries.ENCHANTMENTS.getIdentifier(enchantment);
+        String registryKey = Registries.ENCHANTMENTS.getId(enchantment);
 
-        enchantmentDesc.addProperty("id", Registries.ENCHANTMENTS.getIndex(enchantment));
-        enchantmentDesc.addProperty("name", Objects.requireNonNull(registryKey).getPath());
+        enchantmentDesc.addProperty("id", Registries.ENCHANTMENTS.getRawId(enchantment));
+        enchantmentDesc.addProperty("name", Objects.requireNonNull(registryKey));
         enchantmentDesc.addProperty("displayName", DGU.translateText(enchantment.getTranslationKey()));
 
         enchantmentDesc.addProperty("maxLevel", enchantment.getMaximumLevel());
@@ -93,8 +93,8 @@ public class EnchantmentsDataGenerator implements IDataGenerator {
 
         JsonArray excludes = new JsonArray();
         for (Enchantment excludedEnchantment : incompatibleEnchantments) {
-            Identifier otherKey = Registries.ENCHANTMENTS.getIdentifier(excludedEnchantment);
-            excludes.add(new JsonPrimitive(Objects.requireNonNull(otherKey).getPath()));
+            String otherKey = Registries.ENCHANTMENTS.getId(excludedEnchantment);
+            excludes.add(new JsonPrimitive(Objects.requireNonNull(otherKey)));
         }
         enchantmentDesc.add("exclude", excludes);
 

@@ -1,4 +1,4 @@
-package dev.u9g.minecraftdatagenerator.mixin;
+package dev.u9g.minecraftdatagenerator.mixin.accessor;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -17,6 +17,4 @@ public interface EntityTypeAccessor {
     static Map<Integer, Class<? extends Entity>> ID_CLASS_MAP(){throw new Error();}
     @Accessor("CLASS_ID_MAP")
     static Map<Class<? extends Entity>, Integer> CLASS_ID_MAP(){throw new Error();}
-    @Accessor("NAME_ID_MAP")
-    static Map<String, Integer> NAME_ID_MAP(){throw new Error();}
 }

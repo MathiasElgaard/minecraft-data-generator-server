@@ -1,64 +1,84 @@
 package dev.u9g.minecraftdatagenerator.util;
 
-import dev.u9g.minecraftdatagenerator.mixin.BiomeAccessor;
-import dev.u9g.minecraftdatagenerator.mixin.EnchantmentAccessor;
-import dev.u9g.minecraftdatagenerator.mixin.EntityTypeAccessor;
-import dev.u9g.minecraftdatagenerator.mixin.StatusEffectAccessor;
+import dev.u9g.minecraftdatagenerator.mixin.accessor.BiomeAccessor;
+import dev.u9g.minecraftdatagenerator.mixin.accessor.EnchantmentAccessor;
+import dev.u9g.minecraftdatagenerator.mixin.accessor.EntityTypeAccessor;
+import dev.u9g.minecraftdatagenerator.mixin.accessor.StatusEffectAccessor;
+import dev.u9g.minecraftdatagenerator.registryview.RegistryBackedRegistryView;
+import dev.u9g.minecraftdatagenerator.registryview.RegistryView;
+import dev.u9g.minecraftdatagenerator.registryview.TableBackedRegistryView;
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.item.Item;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.Language;
-import net.minecraft.util.registry.SimpleRegistry;
 import net.minecraft.world.biome.Biome;
+import org.apache.commons.lang3.StringUtils;
 
+import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 public class Registries {
-    public static final SimpleRegistry<String, Biome> BIOMES = setupBiomeRegistry();
-    public static final SimpleRegistry<Identifier, Block> BLOCKS = Block.REGISTRY;
-    public static final SimpleRegistry<Identifier, Item> ITEMS = Item.REGISTRY;
-    public static final SimpleRegistry<Identifier, StatusEffect> STATUS_EFFECTS = setupStatusEffectRegistry();
-    public static final SimpleRegistry<Identifier, Enchantment> ENCHANTMENTS = setupEnchantmentRegistry();
-    public static final SimpleRegistry<Identifier, Class<? extends Entity>> ENTITY_TYPES = setupEntityTypesRegistry();
-    public static final Language LANGUAGE = new Language();
+    public static Language LANGUAGE;
+    public static RegistryView<String, Biome> BIOMES;
+    public static RegistryView<String, Block> BLOCKS;
+    public static RegistryView<String, Item> ITEMS;
+    public static RegistryView<String, StatusEffect> STATUS_EFFECTS;
+    public static RegistryView<String, Enchantment> ENCHANTMENTS;
+    public static RegistryView<String, Class<? extends Entity>> ENTITY_TYPES;
+    public static Set<String> IDENTIFIERS = new HashSet<>();
 
-    private static SimpleRegistry<Identifier, Class<? extends Entity>> setupEntityTypesRegistry() {
-        SimpleRegistry<Identifier, Class<? extends Entity>> registry = new SimpleRegistry<>();
+    private static RegistryView<String, Class<? extends Entity>> setupEntityTypesRegistry() {
+        TableBackedRegistryView.Builder<String, Class<? extends Entity>> registry = new TableBackedRegistryView.Builder<>();
         for (Map.Entry<Integer, Class<? extends Entity>> entry : EntityTypeAccessor.ID_CLASS_MAP().entrySet()) {
             String name = EntityTypeAccessor.CLASS_NAME_MAP().get(entry.getValue());
             if (name.equals("Mob") || name.equals("Monster")) {
                 continue;
             }
-            registry.add(entry.getKey(), new Identifier(name), entry.getValue());
+            registry.add(name, entry.getKey(), entry.getValue());
         }
 
-        return registry;
+        return registry.build();
     }
 
-    private static SimpleRegistry<Identifier, Enchantment> setupEnchantmentRegistry() {
-        SimpleRegistry<Identifier, Enchantment> registry = new SimpleRegistry<>();
-        for (Map.Entry<Identifier, Enchantment> entry : EnchantmentAccessor.ENCHANTMENT_MAP().entrySet()) {
-            registry.add(entry.getValue().id, entry.getKey(), entry.getValue());
+    private static RegistryView<String, Enchantment> setupEnchantmentRegistry() {
+        TableBackedRegistryView.Builder<String, Enchantment> registry = new TableBackedRegistryView.Builder<>();
+        for (Enchantment enchantment : EnchantmentAccessor.ALL_ENCHANTMENTS()) {
+            if (enchantment == null) continue;
+            String translatedName = Registries.LANGUAGE.translate(enchantment.getTranslationKey());
+            registry.add(String.join("",translatedName.toLowerCase(Locale.ENGLISH).split(" ")), enchantment.id, enchantment);
         }
-        return registry;
+        return registry.build();
     }
 
-    private static SimpleRegistry<String, Biome> setupBiomeRegistry() {
-        SimpleRegistry<String, Biome> registry = new SimpleRegistry<>();
+    private static RegistryView<String, Biome> setupBiomeRegistry() {
+        TableBackedRegistryView.Builder<String, Biome> builder = new TableBackedRegistryView.Builder<>();
         for (Biome biome : BiomeAccessor.BIOMESET()) {
-            registry.add(biome.id, biome.name, biome);
+            builder.add(biome.name, biome.id, biome);
         }
-        return registry;
+        return builder.build();
     }
 
-    private static SimpleRegistry<Identifier, StatusEffect> setupStatusEffectRegistry() {
-        SimpleRegistry<Identifier, StatusEffect> registry = new SimpleRegistry<>();
-        for (Map.Entry<Identifier, StatusEffect> entry : StatusEffectAccessor.STATUS_EFFECTS_BY_ID().entrySet()) {
-            registry.add(entry.getValue().id, entry.getKey(), entry.getValue());
+    private static RegistryView<String, StatusEffect> setupStatusEffectRegistry() {
+        TableBackedRegistryView.Builder<String, StatusEffect> builder = new TableBackedRegistryView.Builder<>();
+        for (StatusEffect effect : StatusEffectAccessor.STATUS_EFFECTS()) {
+            if (effect == null) continue;
+            String[] words = Registries.LANGUAGE.translate(effect.getTranslationKey()).split(" ");
+            builder.add(StringUtils.join(words, ""), effect.id, effect);
         }
-        return registry;
+        return builder.build();
+    }
+
+    public static void init() {
+        LANGUAGE = new Language();
+        BIOMES = setupBiomeRegistry();
+        BLOCKS = new RegistryBackedRegistryView<>(Block.BLOCK_REGISTRY);
+        ITEMS = new RegistryBackedRegistryView<>(Item.REGISTRY);
+        STATUS_EFFECTS = setupStatusEffectRegistry();
+        ENCHANTMENTS = setupEnchantmentRegistry();
+        ENTITY_TYPES = setupEntityTypesRegistry();
     }
 }

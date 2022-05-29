@@ -3,7 +3,7 @@ package dev.u9g.minecraftdatagenerator.generators;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import dev.u9g.minecraftdatagenerator.mixin.LanguageAccessor;
+import dev.u9g.minecraftdatagenerator.mixin.accessor.LanguageAccessor;
 import net.minecraft.util.Language;
 
 import java.util.Map;

@@ -3,11 +3,14 @@ package dev.u9g.minecraftdatagenerator.generators;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import dev.u9g.minecraftdatagenerator.mixin.VariantBlockItemAccessor;
+import dev.u9g.minecraftdatagenerator.mixin.accessor.ItemAccessor;
 import dev.u9g.minecraftdatagenerator.util.DGU;
 import dev.u9g.minecraftdatagenerator.util.Registries;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.item.Item;
-import net.minecraft.util.Identifier;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.VariantBlockItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,10 +53,11 @@ public class ItemsDataGenerator implements IDataGenerator {
 
     public static JsonObject generateItem(Item item) {
         JsonObject itemDesc = new JsonObject();
-        Identifier registryKey = Registries.ITEMS.getIdentifier(item);
 
-        itemDesc.addProperty("id", Registries.ITEMS.getIndex(item));
-        itemDesc.addProperty("name", Objects.requireNonNull(registryKey).getPath());
+        itemDesc.addProperty("id", Registries.ITEMS.getRawId(item));
+
+        String name = Registries.ITEMS.getId(item);
+        itemDesc.addProperty("name", name == null ? ((ItemAccessor)item).name() : name.replace("minecraft:", ""));
 
         itemDesc.addProperty("displayName", item.getDisplayName(DGU.stackFor(item)));
         itemDesc.addProperty("stackSize", item.getMaxCount());
@@ -75,8 +79,8 @@ public class ItemsDataGenerator implements IDataGenerator {
 
             JsonArray fixedWithArray = new JsonArray();
             for (Item repairWithItem : repairWithItems) {
-                Identifier repairWithName = Registries.ITEMS.getIdentifier(repairWithItem);
-                fixedWithArray.add(new JsonPrimitive(Objects.requireNonNull(repairWithName).getPath()));
+                String repairWithName = Registries.ITEMS.getId(repairWithItem);
+                fixedWithArray.add(new JsonPrimitive(Objects.requireNonNull(repairWithName)));
             }
             if (fixedWithArray.size() > 0) {
                 itemDesc.add("repairWith", fixedWithArray);
@@ -85,6 +89,23 @@ public class ItemsDataGenerator implements IDataGenerator {
             int maxDurability = item.getMaxDamage();
             itemDesc.addProperty("maxDurability", maxDurability);
         }
+
+        if (item instanceof VariantBlockItem) {
+            JsonArray variations = new JsonArray();
+            VariantBlockItem it = (VariantBlockItem)item;
+            int i = 0;
+            JsonObject obj = new JsonObject();
+            for (String variant : ((VariantBlockItemAccessor)it).variants()) {
+                ItemStack stack = new ItemStack(item, 1, i);
+                obj.add("id", new JsonPrimitive(i));
+                obj.add("name", new JsonPrimitive(variant));
+                obj.add("displayName", new JsonPrimitive(DGU.translateText(it.getTranslationKey(stack)+".name")));
+                variations.add(obj);
+                i++;
+            }
+            itemDesc.add("variations", variations);
+        }
+
         return itemDesc;
     }
 }

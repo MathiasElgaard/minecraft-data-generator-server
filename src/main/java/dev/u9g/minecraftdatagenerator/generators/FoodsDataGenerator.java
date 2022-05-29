@@ -6,7 +6,6 @@ import dev.u9g.minecraftdatagenerator.util.DGU;
 import dev.u9g.minecraftdatagenerator.util.Registries;
 import net.minecraft.item.FoodItem;
 import net.minecraft.item.Item;
-import net.minecraft.util.Identifier;
 
 import java.util.Objects;
 
@@ -29,10 +28,10 @@ public class FoodsDataGenerator implements IDataGenerator {
 
     public static JsonObject generateFoodDescriptor(FoodItem foodItem) {
         JsonObject foodDesc = new JsonObject();
-        Identifier registryKey = Registries.ITEMS.getIdentifier(foodItem);
+        String registryKey = Registries.ITEMS.getId(foodItem);
 
-        foodDesc.addProperty("id", Registries.ITEMS.getIndex(foodItem));
-        foodDesc.addProperty("name", Objects.requireNonNull(registryKey).getPath());
+        foodDesc.addProperty("id", Registries.ITEMS.getRawId(foodItem));
+        foodDesc.addProperty("name", Objects.requireNonNull(registryKey).replace("minecraft:",""));
 
         foodDesc.addProperty("stackSize", foodItem.getMaxCount());
         foodDesc.addProperty("displayName", foodItem.getDisplayName(DGU.stackFor(foodItem)));

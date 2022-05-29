@@ -29,7 +29,7 @@ public class FoliageColors {
         return 4764952;
     }
 
-    public static int getFoliageColor(Biome biome) {
+    public static int getColor(Biome biome) {
         double d = MathHelper.clamp(biome.temperature, 0.0f, 1.0f);
         double e = MathHelper.clamp(biome.downfall, 0.0f, 1.0f);
         return FoliageColors.getColor(d, e);

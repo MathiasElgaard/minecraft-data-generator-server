@@ -1,11 +1,9 @@
 package dev.u9g.minecraftdatagenerator.generators;
 
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.internal.Streams;
 import com.google.gson.stream.JsonWriter;
 import dev.u9g.minecraftdatagenerator.Main;
-import dev.u9g.minecraftdatagenerator.util.DGU;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -66,14 +64,14 @@ public class DataGenerators {
 
     static {
         register(new BiomesDataGenerator());
-        register(new BlockCollisionShapesDataGenerator());
+//        register(new BlockCollisionShapesDataGenerator()); - Needs to be finished
         register(new BlocksDataGenerator());
         register(new EffectsDataGenerator());
         register(new EnchantmentsDataGenerator());
         register(new EntitiesDataGenerator());
         register(new FoodsDataGenerator());
         register(new ItemsDataGenerator());
-        register(new ParticlesDataGenerator());
+//        register(new ParticlesDataGenerator()); - See WorldRenderer#spawnParticle
         register(new TintsDataGenerator());
         register(new LanguageDataGenerator());
         register(new InstrumentsDataGenerator());

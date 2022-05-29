@@ -1,40 +1,46 @@
 package dev.u9g.minecraftdatagenerator.util;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
+import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.level.LevelGeneratorType;
-import org.jetbrains.annotations.Nullable;
 
 public class EmptyBlockView implements BlockView {
     public static EmptyBlockView INSTANCE = new EmptyBlockView();
 
-    @Nullable
-    public BlockEntity getBlockEntity(BlockPos pos) {
+    @Override
+    public Block getBlockAt(int x, int y, int z) {
         return null;
     }
 
     @Override
-    public int getLight(BlockPos pos, int minBlockLight) {
-        return 0;
-    }
-
-    public BlockState getBlockState(BlockPos pos) {
-        return Blocks.AIR.getDefaultState();
+    public BlockEntity getBlockEntityAt(int x, int y, int z) {
+        return null;
     }
 
     @Override
-    public boolean isAir(BlockPos pos) {
+    public int getBrightnessOfSkyBlock(int i, int j, int k, int l) {
+        return 0;
+    }
+
+    @Override
+    public int getBlockData(int x, int y, int z) {
+        return 0;
+    }
+
+    @Override
+    public boolean isAir(int x, int y, int z) {
         return false;
     }
 
     @Override
-    public Biome getBiome(BlockPos pos) {
+    public Biome getBiome(int x, int z) {
         return null;
+    }
+
+    @Override
+    public int method_3771() {
+        return 0;
     }
 
     @Override
@@ -43,12 +49,7 @@ public class EmptyBlockView implements BlockView {
     }
 
     @Override
-    public int getStrongRedstonePower(BlockPos pos, Direction direction) {
+    public int method_3719(int i, int j, int k, int l) {
         return 0;
-    }
-
-    @Override
-    public LevelGeneratorType getGeneratorType() {
-        return null;
     }
 }

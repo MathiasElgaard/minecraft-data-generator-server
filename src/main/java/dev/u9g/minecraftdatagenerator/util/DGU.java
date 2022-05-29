@@ -1,8 +1,10 @@
 package dev.u9g.minecraftdatagenerator.util;
 
+import dev.u9g.minecraftdatagenerator.mixin.accessor.MinecraftClientAccessor;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -10,12 +12,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
-
 public class DGU {
-
     public static MinecraftServer getCurrentlyRunningServer() {
-        return (MinecraftServer) FabricLoader.getInstance().getGameInstance();
+        return ((MinecraftClientAccessor) MinecraftClient.getInstance()).getServer();
     }
 
     @Environment(EnvType.CLIENT)
@@ -26,7 +25,9 @@ public class DGU {
     private static String translateTextFallback(String translationKey) {
         try {
             return Registries.LANGUAGE.translate(translationKey);
-        } catch (Exception ignored) {}
+        } catch (Exception err) {
+            err.printStackTrace();
+        }
         throw new RuntimeException("Failed to translate: '" + translationKey + "'");
     }
 

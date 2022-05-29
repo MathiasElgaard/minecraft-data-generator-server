@@ -4,19 +4,20 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import dev.u9g.minecraftdatagenerator.util.DGU;
 import dev.u9g.minecraftdatagenerator.util.Registries;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.block.FenceBlock;
+import net.minecraft.block.WoolBlock;
+import net.minecraft.client.ItemTexture;
 import net.minecraft.util.math.Box;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class BlockCollisionShapesDataGenerator implements IDataGenerator {
-    private static final Box ENTITY_BOX = new Box(0.0D, 0.0D, 0.0D, 1.0D, 2.0D, 1.0D);
+    private static final Box ENTITY_BOX = Box.of(0.0D, 0.0D, 0.0D, 1.0D, 2.0D, 1.0D);
 
     @Override
     public String getDataName() {
@@ -27,6 +28,7 @@ public class BlockCollisionShapesDataGenerator implements IDataGenerator {
     public JsonObject generateDataJson() {
         ShapeCache shapeCache = new ShapeCache();
         JsonObject blocksObject = new JsonObject();
+
         for (Block block : Registries.BLOCKS) {
             Object val = shapeCache.addShapesFrom(block);
             if (val instanceof JsonArray) {
@@ -42,7 +44,7 @@ public class BlockCollisionShapesDataGenerator implements IDataGenerator {
     }
 
     private static String nameOf(Block block) {
-        return Objects.requireNonNull(Registries.BLOCKS.getIdentifier(block)).getPath();
+        return Objects.requireNonNull(Registries.BLOCKS.getId(block));
     }
 
     private static JsonArray jsonOf(Box box) {
@@ -62,29 +64,44 @@ public class BlockCollisionShapesDataGenerator implements IDataGenerator {
 
         public Object addShapesFrom(Block block) {
             List<Integer> indexesOfBoxesInTheShapesCache = new ArrayList<>();
-            for (BlockState state : block.getStateManager().getBlockStates().reverse()) {
-                List<Box> boxes = new ArrayList<>();
+            for (Field field : block.getClass().getDeclaredFields()) {
+                if (!field.getType().getName().equals("[Lnet.minecraft.client.ItemIcon;")) { // ItemIcon[]
+                    continue;
+                }
                 try {
-                    block.appendCollisionBoxes(DGU.getWorld(), BlockPos.ORIGIN, state, ENTITY_BOX, boxes, null);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                Shapes thisBlockStateShapes = new Shapes(boxes);
-                int indexOfThisBlockStatesShapes = shapesCache.indexOf(thisBlockStateShapes);
-                if (indexOfThisBlockStatesShapes != -1) {
-                    indexesOfBoxesInTheShapesCache.add(indexOfThisBlockStatesShapes);
-                } else {
-                    shapesCache.add(thisBlockStateShapes);
-                    indexesOfBoxesInTheShapesCache.add(shapesCache.size() - 1);
+                    field.setAccessible(true);
+                    ItemTexture[] icons = (ItemTexture[]) field.get(block);
+                    return icons.length;
+                }  catch (Exception err) {
+                    err.printStackTrace();
                 }
             }
-            if (indexesOfBoxesInTheShapesCache.stream().distinct().count() < 2) {
-                return indexesOfBoxesInTheShapesCache.get(0);
-            } else {
-                JsonArray shapeIndexes = new JsonArray();
-                indexesOfBoxesInTheShapesCache.forEach(shapeIndex -> shapeIndexes.add(new JsonPrimitive(shapeIndex)));
-                return shapeIndexes;
-            }
+            // old way
+//            new Throwable("find block damages based on ItemIcon[]").printStackTrace();
+//            for (BlockState state : block.getStateManager().getBlockStates().reverse()) {
+//                List<Box> boxes = new ArrayList<>();
+//                try {
+//                    block.appendCollisionBoxes(DGU.getWorld(), BlockPos.ORIGIN, state, ENTITY_BOX, boxes, null);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//                Shapes thisBlockStateShapes = new Shapes(boxes);
+//                int indexOfThisBlockStatesShapes = shapesCache.indexOf(thisBlockStateShapes);
+//                if (indexOfThisBlockStatesShapes != -1) {
+//                    indexesOfBoxesInTheShapesCache.add(indexOfThisBlockStatesShapes);
+//                } else {
+//                    shapesCache.add(thisBlockStateShapes);
+//                    indexesOfBoxesInTheShapesCache.add(shapesCache.size() - 1);
+//                }
+//            }
+//            if (indexesOfBoxesInTheShapesCache.stream().distinct().count() < 2) {
+//                return indexesOfBoxesInTheShapesCache.get(0);
+//            } else {
+//                JsonArray shapeIndexes = new JsonArray();
+//                indexesOfBoxesInTheShapesCache.forEach(shapeIndex -> shapeIndexes.add(new JsonPrimitive(shapeIndex)));
+//                return shapeIndexes;
+//            }
+            return 1;
         }
 
         public JsonObject toJSON() {

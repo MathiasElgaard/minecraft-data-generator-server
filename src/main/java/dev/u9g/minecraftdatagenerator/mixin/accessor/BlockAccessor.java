@@ -1,4 +1,4 @@
-package dev.u9g.minecraftdatagenerator.mixin;
+package dev.u9g.minecraftdatagenerator.mixin.accessor;
 
 import net.minecraft.block.Block;
 import org.spongepowered.asm.mixin.Mixin;

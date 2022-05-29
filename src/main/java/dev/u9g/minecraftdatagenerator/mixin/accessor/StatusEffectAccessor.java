@@ -1,4 +1,4 @@
-package dev.u9g.minecraftdatagenerator.mixin;
+package dev.u9g.minecraftdatagenerator.mixin.accessor;
 
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.util.Identifier;
@@ -12,6 +12,6 @@ public interface StatusEffectAccessor {
     @Accessor("negative")
     boolean negative();
 
-    @Accessor("STATUS_EFFECTS_BY_ID")
-    public static Map<Identifier, StatusEffect> STATUS_EFFECTS_BY_ID() {throw new Error();}
+    @Accessor("STATUS_EFFECTS")
+    public static StatusEffect[] STATUS_EFFECTS() {throw new Error();}
 }
