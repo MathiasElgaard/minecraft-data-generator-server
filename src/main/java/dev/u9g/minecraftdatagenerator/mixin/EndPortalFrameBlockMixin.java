@@ -19,8 +19,8 @@ public class EndPortalFrameBlockMixin {
      * @reason a
      */
     @Overwrite()
-    public void addCollisionBoxesToList(BlockState blockState, World world, BlockPos blockPos, Box boundingBox, List<Box> list, @Nullable Entity entity, boolean bl) {
-        list.add(EndPortalFrameBlockAccessor.portalFrame());
-        list.add(EndPortalFrameBlockAccessor.eye());
+    public void appendCollisionBoxes(BlockState state, World world, BlockPos pos, Box entityBox, List<Box> boxes, @Nullable Entity entity, boolean isActualState) {
+        boxes.add(EndPortalFrameBlockAccessor.portalFrame());
+        boxes.add(EndPortalFrameBlockAccessor.eye());
     }
 }

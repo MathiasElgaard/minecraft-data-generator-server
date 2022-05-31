@@ -62,7 +62,7 @@ public class BlockCollisionShapesDataGenerator implements IDataGenerator {
             for (BlockState state : block.getStateManager().getBlockStates().reverse()) {
                 List<Box> boxes = new ArrayList<>();
                 try {
-                    state.addCollisionBoxesToList(DGU.getWorld(), BlockPos.ORIGIN, ENTITY_BOX, boxes, null, true);
+                    state.appendCollisionBoxes(DGU.getWorld(), BlockPos.ORIGIN, ENTITY_BOX, boxes, null, true);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

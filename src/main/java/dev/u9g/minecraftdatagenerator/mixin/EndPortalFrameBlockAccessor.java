@@ -7,12 +7,12 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(EndPortalFrameBlock.class)
 public interface EndPortalFrameBlockAccessor {
-    @Accessor("field_12655")
+    @Accessor("PORTAL_FRAME")
     public static Box portalFrame() {
         throw new IllegalStateException();
     }
 
-    @Accessor("field_12656")
+    @Accessor("PORTAL_EYE")
     public static Box eye() {
         throw new IllegalStateException();
     }

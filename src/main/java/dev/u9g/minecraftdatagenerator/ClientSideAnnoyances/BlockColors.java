@@ -112,7 +112,7 @@ public class BlockColors {
         if (blockColorable != null) {
             return blockColorable.method_12155(blockState, (BlockView)null, (BlockPos)null, 0);
         } else {
-            MaterialColor materialColor = blockState.method_11729();
+            MaterialColor materialColor = blockState.getMaterialColor();
             return materialColor != null ? materialColor.color : -1;
         }
     }
