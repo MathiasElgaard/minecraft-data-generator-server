@@ -19,7 +19,7 @@ public class EndPortalFrameBlockOverwrite {
      * @reason a
      */
     @Overwrite()
-    public void addCollisionBoxesToList(BlockState state, World world, BlockPos pos, Box entityBox, List<Box> boxes, @Nullable Entity entity) {
+    public void appendCollisionBoxes(BlockState state, World world, BlockPos pos, Box entityBox, List<Box> boxes, @Nullable Entity entity) {
         boxes.add(EndPortalFrameBlockAccessor.portalFrame());
         boxes.add(EndPortalFrameBlockAccessor.eye());
     }
