@@ -39,14 +39,14 @@ public class EntitiesDataGenerator implements IDataGenerator {
     public static JsonObject generateEntity(Class<? extends Entity> entityClass) {
         JsonObject entityDesc = new JsonObject();
         Identifier registryKey = Registries.ENTITY_TYPES.getIdentifier(entityClass);
-        int entityRawId = Registries.ENTITY_TYPES.getIndex(entityClass);
+        int entityRawId = Registries.ENTITY_TYPES.getRawId(entityClass);
         @Nullable Entity entity = makeEntity(entityClass);
         // FIXME: ENTITY ID IS WRONG
         int id = entityId(entity);
         entityDesc.addProperty("id", id);
         entityDesc.addProperty("internalId", id);
         entityDesc.addProperty("name", Objects.requireNonNull(registryKey).getPath());
-        String displayName = entity != null ? entity.method_2518() : null;
+        String displayName = entity != null ? entity.getTranslationKey() : null;
         if (displayName != null && !displayName.startsWith("entity.")) {
             entityDesc.addProperty("displayName", displayName);
         }
@@ -140,7 +140,7 @@ public class EntitiesDataGenerator implements IDataGenerator {
         if (!DGU.getCurrentlyRunningServer().getVersion().equals("1.8.9")) {
             throw new Error("These ids were gotten manually for 1.8.9, remake for " + DGU.getCurrentlyRunningServer().getVersion());
         }
-        int rawId = Registries.ENTITY_TYPES.getIndex(entity.getClass());
+        int rawId = Registries.ENTITY_TYPES.getRawId(entity.getClass());
         if (rawId == -1) { // see TrackedEntityInstance
             if (entity instanceof ItemEntity) {
                 return 2;

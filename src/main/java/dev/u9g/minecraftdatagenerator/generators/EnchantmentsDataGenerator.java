@@ -73,7 +73,7 @@ public class EnchantmentsDataGenerator implements IDataGenerator {
         JsonObject enchantmentDesc = new JsonObject();
         Identifier registryKey = Registries.ENCHANTMENTS.getIdentifier(enchantment);
 
-        enchantmentDesc.addProperty("id", Registries.ENCHANTMENTS.getIndex(enchantment));
+        enchantmentDesc.addProperty("id", Registries.ENCHANTMENTS.getRawId(enchantment));
         enchantmentDesc.addProperty("name", Objects.requireNonNull(registryKey).getPath());
         enchantmentDesc.addProperty("displayName", DGU.translateText(enchantment.getTranslationKey()));
 

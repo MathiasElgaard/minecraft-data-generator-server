@@ -10,10 +10,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
-
 public class DGU {
-
     public static MinecraftServer getCurrentlyRunningServer() {
         return (MinecraftServer) FabricLoader.getInstance().getGameInstance();
     }

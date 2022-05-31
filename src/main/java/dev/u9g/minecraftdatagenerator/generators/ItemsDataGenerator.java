@@ -52,7 +52,7 @@ public class ItemsDataGenerator implements IDataGenerator {
         JsonObject itemDesc = new JsonObject();
         Identifier registryKey = Registries.ITEMS.getIdentifier(item);
 
-        itemDesc.addProperty("id", Registries.ITEMS.getIndex(item));
+        itemDesc.addProperty("id", Registries.ITEMS.getRawId(item));
         itemDesc.addProperty("name", Objects.requireNonNull(registryKey).getPath());
 
         itemDesc.addProperty("displayName", item.getDisplayName(DGU.stackFor(item)));

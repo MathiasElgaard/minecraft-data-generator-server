@@ -106,7 +106,7 @@ public class BlocksDataGenerator implements IDataGenerator {
         Identifier registryKey = Registries.BLOCKS.getIdentifier(block);
         List<Item> effectiveTools = getItemsEffectiveForBlock(block);
 
-        blockDesc.addProperty("id", Registries.BLOCKS.getIndex(block));
+        blockDesc.addProperty("id", Registries.BLOCKS.getRawId(block));
         blockDesc.addProperty("name", Objects.requireNonNull(registryKey).getPath());
         if (!block.getTranslatedName().startsWith("tile.")) {
             blockDesc.addProperty("displayName", block.getTranslatedName());
@@ -119,7 +119,7 @@ public class BlocksDataGenerator implements IDataGenerator {
         blockDesc.addProperty("diggable", hardness != -1.0f && !(block instanceof AirBlock));
         JsonObject effTools = new JsonObject();
         effectiveTools.forEach(item -> effTools.addProperty(
-            String.valueOf(Registries.ITEMS.getIndex(item)), // key
+            String.valueOf(Registries.ITEMS.getRawId(item)), // key
             item.getMiningSpeedMultiplier(DGU.stackFor(item), block) // value
         ));
         blockDesc.add("effectiveTools", effTools);

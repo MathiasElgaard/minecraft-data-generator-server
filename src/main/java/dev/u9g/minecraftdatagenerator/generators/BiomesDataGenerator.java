@@ -24,7 +24,7 @@ public class BiomesDataGenerator implements IDataGenerator {
         JsonObject biomeDesc = new JsonObject();
 //        Identifier registryKey = registry.getIdentifier(biome);
 
-        biomeDesc.addProperty("id", Registries.BIOMES.getIndex(biome));
+        biomeDesc.addProperty("id", Registries.BIOMES.getRawId(biome));
         biomeDesc.addProperty("name", String.join("_", ((BiomeAccessor)biome).name().toLowerCase(Locale.ENGLISH).split(" ")));
         biomeDesc.addProperty("category", category(biome));
         biomeDesc.addProperty("temperature", biome.temperature);

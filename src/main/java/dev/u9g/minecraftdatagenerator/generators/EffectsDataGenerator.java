@@ -34,7 +34,7 @@ public class EffectsDataGenerator implements IDataGenerator {
         JsonObject effectDesc = new JsonObject();
         @NotNull Identifier registryKey = Objects.requireNonNull(Registries.STATUS_EFFECTS.getIdentifier(statusEffect));
 
-        effectDesc.addProperty("id", Registries.STATUS_EFFECTS.getIndex(statusEffect));
+        effectDesc.addProperty("id", Registries.STATUS_EFFECTS.getRawId(statusEffect));
         effectDesc.addProperty("name", Arrays.stream(registryKey.getPath().split("_")).map(StringUtils::capitalize).collect(Collectors.joining()));
         effectDesc.addProperty("displayName", DGU.translateText(statusEffect.getTranslationKey()));
 
