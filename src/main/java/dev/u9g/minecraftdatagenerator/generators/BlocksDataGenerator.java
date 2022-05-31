@@ -117,7 +117,7 @@ public class BlocksDataGenerator implements IDataGenerator {
         ));
         blockDesc.add("effectiveTools", effTools);
         blockDesc.addProperty("transparent", block instanceof TransparentBlock);
-        blockDesc.addProperty("emitLight", defaultState.getLuminance2());
+        blockDesc.addProperty("emitLight", defaultState.getLuminance());
         blockDesc.addProperty("filterLight", block.getDefaultState().getOpacity());
 
         JsonArray stateProperties = new JsonArray();
@@ -132,7 +132,7 @@ public class BlocksDataGenerator implements IDataGenerator {
     }
 
     private static String boundingBox(Block block, BlockState state) {
-        if (block.getDefaultState().getCollisionBox(EmptyBlockView.INSTANCE, BlockPos.ORIGIN) == null) {
+        if (block.getDefaultState().getCollisionBox(EmptyBlockView.INSTANCE, BlockPos.ORIGIN) == Block.NULL_BOX) {
             return "empty";
         }
         return "block";
