@@ -42,7 +42,7 @@ public class TintsDataGenerator implements IDataGenerator {
     public static Map<Integer, Integer> generateRedstoneTintColors() {
         Map<Integer, Integer> resultColors = new HashMap<>();
 
-        for (int redstoneLevel : RedstoneWireBlock.REDSTONE_POWER.getValues()) {
+        for (int redstoneLevel : RedstoneWireBlock.POWER.getValues()) {
             int color = ServerSideRedstoneWireBlock.getWireColor(redstoneLevel);
             resultColors.put(redstoneLevel, color);
         }

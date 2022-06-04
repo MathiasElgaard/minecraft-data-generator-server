@@ -10,7 +10,7 @@ import net.minecraft.item.Itemable;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Language;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType2;
+import net.minecraft.world.dimension.DimensionType;
 import org.jetbrains.annotations.NotNull;
 
 public class DGU {
@@ -58,7 +58,7 @@ public class DGU {
 
     @NotNull
     public static World getWorld() {
-        return getCurrentlyRunningServer().method_20312(DimensionType2.OVERWORLD);
+        return getCurrentlyRunningServer().method_20312(DimensionType.OVERWORLD);
     }
 
     public static ItemStack stackFor(Itemable ic) {

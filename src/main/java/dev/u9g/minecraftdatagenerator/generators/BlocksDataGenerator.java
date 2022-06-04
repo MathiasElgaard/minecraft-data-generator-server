@@ -126,7 +126,7 @@ public class BlocksDataGenerator implements IDataGenerator {
         blockDesc.addProperty("minStateId", Block.getRawIdFromState(blockStates.get(0)));
         blockDesc.addProperty("maxStateId", Block.getRawIdFromState(blockStates.get(blockStates.size() - 1)));
         JsonArray stateProperties = new JsonArray();
-        for (Property<?> property : block.getStateManager().getProperties2()) {
+        for (Property<?> property : block.getStateManager().getProperties()) {
             stateProperties.add(generateStateProperty(property));
         }
         blockDesc.add("states", stateProperties);

@@ -24,7 +24,7 @@ public class BlockColors {
         blockColors.method_12158((blockState, renderBlockView, blockPos, i) -> net.minecraft.client.color.world.FoliageColors.getBirchColor(), Blocks.BIRCH_LEAVES);
         blockColors.method_12158((blockState, renderBlockView, blockPos, i) -> renderBlockView != null && blockPos != null ? BiomeColors.method_19684(renderBlockView, blockPos) : FoliageColors.getDefaultColor(), Blocks.OAK_LEAVES, Blocks.JUNGLE_LEAVES, Blocks.ACACIA_LEAVES, Blocks.DARK_OAK_LEAVES, Blocks.VINE);
         blockColors.method_12158((blockState, renderBlockView, blockPos, i) -> renderBlockView != null && blockPos != null ? BiomeColors.method_19686(renderBlockView, blockPos) : -1, Blocks.WATER, Blocks.BUBBLE_COLUMN, Blocks.CAULDRON);
-        blockColors.method_12158((blockState, renderBlockView, blockPos, i) -> RedstoneWireBlock.method_8877(blockState.getProperty(RedstoneWireBlock.REDSTONE_POWER)), Blocks.REDSTONE_WIRE);
+        blockColors.method_12158((blockState, renderBlockView, blockPos, i) -> RedstoneWireBlock.method_8877(blockState.getProperty(RedstoneWireBlock.POWER)), Blocks.REDSTONE_WIRE);
         blockColors.method_12158((blockState, renderBlockView, blockPos, i) -> renderBlockView != null && blockPos != null ? BiomeColors.method_19681(renderBlockView, blockPos) : -1, Blocks.SUGAR_CANE);
         blockColors.method_12158((blockState, renderBlockView, blockPos, i) -> 14731036, Blocks.ATTACHED_MELON_STEM, Blocks.ATTACHED_PUMPKIN_STEM);
         blockColors.method_12158((blockState, renderBlockView, blockPos, i) -> {

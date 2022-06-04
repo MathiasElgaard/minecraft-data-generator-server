@@ -5,8 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import dev.u9g.minecraftdatagenerator.util.DGU;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityTypes;
-import net.minecraft.entity.LightningBoltEntity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.*;
 import net.minecraft.entity.passive.AnimalEntity;
@@ -31,14 +30,14 @@ public class EntitiesDataGenerator implements IDataGenerator {
     @Override
     public JsonArray generateDataJson() {
         JsonArray resultArray = new JsonArray();
-        Registry<EntityTypes<?>> entityTypeRegistry = Registry.ENTITY_TYPE;
-        for (EntityTypes<?> entityType : (Iterable<EntityTypes<?>>) entityTypeRegistry) {
+        Registry<EntityType<?>> entityTypeRegistry = Registry.ENTITY_TYPE;
+        for (EntityType<?> entityType : (Iterable<EntityType<?>>) entityTypeRegistry) {
             resultArray.add(generateEntity(entityTypeRegistry, entityType));
         }
         return resultArray;
     }
 
-    public static JsonObject generateEntity(Registry<EntityTypes<?>> entityRegistry, EntityTypes<?> entityType) {
+    public static JsonObject generateEntity(Registry<EntityType<?>> entityRegistry, EntityType<?> entityType) {
         JsonObject entityDesc = new JsonObject();
         Identifier registryKey = entityRegistry.getId(entityType);
         int entityRawId = entityRegistry.getRawId(entityType);
@@ -61,7 +60,7 @@ public class EntitiesDataGenerator implements IDataGenerator {
         return entityDesc;
     }
 
-    private static Entity makeEntity(EntityTypes<?> type) {
+    private static Entity makeEntity(EntityType<?> type) {
         Entity entity;
         try {
             entity = type.spawn(DGU.getWorld());
@@ -72,11 +71,11 @@ public class EntitiesDataGenerator implements IDataGenerator {
         return entity;
     }
 
-    private static Class<? extends Entity> getEntityClass(EntityTypes<?> entityType) {
+    private static Class<? extends Entity> getEntityClass(EntityType<?> entityType) {
         Class<? extends Entity> entityClazz = null;
         try {
-            for (Field field : EntityTypes.class.getFields())
-                if (entityType == field.get(EntityTypes.class))
+            for (Field field : EntityType.class.getFields())
+                if (entityType == field.get(EntityType.class))
                     entityClazz = (Class<? extends Entity>)((ParameterizedType) TypeToken.get(field.getGenericType()).getType()).getActualTypeArguments()[0];
         } catch (Exception e) {
             e.printStackTrace();
@@ -86,8 +85,8 @@ public class EntitiesDataGenerator implements IDataGenerator {
         return entityClazz;
     }
 
-    private static String getCategoryFrom(@NotNull EntityTypes<?> entityType) {
-        if (entityType == EntityTypes.PLAYER) return "other"; // fail early for player entities
+    private static String getCategoryFrom(@NotNull EntityType<?> entityType) {
+        if (entityType == EntityType.PLAYER) return "other"; // fail early for player entities
         Class<? extends Entity> entityClazz = getEntityClass(entityType);
         String packageName = entityClazz.getPackage().getName();
         String category = null;
