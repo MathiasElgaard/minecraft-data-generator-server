@@ -115,11 +115,11 @@ public class BlocksDataGenerator implements IDataGenerator {
         ));
         blockDesc.add("effectiveTools", effTools);
         blockDesc.addProperty("transparent", block instanceof TransparentBlock);
-        blockDesc.addProperty("emitLight", defaultState.getLuminance2());
+        blockDesc.addProperty("emitLight", defaultState.getLuminance());
         blockDesc.addProperty("filterLight", block.getDefaultState().getOpacity());
 
         JsonArray stateProperties = new JsonArray();
-        for (Property<?> property : block.getStateManager().getProperties2()) {
+        for (Property<?> property : block.getStateManager().getProperties()) {
             stateProperties.add(generateStateProperty(property));
         }
         blockDesc.add("states", stateProperties);

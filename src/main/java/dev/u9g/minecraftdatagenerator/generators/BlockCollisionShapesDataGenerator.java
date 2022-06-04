@@ -44,12 +44,12 @@ public class BlockCollisionShapesDataGenerator implements IDataGenerator {
     private static JsonArray jsonOf(Box box) {
         JsonArray arr = new JsonArray();
         if (box == null) return arr;
-        arr.add(box.minnX);
-        arr.add(box.minnY);
-        arr.add(box.minnZ);
-        arr.add(box.maxxX);
-        arr.add(box.maxxY);
-        arr.add(box.maxxZ);
+        arr.add(box.minX);
+        arr.add(box.minY);
+        arr.add(box.minZ);
+        arr.add(box.maxX);
+        arr.add(box.maxY);
+        arr.add(box.maxZ);
         return arr;
     }
 
@@ -61,7 +61,7 @@ public class BlockCollisionShapesDataGenerator implements IDataGenerator {
             for (BlockState state : block.getStateManager().getBlockStates().reverse()) {
                 List<Box> boxes = new ArrayList<>();
                 try {
-                    state.addCollisionBoxesToList(DGU.getWorld(), BlockPos.ORIGIN, ENTITY_BOX, boxes, null, true);
+                    state.appendCollisionBoxes(DGU.getWorld(), BlockPos.ORIGIN, ENTITY_BOX, boxes, null, true);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
