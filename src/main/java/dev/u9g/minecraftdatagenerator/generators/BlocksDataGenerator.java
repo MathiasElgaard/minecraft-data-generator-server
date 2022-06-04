@@ -124,7 +124,7 @@ public class BlocksDataGenerator implements IDataGenerator {
         JsonObject effTools = new JsonObject();
         effectiveTools.forEach(item -> effTools.addProperty(
             String.valueOf(Registry.ITEM.getRawId(item)), // key
-            item.getMiningSpeed(item.getStackForRender(), defaultState) // value
+            item.getMiningSpeed(DGU.asStack(item), defaultState) // value
         ));
         blockDesc.add("effectiveTools", effTools);
 
@@ -141,10 +141,10 @@ public class BlocksDataGenerator implements IDataGenerator {
         }
         blockDesc.add("states", stateProperties);
 
-        List<ItemStack> drops = populateDropsIfPossible(defaultState, effectiveTools.stream().findFirst().orElse(Items.AIR));
+//        List<ItemStack> drops = populateDropsIfPossible(defaultState, effectiveTools.stream().findFirst().orElse(Items.AIR));
 
         JsonArray dropsArray = new JsonArray();
-        drops.forEach(dropped -> dropsArray.add(Item.getRawId(dropped.getItem())));
+//        drops.forEach(dropped -> dropsArray.add(Item.getRawId(dropped.getItem())));
         blockDesc.add("drops", dropsArray);
 
         VoxelShape blockCollisionShape = defaultState.getCollisionShape(EmptyBlockView.INSTANCE, BlockPos.ORIGIN);

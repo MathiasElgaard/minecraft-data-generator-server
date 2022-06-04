@@ -17,9 +17,9 @@ import java.util.stream.Collectors;
 public class ItemsDataGenerator implements IDataGenerator {
 
     private static List<Item> calculateItemsToRepairWith(Registry<Item> itemRegistry, Item sourceItem) {
-        ItemStack sourceItemStack = sourceItem.getStackForRender();
+        ItemStack sourceItemStack = DGU.asStack(sourceItem);
         return itemRegistry.stream()
-                .filter(otherItem -> sourceItem.canRepair(sourceItemStack, otherItem.getStackForRender()))
+                .filter(otherItem -> sourceItem.canRepair(sourceItemStack, DGU.asStack(otherItem)))
                 .collect(Collectors.toList());
     }
 
