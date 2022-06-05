@@ -33,7 +33,7 @@ public class TintsDataGenerator implements IDataGenerator {
         BiomeTintColors colors = new BiomeTintColors();
 
         for (Biome biome : Registries.BIOMES) {
-            BlockView bv = new EmptyBlockView() {
+            EmptyBlockView bv = new EmptyBlockView() {
                 @Override
                 public Biome getBiome(BlockPos pos) {
                     return biome;

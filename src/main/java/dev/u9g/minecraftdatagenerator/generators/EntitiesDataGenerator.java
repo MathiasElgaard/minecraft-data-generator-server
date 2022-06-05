@@ -131,8 +131,8 @@ public class EntitiesDataGenerator implements IDataGenerator {
     }
 
     private static int entityId(Entity entity) {
-        if (!DGU.getCurrentlyRunningServer().getVersion().equals("1.12.2")) {
-            throw new Error("These ids were gotten manually for 1.12.2, remake for " + DGU.getCurrentlyRunningServer().getVersion());
+        if (!DGU.getCurrentlyRunningServer().getVersion().equals("1.11.2")) {
+            throw new Error("These ids were gotten manually for 1.11.2, remake for " + DGU.getCurrentlyRunningServer().getVersion());
         }
         int rawId = Registries.ENTITY_TYPES.getRawId(entity.getClass());
         if (rawId == -1) { // see TrackedEntityInstance

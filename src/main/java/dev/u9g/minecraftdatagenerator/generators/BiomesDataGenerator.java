@@ -4,16 +4,11 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import dev.u9g.minecraftdatagenerator.ClientSideAnnoyances.SkyColor;
 import dev.u9g.minecraftdatagenerator.mixin.BiomeAccessor;
-import dev.u9g.minecraftdatagenerator.util.DGU;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.SimpleRegistry;
 import net.minecraft.world.biome.*;
 
-import java.util.Iterator;
 import java.util.Locale;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class BiomesDataGenerator implements IDataGenerator {
 

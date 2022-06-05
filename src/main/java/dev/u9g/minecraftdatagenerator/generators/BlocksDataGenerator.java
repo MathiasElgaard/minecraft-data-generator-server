@@ -120,7 +120,7 @@ public class BlocksDataGenerator implements IDataGenerator {
         blockDesc.addProperty("filterLight", block.getDefaultState().getOpacity());
 
         JsonArray stateProperties = new JsonArray();
-        for (Property<?> property : block.getStateManager().getProperties2()) {
+        for (Property<?> property : block.getStateManager().getProperties()) {
             stateProperties.add(generateStateProperty(property));
         }
         blockDesc.add("states", stateProperties);

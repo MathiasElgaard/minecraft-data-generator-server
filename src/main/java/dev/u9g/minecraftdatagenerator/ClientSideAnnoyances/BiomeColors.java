@@ -1,6 +1,8 @@
 package dev.u9g.minecraftdatagenerator.ClientSideAnnoyances;
 
+import dev.u9g.minecraftdatagenerator.util.EmptyBlockView;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.biome.Biome;
 
@@ -9,12 +11,16 @@ import java.util.Iterator;
 public class BiomeColors {
     private static final ColorProvider GRASS_COLOR = new ColorProvider() {
         public int getColorAtPos(Biome biome, BlockPos pos) {
-            return biome.getGrassColor(pos);
+            double d = (double) MathHelper.clamp(biome.getTemperature(pos), 0.0F, 1.0F);
+            double e = (double)MathHelper.clamp(biome.getRainfall(), 0.0F, 1.0F);
+            return GrassColors.getColor(d, e);
         }
     };
     private static final ColorProvider FOLIAGE_COLOR = new ColorProvider() {
         public int getColorAtPos(Biome biome, BlockPos pos) {
-            return biome.getFoliageColor(pos);
+            double d = (double) MathHelper.clamp(biome.getTemperature(pos), 0.0F, 1.0F);
+            double e = (double)MathHelper.clamp(biome.getRainfall(), 0.0F, 1.0F);
+            return FoliageColors.getColor(d, e);
         }
     };
     private static final ColorProvider WATER_COLOR = new ColorProvider() {
@@ -23,7 +29,7 @@ public class BiomeColors {
         }
     };
 
-    private static int getColor(BlockView view, BlockPos pos, ColorProvider provider) {
+    private static int getColor(EmptyBlockView view, BlockPos pos, ColorProvider provider) {
         int i = 0;
         int j = 0;
         int k = 0;
@@ -39,15 +45,15 @@ public class BiomeColors {
         return (i / 9 & 255) << 16 | (j / 9 & 255) << 8 | k / 9 & 255;
     }
 
-    public static int getGrassColor(BlockView view, BlockPos pos) {
+    public static int getGrassColor(EmptyBlockView view, BlockPos pos) {
         return getColor(view, pos, GRASS_COLOR);
     }
 
-    public static int getFoliageColor(BlockView view, BlockPos pos) {
+    public static int getFoliageColor(EmptyBlockView view, BlockPos pos) {
         return getColor(view, pos, FOLIAGE_COLOR);
     }
 
-    public static int getWaterColor(BlockView view, BlockPos pos) {
+    public static int getWaterColor(EmptyBlockView view, BlockPos pos) {
         return getColor(view, pos, WATER_COLOR);
     }
 
