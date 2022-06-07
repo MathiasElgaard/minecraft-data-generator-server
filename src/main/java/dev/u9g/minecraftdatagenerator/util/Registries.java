@@ -75,7 +75,7 @@ public class Registries {
     public static void init() {
         LANGUAGE = new Language();
         BIOMES = setupBiomeRegistry();
-        BLOCKS = new RegistryBackedRegistryView<>(Block.BLOCK_REGISTRY);
+        BLOCKS = new RegistryBackedRegistryView<>(Block.REGISTRY);
         ITEMS = new RegistryBackedRegistryView<>(Item.REGISTRY);
         STATUS_EFFECTS = setupStatusEffectRegistry();
         ENCHANTMENTS = setupEnchantmentRegistry();

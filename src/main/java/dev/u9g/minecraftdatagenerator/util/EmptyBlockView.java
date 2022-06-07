@@ -10,18 +10,13 @@ public class EmptyBlockView implements BlockView {
     public static EmptyBlockView INSTANCE = new EmptyBlockView();
 
     @Override
-    public Block getBlockAt(int x, int y, int z) {
+    public Block getBlock(int x, int y, int z) {
         return null;
     }
 
     @Override
-    public BlockEntity getBlockEntityAt(int x, int y, int z) {
+    public BlockEntity getBlockEntity(int x, int y, int z) {
         return null;
-    }
-
-    @Override
-    public int getBrightnessOfSkyBlock(int i, int j, int k, int l) {
-        return 0;
     }
 
     @Override
@@ -56,6 +51,11 @@ public class EmptyBlockView implements BlockView {
 
     @Override
     public int method_3719(int i, int j, int k, int l) {
+        return 0;
+    }
+
+    @Override
+    public int method_3778(int i, int j, int k, int l) {
         return 0;
     }
 }

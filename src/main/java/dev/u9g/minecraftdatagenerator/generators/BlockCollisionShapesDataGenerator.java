@@ -6,9 +6,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import dev.u9g.minecraftdatagenerator.util.Registries;
 import net.minecraft.block.Block;
-import net.minecraft.block.FenceBlock;
-import net.minecraft.block.WoolBlock;
-import net.minecraft.client.ItemTexture;
+import net.minecraft.client.Texture;
 import net.minecraft.util.math.Box;
 
 import java.lang.reflect.Field;
@@ -70,7 +68,7 @@ public class BlockCollisionShapesDataGenerator implements IDataGenerator {
                 }
                 try {
                     field.setAccessible(true);
-                    ItemTexture[] icons = (ItemTexture[]) field.get(block);
+                    Texture[] icons = (Texture[]) field.get(block);
                     return icons.length;
                 }  catch (Exception err) {
                     err.printStackTrace();

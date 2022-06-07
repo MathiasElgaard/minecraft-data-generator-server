@@ -18,7 +18,7 @@ public abstract class ItemEntityOverwrite extends Entity {
      * @reason a
      */
     @Overwrite
-    public String method_2518() {
-        return super.method_2518();
+    public String getTranslatedName() {
+        return super.getTranslatedName();
     }
 }

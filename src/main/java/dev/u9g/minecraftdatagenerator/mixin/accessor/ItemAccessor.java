@@ -6,6 +6,6 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(Item.class)
 public interface ItemAccessor {
-    @Accessor("name")
-    String name();
+    @Accessor("translationKey")
+    String translationKey();
 }

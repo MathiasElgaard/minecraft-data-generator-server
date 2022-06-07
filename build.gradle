@@ -13,13 +13,9 @@ group = project.maven_group
 repositories {
     mavenCentral()
     maven {
+        name = "u9g"
         url = "https://maven.u9g.dev"
     }
-//    maven {
-//        name = "legacy-fabric"
-//        url = "https://maven.legacyfabric.net"
-//    }
-    maven { url 'https://jitpack.io' }
 }
 
 loom {

@@ -57,7 +57,7 @@ public class ItemsDataGenerator implements IDataGenerator {
         itemDesc.addProperty("id", Registries.ITEMS.getRawId(item));
 
         String name = Registries.ITEMS.getId(item);
-        itemDesc.addProperty("name", name == null ? ((ItemAccessor)item).name() : name.replace("minecraft:", ""));
+        itemDesc.addProperty("name", name == null ? ((ItemAccessor)item).translationKey() : name.replace("minecraft:", ""));
 
         itemDesc.addProperty("displayName", item.getDisplayName(DGU.stackFor(item)));
         itemDesc.addProperty("stackSize", item.getMaxCount());

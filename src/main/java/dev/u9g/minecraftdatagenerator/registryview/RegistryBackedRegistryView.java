@@ -16,12 +16,12 @@ public class RegistryBackedRegistryView<V> implements RegistryView<String, V> {
 
     @Override
     public int getRawId(V value) {
-        return registry.getIndex(value);
+        return registry.getRawId(value);
     }
 
     @Override
     public String getId(V value) {
-        return registry.getObjectId(value);
+        return registry.getId(value);
     }
 
     @Override
