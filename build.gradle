@@ -11,13 +11,11 @@ version = project.mod_version
 group = project.maven_group
 
 repositories {
-    mavenLocal()
     maven {
         name = "legacy-fabric"
         url = "https://maven.legacyfabric.net"
     }
     mavenCentral()
-    maven { url 'https://jitpack.io' }
 }
 
 loom {
