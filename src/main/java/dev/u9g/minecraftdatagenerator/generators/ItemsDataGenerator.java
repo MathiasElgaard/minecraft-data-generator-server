@@ -46,9 +46,9 @@ public class ItemsDataGenerator implements IDataGenerator {
         Identifier registryKey = itemRegistry.getKey(item).orElseThrow().getValue();
 
         itemDesc.addProperty("id", itemRegistry.getRawId(item));
+        itemDesc.addProperty("displayName", DGU.translateText(item.getTranslationKey()));
         itemDesc.addProperty("name", registryKey.getPath());
 
-        itemDesc.addProperty("displayName", DGU.translateText(item.getTranslationKey()));
         itemDesc.addProperty("stackSize", item.getMaxCount());
 
         List<EnchantmentTarget> enchantmentTargets = getApplicableEnchantmentTargets(item);
