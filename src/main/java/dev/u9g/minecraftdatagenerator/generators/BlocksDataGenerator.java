@@ -7,6 +7,7 @@ import dev.u9g.minecraftdatagenerator.util.DGU;
 import net.minecraft.block.AirBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.SnowBlock;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -89,7 +90,7 @@ public class BlocksDataGenerator implements IDataGenerator {
         propertyObject.addProperty("num_values", propertyValues.size());
 
         //Do not add values for vanilla boolean properties, they are known by default
-        if (!(property instanceof BooleanProperty) && !(property instanceof IntProperty)) {
+        if (!(property instanceof BooleanProperty) && !(property instanceof IntProperty && property.name(propertyValues.iterator().next()).equals("0"))) {
             JsonArray propertyValuesArray = new JsonArray();
             for (T propertyValue : propertyValues) {
                 propertyValuesArray.add(property.name(propertyValue));
