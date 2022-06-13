@@ -2,7 +2,9 @@ package dev.u9g.minecraftdatagenerator.generators;
 
 import com.google.gson.JsonElement;
 import com.google.gson.internal.Streams;
+import com.google.gson.internal.bind.TypeAdapters;
 import com.google.gson.stream.JsonWriter;
+import dev.u9g.minecraftdatagenerator.util.DGU;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,9 +44,7 @@ public class DataGenerators {
                 Path outputFilePath = outputDirectory.resolve(outputFileName);
 
                 try (Writer writer = Files.newBufferedWriter(outputFilePath, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
-                    JsonWriter jsonWriter = new JsonWriter(writer);
-                    jsonWriter.setIndent("  ");
-                    Streams.write(outputElement, jsonWriter);
+                    DGU.JSON_ELEMENT.write(DGU.GSON.newJsonWriter(writer), outputElement);
                 }
                 logger.info("Generator: {} -> {}", dataGenerator.getDataName(), outputFileName);
 

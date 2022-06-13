@@ -31,7 +31,6 @@ public class EntitiesDataGenerator implements IDataGenerator {
         entityTypeRegistry.forEach(entity -> resultArray.add(generateEntity(entityTypeRegistry, entity)));
         return resultArray;
     }
-
     public static JsonObject generateEntity(Registry<EntityType<?>> entityRegistry, EntityType<?> entityType) {
         JsonObject entityDesc = new JsonObject();
         Identifier registryKey = entityRegistry.getKey(entityType).orElseThrow().getValue();

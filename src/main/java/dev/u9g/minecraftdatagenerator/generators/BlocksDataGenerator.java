@@ -89,7 +89,7 @@ public class BlocksDataGenerator implements IDataGenerator {
         propertyObject.addProperty("num_values", propertyValues.size());
 
         //Do not add values for vanilla boolean properties, they are known by default
-        if (!(property instanceof BooleanProperty)) {
+        if (!(property instanceof BooleanProperty) && !(property instanceof IntProperty)) {
             JsonArray propertyValuesArray = new JsonArray();
             for (T propertyValue : propertyValues) {
                 propertyValuesArray.add(property.name(propertyValue));
@@ -143,35 +143,34 @@ public class BlocksDataGenerator implements IDataGenerator {
         List<Item> effectiveTools = getItemsEffectiveForBlock(defaultState);
 
         blockDesc.addProperty("id", blockRegistry.getRawId(block));
-        blockDesc.addProperty("name", registryKey.getPath());
         blockDesc.addProperty("displayName", DGU.translateText(localizationKey));
-
+        blockDesc.addProperty("name", registryKey.getPath());
         blockDesc.addProperty("hardness", block.getHardness());
         blockDesc.addProperty("resistance", block.getBlastResistance());
-        blockDesc.addProperty("stackSize", block.asItem().getMaxCount());
-        blockDesc.addProperty("diggable", block.getHardness() != -1.0f && !(block instanceof AirBlock));
-//        JsonObject effTools = new JsonObject();
-//        effectiveTools.forEach(item -> effTools.addProperty(
-//                String.valueOf(Registry.ITEM.getRawId(item)), // key
-//                item.getMiningSpeedMultiplier(item.getDefaultStack(), defaultState) // value
-//        ));
-//        blockDesc.add("effectiveTools", effTools);
-        blockDesc.addProperty("material", findMatchingBlockMaterial(defaultState, materials));
-
-        blockDesc.addProperty("transparent", !defaultState.isOpaque());
-        blockDesc.addProperty("emitLight", defaultState.getLuminance());
-        blockDesc.addProperty("filterLight", defaultState.getOpacity(EmptyBlockView.INSTANCE, BlockPos.ORIGIN));
-
-        blockDesc.addProperty("defaultState", Block.getRawIdFromState(defaultState));
         blockDesc.addProperty("minStateId", Block.getRawIdFromState(blockStates.get(0)));
         blockDesc.addProperty("maxStateId", Block.getRawIdFromState(blockStates.get(blockStates.size() - 1)));
-
         JsonArray stateProperties = new JsonArray();
         for (Property<?> property : block.getStateManager().getProperties()) {
             stateProperties.add(generateStateProperty(property));
         }
         blockDesc.add("states", stateProperties);
+        // Let's not generate block drops...
+        // List<ItemStack> actualBlockDrops = new ArrayList<>();
+        // populateDropsIfPossible(defaultState, effectiveTools.isEmpty() ? Items.AIR : effectiveTools.get(0), actualBlockDrops);
 
+        // for (ItemStack dropStack : actualBlockDrops) {
+        //     dropsArray.add(Item.getRawId(dropStack.getItem()));
+        // }
+        JsonArray dropsArray = new JsonArray();
+        blockDesc.add("drops", dropsArray);
+        blockDesc.addProperty("diggable", block.getHardness() != -1.0f && !(block instanceof AirBlock));
+        blockDesc.addProperty("transparent", !defaultState.isOpaque());
+        blockDesc.addProperty("filterLight", defaultState.getOpacity(EmptyBlockView.INSTANCE, BlockPos.ORIGIN));
+        blockDesc.addProperty("emitLight", defaultState.getLuminance());
+        VoxelShape blockCollisionShape = defaultState.getCollisionShape(EmptyBlockView.INSTANCE, BlockPos.ORIGIN);
+        blockDesc.addProperty("boundingBox", blockCollisionShape.isEmpty() ? "empty" : "block");
+        blockDesc.addProperty("stackSize", block.asItem().getMaxCount());
+        blockDesc.addProperty("material", findMatchingBlockMaterial(defaultState, materials));
         //Only add harvest tools if tool is required for harvesting this block
         if (defaultState.isToolRequired()) {
             JsonObject effectiveToolsObject = new JsonObject();
@@ -180,19 +179,13 @@ public class BlocksDataGenerator implements IDataGenerator {
             }
             blockDesc.add("harvestTools", effectiveToolsObject);
         }
-
-        List<ItemStack> actualBlockDrops = new ArrayList<>();
-        populateDropsIfPossible(defaultState, effectiveTools.isEmpty() ? Items.AIR : effectiveTools.get(0), actualBlockDrops);
-
-        JsonArray dropsArray = new JsonArray();
-        for (ItemStack dropStack : actualBlockDrops) {
-            dropsArray.add(Item.getRawId(dropStack.getItem()));
-        }
-        blockDesc.add("drops", dropsArray);
-
-        VoxelShape blockCollisionShape = defaultState.getCollisionShape(EmptyBlockView.INSTANCE, BlockPos.ORIGIN);
-        blockDesc.addProperty("boundingBox", blockCollisionShape.isEmpty() ? "empty" : "block");
-
+        blockDesc.addProperty("defaultState", Block.getRawIdFromState(defaultState));
+//        JsonObject effTools = new JsonObject();
+//        effectiveTools.forEach(item -> effTools.addProperty(
+//                String.valueOf(Registry.ITEM.getRawId(item)), // key
+//                item.getMiningSpeedMultiplier(item.getDefaultStack(), defaultState) // value
+//        ));
+//        blockDesc.add("effectiveTools", effTools);
         return blockDesc;
     }
 }

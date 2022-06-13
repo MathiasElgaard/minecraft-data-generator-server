@@ -57,6 +57,8 @@ public class ItemsDataGenerator implements IDataGenerator {
         for (EnchantmentTarget target : enchantmentTargets) {
             enchantCategoriesArray.add(EnchantmentsDataGenerator.getEnchantmentTargetName(target));
         }
+
+        if (item.isDamageable()) itemDesc.addProperty("maxDurability", item.getMaxDamage());
         if (enchantCategoriesArray.size() > 0) {
             itemDesc.add("enchantCategories", enchantCategoriesArray);
         }
@@ -72,9 +74,6 @@ public class ItemsDataGenerator implements IDataGenerator {
             if (fixedWithArray.size() > 0) {
                 itemDesc.add("repairWith", fixedWithArray);
             }
-
-            int maxDurability = item.getMaxDamage();
-            itemDesc.addProperty("maxDurability", maxDurability);
         }
         return itemDesc;
     }
